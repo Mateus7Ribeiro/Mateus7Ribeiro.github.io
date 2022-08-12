@@ -1,0 +1,128 @@
+body {
+	zoom: 1.8;
+}
+
+@font-face {
+  font-family: PocketCalculator;
+  src: url(font/PocketCalculator-qjd.ttf);
+}
+
+#calculadora {
+	background-color:#202020;
+	width: 270px;
+	border-radius:10px;
+	padding:15px 15px;
+}
+
+.displayCalc {
+	box-shadow:inset 0px 1px 3px 0px #91b8b3;
+	background:linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
+	background-color:#6c7c7c;
+	border-radius:5px;
+	border:2px solid #566963;
+	display:inline-block;
+	color:#ffffff;
+	font-family: PocketCalculator;
+	font-size:35px;
+	text-align: right;
+	padding:10px 15px;
+	width: 235px;
+	height: 30px;
+	text-decoration:none;
+	margin-bottom: 3px;
+}
+
+.botaoCalc {
+	box-shadow: 3px 4px 0px -1px #899599;
+	border-radius:9px;
+	display:inline-block;
+	cursor:pointer;
+	font-family:Arial;
+	font-size:24px;
+	font-weight:bold;
+	padding:10px 0 0 0;
+	text-decoration:none;
+	width: 60px;
+    height: 35px;
+	margin-bottom: 3px;
+	text-align: center;
+}
+.botaoCalc:active {
+	position:relative;
+	top:1px;
+	
+}
+
+
+.botaoNumero{
+	background:linear-gradient(to bottom, #ffffff 5%, #e3e3e3 100%);
+	background-color:#ffffff;
+	border:1px solid #bdbdbd;
+	color:#172d33;
+	text-shadow:2px 1px 0px #ffffff;
+}
+.botaoNumero:hover{
+	background:linear-gradient(to bottom, #e3e3e3 5%, #ffffff 100%);
+	background-color:#e3e3e3;
+}
+
+.botaoFunc{
+	font-size:11pt;
+	background:linear-gradient(to bottom, #eae0c2 5%, #ccc2a6 100%);
+	background-color:#eae0c2;
+	border:1px solid #bdbdbd;
+	color:#172d33;
+	padding:7px 0 0 0;
+	height: 24px;
+	text-shadow:0px 1px 0px #ffffff;
+}
+
+.botaoFunc:hover{
+	background:linear-gradient(to bottom, #ccc2a6 5%, #eae0c2 100%);
+	background-color:#ccc2a6;
+}
+
+
+.botaoIgualdade {
+	background:linear-gradient(to bottom, #f5ca75 5%, #faa700 100%);
+	background-color:#f5ca75;
+	border:1px solid #c5ae40;
+	color:#4b5152;
+	
+	text-shadow:2px 1px 0px #fcd358;
+}
+.botaoIgualdade:hover {
+	background:linear-gradient(to bottom, #faa700 5%, #f5ca75 100%);
+	background-color:#faa700;
+}
+
+* {
+	font-family: Arial, sans-serif;	
+}
+h1 {	
+	font-size:16pt; font-weight:bold; color#244d7c;
+}
+h2 {	
+	font-size:12pt; font-weight:bold; color#244d7c;
+	margin:0;
+}
+#historico {
+	background-color:#494e62;
+	width: 270px;
+	border-radius:10px;
+	padding:10px 10px;
+	color: white;
+}
+#historico p{
+	margin:0;
+	font-size:8pt; font-weight:none; color#244d7c;
+}
+
+#info {
+	font-family: Arial, sans-serif;
+	font-size:8pt; font-weight:bold; color:#5f7085;
+}
+hr {
+	border: 0.1px solid white;
+	margin-top:0;
+}
