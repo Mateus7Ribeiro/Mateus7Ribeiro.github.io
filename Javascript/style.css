@@ -1,0 +1,636 @@
+* {
+    margin: 0;
+    padding: 0;
+	/*user-select: none;	*/
+}
+
+#conteudo{
+	margin:20px 0px 0px 37px;
+}
+
+#resultado, #titulo{
+	margin:4px 37px;
+}
+
+h1, h2, h3 {
+	font-family:'Calibri';
+	font-size:25px;
+}
+#abas {
+display: flex;
+justify-content: center;
+background-color:#151f38;
+}
+
+@media (max-width : 960px) {
+	#abas {
+		flex-direction: column;
+	}
+	
+	}
+	
+
+.menu {
+	
+	display:inline-block;
+	cursor:pointer;
+	color:#e7e7e7;
+	font-family:Verdana;
+	font-size:18px;
+	padding:10px 37px;
+	text-decoration:none;
+	text-shadow:-1px -1px 1px #283966;
+}
+.menu:hover {
+	background-color:#10478a;
+}
+
+/*calendario*/
+#divCalendario{
+	zoom: 130%;
+}
+
+#calendario .clicado{
+	background-color: #4c74f7;
+	color:#f9f9f9;
+}
+#calendario {
+	text-align: center;
+	
+}
+
+#calendario th {
+    background-color: #283966;
+	color:#e7e7e7;
+	font-family:Verdana;
+	font-size:18px;
+	padding: 10px 15px;
+}
+#calendario .desabilitado, #calendario .desabilitado:hover {
+	background-color: #eef0f3;
+	cursor:initial;
+}
+
+#calendario td {
+	cursor: pointer;
+	font-family:Verdana;
+	font-weight: bold;
+	color: #313131;
+	font-size:18px;
+    background-color: #f5f5f5;
+	padding: 5px 20px;
+	
+}
+
+#calendario td:hover {
+	background-color: #95bef0;
+	color: #313131;
+}
+
+.resultadoPreenchido{
+    font-family: Arial;
+    font-size: 17px;
+    font-weight: bold;
+    width: 500px;
+    background-color: #3d6eab;
+    color: #ffffff;
+    padding: 8px 0px;
+	text-align: center;
+	margin-left: -10px;
+	zoom: 125%;
+}
+
+#controlesCalendario {
+	width: 490px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.mensagem{
+	font-family: Arial;
+	padding: 8px 50px;
+	font-size: 20px;
+    font-weight: bold;
+	margin: 0 auto;
+}
+
+
+
+.botaoMenuCalendar {
+	box-shadow:inset 0px 1px 3px 0px #23395e;
+	background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
+	background-color:#2e466e;
+	border-radius:5px;
+	border:1px solid #1f2f47;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:5px 23px;
+	text-shadow:0px -1px 0px #263666;
+}
+.botaoMenuCalendar:hover {
+	background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
+	background-color:#415989;
+}
+
+
+.conteudoLinha{
+	display: flex;
+	background-color: #59627c;
+	width: 700px;
+	
+	margin: 0 auto;
+}
+
+@keyframes numerosDaSorte {
+	0% { color: #ffffff; }
+	
+	100% { color: #828283; }
+	
+}
+
+.conteudoCel{
+	animation: numerosDaSorte 5s infinite alternate;
+	display: block;
+	width: 60px;
+	height: 55px;
+	background-color: rgb(39, 39, 39);
+	padding: 10px;
+	text-align: center;
+	align-content: center;
+	font-family: fantasy;
+	
+	font-size: 35px;
+    /*font-weight: bold;*/
+	/*color: #def0ff;*/
+	cursor:pointer;
+	border: 1px, #10478a;
+
+}
+
+.conteudoCel.inativo {
+	animation:none;
+	background-color: #333638;
+	color: #434547;
+	cursor:initial;
+}
+
+#historico {
+	width: 300px;
+	min-height: 20px;
+	background-color: #2e466e;
+	display:block;
+	color: #e7e7e7;
+	position: fixed;
+	top: 150px;
+	padding: 5px 15px;
+}
+
+#cartelaJogador {
+	width: 610px;
+	
+	margin:0 auto;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: #d64646;
+	padding: 10px;
+	padding-bottom: 20px;
+	align-content: center;
+    justify-content: center;
+	border-radius: 10px;
+}
+
+
+
+#cartelaJogador .TituloCartela{
+	width: 610px;
+	height: 85px;
+	margin:3px;
+	text-align:center;
+	font-size: 50pt;
+	font-family: Georgia, Times, 'Times New Roman', serif;
+	font-weight: bold;
+	color: #f3f3f3;
+}
+
+#cartelaJogador .NumeroCartela, .SeparadorCartela{
+	width: 115px;
+	height: 115px;
+	background-color: #f3f3f3;
+	display: flex;
+	margin:3px;
+	justify-content: center;
+    align-items: center;
+
+
+	font-size: 40pt;
+	font-family:Tahoma;
+	font-weight: bold;
+	border-radius:10px;
+
+}
+#cartelaJogador .NumeroCartela{
+	cursor: pointer;
+}
+
+#cartelaJogador .SeparadorCartela.qd_sep{
+	background-color: #420d0d;
+	font-size: 50pt;
+	color: #f3f3f3;
+	border-radius:20px;
+
+}
+#cartelaJogador .NumeroCartela.sorteado{
+	background-color: #201e1e;	
+	color: #979191
+
+}
+
+.bingoDoMilhao{
+	display: flex;
+	justify-content: flex-start;
+	background-color: #dbdcde;
+	color: #f3f3f3;
+	padding: 10px;
+	height: 40px;
+	align-items: center;
+	font-weight: bold;
+}
+
+.bingoDoMilhao .SorteadosTitulo{
+	font-size: 18pt;
+	
+    color: #000;
+	font-family:Tahoma;
+}
+
+#sorteadosConteudo{
+	display: flex;
+}
+#sorteadosConteudo span{
+	box-shadow:inset 0px 1px 0px 0px #899599;
+	background:linear-gradient(to bottom, #ededed 5%, #b1b6ba 100%);
+	background-color:#ededed;
+	font-size: 13pt;
+	width: 40px;
+	height: 40px;
+	display: flex;	
+	color: #201e1e;
+	margin: 0 5px;
+	justify-content: center;
+    align-items: center;
+	font-family:Tahoma;
+	border-radius: 20px;
+}
+#sorteadosConteudo span:last-child{
+	box-shadow:inset 0px 1px 0px 0px #fff6af;
+	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+	background-color:#ffec64;
+	border-radius:35px;
+	border:1px solid #ffaa22;
+	
+
+	font-size: 14pt;
+
+	color:#333333;
+	text-shadow:0px 1px 0px #ffee66;
+	text-decoration: underline;
+}
+#jogadores{
+	background-color: #dfdfdf;
+	padding: 20px 0px;
+}
+
+#jogadores .divJogador{
+	height: 45px;
+	display: flex;
+	align-content: center;
+    align-items: center;
+    justify-content: center;
+	border-top: 1px solid rgb(233, 231, 231);
+	box-shadow: 1px 1px 3px 0px #5c555c;
+	padding: 2px 0px 2px 0px;
+	color:#494242;
+	
+}
+#jogadores .divJogador:nth-child(even){
+	background-color: #cfcfcf;
+}
+#jogadores .divJogador:hover{
+	background-color: #7f8091;
+	padding: 2px 0px 2px 4px;
+	cursor: pointer;
+	color: #fff;
+	
+}
+
+#jogadores .divJogador .NmJogador{
+	
+	min-width: 200px;
+	padding: 5px 10px;	
+	
+	text-align: right;
+	font-family:Verdana;
+	font-size:17px;
+	font-weight:bold;
+}
+
+
+#jogadores .divJogador .divJogadorCartela{	
+	
+	min-width: 900px;	
+	display: flex;
+	justify-content: flex-start;
+}
+
+#historicoBingo {
+	padding: 20px 20% 70px 20%;
+	
+}
+
+@font-face {
+	font-family: 'Symbols';
+	src: url(font/GuifxV2Transports-YMJo.ttf);
+  }
+
+.play:before{content:"1";
+	font-family:'Symbols';
+}
+
+.pause:before{content:"2";
+	font-family:'Symbols';
+}
+
+#somaTotal {
+    color: #bbefd3;
+    font-size: 12pt;
+	text-decoration: underline;
+	
+}
+
+#jogadores .divJogador .divJogadorCartela span,
+#historicoBingo span,
+#resultado .botoesSoma
+{	
+	width: 15px;
+	height: 15px;
+	margin: 3px 5px;
+	text-align: center;
+	box-shadow: -1px 2px 5px 0px #5c555c;
+	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+	background-color:#ffffff;
+	border-radius:32px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	
+	color:#2b2b2b;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:10px 10px;
+	
+	text-shadow:0px 1px 0px #ffffff;
+}
+#resultado .botoesSoma
+{	width: 100px;
+	height: 20px;
+	cursor: pointer;
+	user-select: none;	
+}
+
+#jogadores .divJogador .divJogadorCartela span.sorteado{
+	border:1px solid #bcb8b8;
+    box-shadow: inset 0px 2px 3px -1px #929292;
+	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+	background-color:#242424;
+    color: #c9c9c9;
+    /* text-shadow: 0px 1px 0px #263666; */
+    
+	text-decoration:none;	
+}
+
+#jogoDaVelha{
+	display: flex;
+	flex-wrap: wrap;
+	width: 606px;
+	height: 606px;
+	background-color:#353535;
+	margin: 0 auto;
+	padding: 1px;
+	cursor: pointer;
+}
+
+.ganhadorJogoDaVelha, .empateJogoDaVelha{
+	display: flex;
+	align-items: center;
+    justify-content: center;
+
+	background-color: #10478a;
+	font-size: 20pt;
+	font-family: 'Gill Sans', sans-serif;
+	
+	padding: 10px ;
+	margin: 10px auto !important;
+	color: #fff;
+	
+}
+
+.ganhadorJogoDaVelha {
+	background-color: #0ca874 !important;
+}
+.ganhadorJogoDaVelha .img_jogoVelha {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	background-size: 40px;
+	
+}
+ 
+
+
+#jogoDaVelha .campo{
+	margin:  1px;
+	display: block;
+	width: 200px;
+	height: 200px;
+	background-color:#fff;
+	background-size: 200px;
+}
+
+.placarJogoVelha{
+	display: flex;
+	padding: 8px 0;
+	font-weight:500;
+}
+.img_jogoVelha {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background-size: 20px;
+	margin: 0 5px;
+}
+
+.clicou_x{
+	background-image: url('img/xis.png');
+	cursor: initial;
+}
+.clicou_o{
+	background-image: url('img/bola.png');
+	cursor: initial;
+}
+
+/*----------- desafio form --------- */
+
+#formulario {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+	min-width: 300px;
+    padding: 20px 45px;
+    background-color: #767575;;
+    font-family:Verdana;
+    border-radius: 10px 10px 10px 10px;
+    color: #ffffff;
+    margin: 0 auto;
+	
+}
+
+#formulario label {
+	display: block;
+	font-size: 14pt;
+	margin-top: 6px;
+	
+}
+#formulario input, #formulario select {
+	display: block;	
+	font-size: 16pt;
+	color: #2b2a2a;
+	border-radius:5px;
+	border:1px solid #314179;
+	padding: 3px;
+}
+#formulario #Cancelar, #formulario #Confirmar{
+	border-radius:6px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;	
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+}
+#formulario #Cancelar{
+	margin-top: 20px;
+	height: 30px;
+
+	box-shadow:inset 0px 1px 0px 0px #7a8eb9;
+	background:linear-gradient(to bottom, #637aad 5%, #5972a7 100%);
+	background-color:#637aad;
+	border:1px solid #314179;
+	text-shadow:0px 1px 0px #7a8eb9;
+
+	
+}
+#formulario #Confirmar{
+	margin: 10px 0;
+	height: 45px;
+	
+	box-shadow:inset 0px 1px 0px 0px #23395e;
+	background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
+	background-color:#2e466e;
+	border:1px solid #1f2f47;
+	text-shadow:0px 1px 0px #263666;
+	
+}
+
+#formulario #Confirmar:hover{
+	background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
+	background-color:#415989;
+}
+
+#formulario #divSex{
+	display: flex;
+	margin: 10px 0;	
+	justify-content: space-around;
+    align-items: baseline;
+	
+}
+
+/* ------ tabela periodica ------- */
+#tabelaPeriodica {
+	margin: 0 4% ;	
+	display: flex;
+    width: 1600px;
+    min-height: 750px;
+    font-family: 'Open Sans','Geneva',sans-serif;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+	padding: 20px 10px;
+	user-select: none;
+}
+
+
+.elemento {
+	width: 80px;
+	height: 83px;
+	margin: 1px;
+	display: block;
+	padding-left: 5px;
+	padding-top: 3px;
+	cursor:pointer;
+	background-color:inherit;
+	border-radius: 4px;
+}
+
+.elemento .simbolo {
+	font-weight: bold;
+	font-size: 22pt;
+}
+
+.elementoVazio {
+	background-color:inherit;
+	height: 30px;
+	cursor:default;
+}
+
+#divLegendas {
+	display: flex;
+	width: inherit;
+	flex-wrap: wrap;
+	
+	margin-top: 30px;
+}
+
+#divDescricaoLegenda {
+	display: block;
+	width: 300px;
+	background-color: #fff;
+}
+
+#divDescricaoLegenda:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+	
+}
+
+.legenda.e_1:before,  .e_1   {background-color: #2f8ba6;}
+.legenda.e_2:before,  .e_2   {background-color: #4fc45f;}
+.legenda.e_3:before,  .e_3   {background-color: #7ddcd3;}
+.legenda.e_4:before,  .e_4   {background-color: #31acc6;}
+.legenda.e_5:before,  .e_5   {background-color: #f8ab09;}
+.legenda.e_6:before,  .e_6   {background-color: #1f9956;}
+.legenda.e_7:before,  .e_7   {background-color: #f6b64a;}
+.legenda.e_8:before,  .e_8   {background-color: #d6c819;}
+.legenda.e_9:before,  .e_9   {background-color: #62a5cc;}
+.legenda.e_10:before, .e_10  {	background-color: #d3442e;}
+
+.legenda:hover,  .elemento:hover{
+	opacity: 0.8;
+}
