@@ -90,6 +90,7 @@ function bingoDoMilhao(){
         divJogadores.appendChild(divJogador);
     }
     
+    /*
     let camposCartela = document.getElementsByClassName("NumeroCartela");
     let cont = 0;
     
@@ -101,7 +102,7 @@ function bingoDoMilhao(){
          });
         cont++;
     }); 
-
+*/
 }
 
 

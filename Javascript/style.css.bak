@@ -191,7 +191,7 @@ background-color:#151f38;
 
 #cartelaJogador {
 	width: 610px;
-	user-select: none;
+	
 	margin:0 auto;
 	display: flex;
 	flex-wrap: wrap;
