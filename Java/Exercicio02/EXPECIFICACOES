@@ -1,0 +1,67 @@
+type nul > Pessoa.java
+type nul > CadastroPessoa.java
+type nul > Endereco.java
+
+01)    Implemente uma classe Pessoa com os seguintes atributos: Nome, idade e CPF.
+02)    Utilizando a classe implementada no item 01 crie um programa que instancie 2 pessoas com 
+todos os atributos e imprima os valores (receba esses valores passados pelo usuário).
+03)    Implemente uma classe de Endereço com os seguintes atributos: 
+Estado, Cidade, Bairro, Rua, CEP e Telefone.
+04)    Adicione à classe Pessoa um atributo de Endereço.
+05)    Implemente um método construtor para a classe Pessoa de forma que uma instância desta classe seja 
+criada apenas se possuir nome, idade e cpf.
+
+
+
+
+06)    Implemente uma classe que simule um cadastro de pessoal. 
+Esta classe deve armazenar até 10 pessoas (utilize a classe Pessoa) 
+com seus respectivos endereços. 
+Esta classe deve ter os seguintes comportamentos: 
+permitir o cadastramento e exclusão de pessoas do cadastro.
+
+
+nome, idade, cpf
+
+private String nome  ;
+private String idade ;
+private String cpf   ;
+
+Pessoa(String nome , String idade, String cpf){
+	this.nome  = nome  ;
+	this.idade = idade ;
+	this.cpf   = cpf   ;
+}
+
+public String getNome (){return this.nome  ;}
+public String getIdade(){return this.idade ;}
+public String getCpf  (){return this.cpf   ;}
+
+public void   setNome (String nome ){this.nome  = nome  ;}
+public void   setIdade(String idade){this.idade = idade ;}
+public void   setCpf  (String cpf  ){this.cpf   = cpf   ;}
+
+======================================
+
+estado, cidade, bairro, rua, cep, telefone
+
+private String estado   ;
+private String cidade   ;
+private String bairro   ;
+private String rua      ;
+private String cep      ;
+private String telefone ;
+
+public void setEstado   (String estado  ){ this.estado    = estado   ;}
+public void setCidade   (String cidade  ){ this.cidade    = cidade   ;}
+public void setBairro   (String bairro  ){ this.bairro    = bairro   ;}
+public void setRua      (String rua     ){ this.rua       = rua      ;}
+public void setCep      (String cep     ){ this.cep       = cep      ;}
+public void setTelefone (String telefone){ this.telefone  = telefone ;}
+
+public String getEstado   (){ return this.estado   ;}
+public String getCidade   (){ return this.cidade   ;}
+public String getBairro   (){ return this.bairro   ;}
+public String getRua      (){ return this.rua      ;}
+public String getCep      (){ return this.cep      ;}
+public String getTelefone (){ return this.telefone ;}

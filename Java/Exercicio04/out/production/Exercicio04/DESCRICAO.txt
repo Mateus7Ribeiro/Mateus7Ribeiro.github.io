@@ -1,0 +1,25 @@
+.    Crie uma classe abstrata denominada conta corrente. Adicione os métodos sacar, depositar e obter saldo, adicione o atributo saldo total.
+.    Estenda a classe desenvolvida no exercício anterior. Crie a classe conta corrente especial que contenha um atributo que represente um limite extra da conta corrente convencional de forma que:
+.    O saque debita primeiro o saldo total, na sequência deve-se debitar o limite do cheque especial;
+.    O depósito primeiro deve creditar o limite do cheque especial, até cobrir o valor devedor, e somente após o saldo total.
+
+
+public abstract class contaCorrente(){
+private double saldoTotal = 0;
+public void sacar(double vlrSaque){
+	saldoTotal -= vlrSaque;
+}
+public void depositar(double vlrDeposito){
+	saldoTotal += vlrDeposito;
+}
+public double obterSaldo(){
+	return saldoTotal;
+}
+
+}
+
+
+public contaCorrenteEspecial(){
+double limiteExtra;
+
+}

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Compila teste">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Compila teste/PrimeiroJar.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Compila teste/Professor.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

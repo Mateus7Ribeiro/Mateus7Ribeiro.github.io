@@ -1,0 +1,7 @@
+cd "C:\Users\320188883\OneDrive - Philips\Diversos\TEMP\JAVA\Exercicio1"
+
+javac .\Exercicio03\Exercicio02MateusArr.java -d .\Exercicio03\Classes
+
+cd "C:\Users\320188883\OneDrive - Philips\Diversos\TEMP\JAVA\Exercicio1\Exercicio03\Classes"
+
+jar -cvfm Programa.jar Exercicio03\manifest.mf Exercicio03\Exercicio02MateusArr.class Exercicio03\Endereco.class Exercicio03\Pessoa.class

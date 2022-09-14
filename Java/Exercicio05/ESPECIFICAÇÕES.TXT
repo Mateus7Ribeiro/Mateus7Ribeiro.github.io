@@ -1,0 +1,54 @@
+
+Desenvolva um formulário de cadastro em Swing. 
+O formulário deve conter os campos:
+Nome, Endereço, UF, Email, CPF, Sexo (M, F, O), Preferências (Filme, Música, Teatro, Outros).
+
+O formulário também deve conter dois botões:
+ 
+Cancelar 
+(se clicado pergunta se o usuário quer sair da aplicação, se confirmado, sai da aplicação) 
+Confirmar 
+(se clicado exibe os dados do formulário na tela para o usuário num JoptionPane)
+
+
+
+Nome
+Endereço
+UF
+Email
+CPF
+Sexo
+	M
+	F
+	O
+
+Preferências 
+	Filme
+	Música
+	Teatro
+	Outros
+
+private String nome        ;
+private String endereco    ;
+private String uf          ;
+private String email       ;
+private String cpf         ;
+private String sexo        ;
+private String preferencias;
+
+public setNome          () {}
+public setEndereco      () {}
+public setUf            () {}
+public setEmail         () {}
+public setCpf           () {}
+public setSexo          () {}
+public setPreferencias  () {}
+public 				 () {}
+public String getNome          () {}
+public String getEndereco      () {}
+public String getUf            () {}
+public String getEmail         () {}
+public String getCpf           () {}
+public String getSexo          () {}
+public String getPreferencias  () {}
+
