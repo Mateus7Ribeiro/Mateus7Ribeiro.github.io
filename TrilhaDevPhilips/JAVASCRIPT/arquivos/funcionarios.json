@@ -1,0 +1,9 @@
+[
+{"nome":"Cau\u00e3 Ferreira","salario":3600,"horaExtraDia":null,"horaExtraNoite":null,"dependentes":2,"horaFaltas":1.0,"descontosEventuais":null,"refeicao":35,"vales":250.0},
+{"nome":"Luiz Henrique Gon\u00e7alves","salario":8000,"horaExtraDia":null,"horaExtraNoite":1.0,"dependentes":0,"horaFaltas":null,"descontosEventuais":null,"refeicao":60,"vales":null},
+{"nome":"Maysa Almeida","salario":6900,"horaExtraDia":2.0,"horaExtraNoite":null,"dependentes":2,"horaFaltas":1.0,"descontosEventuais":null,"refeicao":35,"vales":null},
+{"nome":"Leandro Ara\u00fajo","salario":2500,"horaExtraDia":null,"horaExtraNoite":2.0,"dependentes":2,"horaFaltas":null,"descontosEventuais":125.0,"refeicao":25,"vales":null},
+{"nome":"Cec\u00edlia Novaes","salario":5300,"horaExtraDia":null,"horaExtraNoite":null,"dependentes":1,"horaFaltas":null,"descontosEventuais":null,"refeicao":30,"vales":300.0},
+{"nome":"Luiz Fernando da Luz","salario":2300,"horaExtraDia":2.0,"horaExtraNoite":0.2,"dependentes":0,"horaFaltas":1.0,"descontosEventuais":null,"refeicao":25,"vales":115.0},
+{"nome":"Jo\u00e3o Lucas Lima","salario":5300,"horaExtraDia":null,"horaExtraNoite":2.0,"dependentes":3,"horaFaltas":null,"descontosEventuais":200.0,"refeicao":25,"vales":null}
+]
