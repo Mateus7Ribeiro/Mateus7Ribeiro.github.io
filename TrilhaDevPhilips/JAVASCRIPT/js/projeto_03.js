@@ -15,7 +15,6 @@ class objEmprestimo {
         this.itemEmprestado = itemEmprestado;
         this.dataEmprestimo = new Date(new Date(dataEmprestimo).setHours(24));
         this.dataCombinada =  new Date(new Date(dataCombinada).setHours(24)); 
-        //this.dataDevolucao = dataDevolucao; //criar função devolver
 
         this.marcarComoDevolvido = function(){
             this.dataDevolucao = new Date();
@@ -35,7 +34,7 @@ function F03_proj(){
 
     conteudo.innerHTML += ``;
     conteudo.innerHTML += `
-    <label for="ctrl-modal" class='btn-proj-gray' onClick="btDevolucao.style.display = 'none'">+ Novo</label>
+    <label for="ctrl-modal" class='btn-proj-gray' onClick="F03_LimparNovoRegistro()">+ Novo</label>
     <label class='btn-proj-gray' onClick='F03_GeraDadosAleatórios(1)'>Gerar Empréstimo Aleatório</label>
     <label class='btn-proj-gray' onClick='F03_LimpaControleEmprestimoCompleta()'>Apagar tudo</label>
     <input type='text' placeholder='Pesquisar' id='campoPesquisa_03'/>
@@ -82,11 +81,16 @@ function F03_addIdControleEmprestimo(id){
     }
 }
 
+function F03_LimparNovoRegistro(){    
+    btDevolucao.style.display = 'none';
+    document.forms["formEmprestimo"].reset();
+}
+
 function F03_CriaNovaEntrada(objEmprestimo){
 
     let hoje = new Date();
     let dataCombinada = new Date(objEmprestimo.dataCombinada);
-    let dataDevolucao = new Date(objEmprestimo.dataDevolucao);
+    
 
     let classe = (dataCombinada > hoje) ? '-' : 'atrasado';    
     let diasParaDevolver = parseInt((dataCombinada-hoje)/(24*3600*1000));
@@ -183,7 +187,7 @@ function F03_geraPopup(){
         <span class="linha"><label for="tel">Telefone: </label><input type="text" name="tel" id="tel"></span>
         <span class="linha"><label for="item">Item Emprestado: </label><input type="text" name="item" id="item"></span>
         <span class="linha"><label for="dataEmp">Data Empréstimo: </label><input type="date" name="dataEmp" id="dataEmp"></span>
-        <span class="linha"><label for="dataFim">Data Final: </label><input type="date" name="dataFim" id="dataFim"></span>
+        <span class="linha"><label for="dataFim">Data Limite: </label><input type="date" name="dataFim" id="dataFim"></span>
         <input type="hidden" name="numId" id="numId"></span>
 
         <label for="" class="btn-proj-gray btcenter" id="btDevolucao" onClick='F03_salvaValoresForm("devolucao")'>Marcar como devolvido</label>
@@ -191,9 +195,6 @@ function F03_geraPopup(){
     </form>`;
 }
 
-function F03_marcarDevolvido(){
-    
-}
 
 function F03_GeraDadosAleatórios(qtd){
 

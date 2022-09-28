@@ -28,7 +28,7 @@ function F02_proj(){
 	titulo.innerHTML    =  "<h1>Agenda telefônica</h1>";
     conteudo.innerHTML += ``;
     conteudo.innerHTML += `
-    <label for="ctrl-modal" class='btn-proj-gray' onClick=''>+ Novo</label>
+    <label for="ctrl-modal" class='btn-proj-gray' onClick='F02_LimparNovoRegistro()'>+ Novo</label>
     <label class='btn-proj-gray' onClick='F02_GeraDadosAleatórios(1)'>Gerar contato Aleatório</label>
     <label class='btn-proj-gray' onClick='F02_LimpaAgendaCompleta()'>Apagar tudo</label>
     <input type='text' placeholder='Pesquisar' id='campoPesquisa'/>
@@ -82,6 +82,11 @@ function F02_CriaNovaEntrada(objContato){
     </tr>
     `;
     contentAgenda.innerHTML += linha;
+}
+
+function F02_LimparNovoRegistro(){  
+    
+    document.forms["formContato"].reset();
 }
 
 function F02_apagarContato(id){

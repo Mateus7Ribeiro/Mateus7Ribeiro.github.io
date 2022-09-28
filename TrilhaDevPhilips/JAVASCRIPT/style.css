@@ -46,7 +46,7 @@ span {
     
 }
 
-input {
+input, select {
     padding:3px 10px ;
     border: 1px solid #b9bbc7;
     outline: 0;
@@ -247,7 +247,6 @@ span.del{
 }
 
 .atrasado  {
-    /*background-color: #f1bbbb;*/
     border-top: #f1bbbb solid 2px;   
     border-bottom: #f1bbbb solid 2px;   
 }
@@ -274,4 +273,84 @@ span.del{
 #contentControleEmprestimo_03 td:nth-child(1){
     text-align: center; 
     
+}
+
+
+#tbControleTarefas tr {
+    cursor: move;    
+    background-color: #f9f9f9;
+    border-bottom: #1d1d1d solid 2px; 
+    font-size: 13pt;
+}
+
+#tbControleTarefas td, #tbControleTarefas th {
+    padding: 10px 10px;
+    min-width: 500px;
+}
+#tbControleTarefas th {
+    background-color: #1b1b2e;
+    color: #cbccce;
+    font-size: 15pt;
+}
+#tbControleTarefas {
+    margin: 15px 0;
+}
+#tbControleTarefas td {
+    
+}
+
+.ordemTasks br {
+    border-bottom:1px dashed rgb(131, 127, 127);
+    content: "";
+    width: 90%;
+    display: block;
+    
+}
+#formTasks {
+    height: 375px;
+}
+
+#formTasks label {
+    width: 100%;
+    float: left;
+    text-align: left;
+    padding-left: 10px;
+}
+
+#formTasks input, #formTasks select {
+    width: 90%;
+    float: left;
+    
+}
+
+#formTasks .botoes {
+    width: 90%;
+    float: left;
+}
+#formTasks .botoes button{
+    float: right;
+    min-width: 200px;
+    margin: 10px;
+}
+
+#contentControleTarefas_04 .atrasado  {
+    border:none;
+    border-left: solid #bf0c0c  10px;
+    
+}
+#contentControleTarefas_04 .finalizado  {
+    border:none;
+    border-left: solid #59c788 10px;
+    text-decoration: line-through;
+}
+#contentControleTarefas_04 .ok  {
+    border:none;
+    border-left: solid #dfdfdf 10px;
+}
+#contentControleTarefas_04 .alertadata  {
+    border:none;
+    border-left: solid #e8ec2b  10px;
+}
+#tbControleTarefas .col  {
+    border-left: solid #000000 10px;
 }

@@ -61,7 +61,9 @@ function F01_proj(){
         <tbody id='contentFuncionarios'>
         </tbody>
     </table>
-    <label for="ctrl-modal" class='btn-proj-gray' onClick=''>+ Novo</label>    `;
+    <label for="ctrl-modal" class='btn-proj-gray' onClick=''>+ Novo</label>   
+    <label for="" class='btn-proj-gray' onClick='F01_GeraValoreAleatorio()'>Gerar Registro Aleatório</label>   
+     `;
 
     contentFuncionarios = document.getElementById("contentFuncionarios");
     
@@ -119,18 +121,34 @@ function F01_CriaNovaEntrada(funcionarioObj){
 
 function F01_PegaValoresForm(){
     let func = new objFuncionario(
-               document.forms["formFuncionario"].nom.value , 
-    parseFloat(document.forms["formFuncionario"].sal.value ), 
-    parseFloat(document.forms["formFuncionario"].dia.value ), 
-    parseFloat(document.forms["formFuncionario"].noi.value ), 
-    parseInt(document.forms["formFuncionario"].dep.value ), 
-    parseFloat(document.forms["formFuncionario"].hor.value ), 
-    parseFloat(document.forms["formFuncionario"].des.value ), 
-    parseFloat(document.forms["formFuncionario"].ref.value ), 
-    parseFloat(document.forms["formFuncionario"].val.value ), 
+        document.forms["formFuncionario"].nom.value , 
+        parseFloat(document.forms["formFuncionario"].sal.value ), 
+        parseFloat(document.forms["formFuncionario"].dia.value ), 
+        parseFloat(document.forms["formFuncionario"].noi.value ), 
+        parseInt(document.forms["formFuncionario"].dep.value ), 
+        parseFloat(document.forms["formFuncionario"].hor.value ), 
+        parseFloat(document.forms["formFuncionario"].des.value ), 
+        parseFloat(document.forms["formFuncionario"].ref.value ), 
+        parseFloat(document.forms["formFuncionario"].val.value ), 
     );
     F01_CriaNovaEntrada(func);
 }
+
+function F01_GeraValoreAleatorio(){
+    let func = new objFuncionario(
+        nomesAleatorios[aleatorio(nomesAleatorios.length)]+' '+sobrenomesAleatorios[aleatorio(sobrenomesAleatorios.length)] , 
+        parseFloat(aleatorio(20000)+1212 ), 
+        parseFloat(aleatorio(10) ), 
+        parseFloat(aleatorio(10) ), 
+        parseInt(aleatorio(7) ), 
+        parseFloat(aleatorio(1000)/100 ), 
+        parseFloat(aleatorio(10000)/100 ), 
+        parseFloat(aleatorio(10000)/100 ), 
+        parseFloat(aleatorio(10000)/100 ), 
+    );
+    F01_CriaNovaEntrada(func);
+}
+
 
 function F01_geraPopup(){
     document.getElementById("conteudo-popup").innerHTML =  `
