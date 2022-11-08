@@ -28,3 +28,5 @@ replay_pid*
 
 # Backup bak
 *.bak
+oculto_CSS3/
+oculto_HTML/
