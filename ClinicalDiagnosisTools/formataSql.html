@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-weight: bold;
+      display: flex;
+      margin: 3px 5px;
+
+      align-items: center;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      resize: none;
+    }
+
+    input[type="button"] {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    textarea {
+      height: 200px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    #texto_saida {
+      margin-top: 10px;
+    }
+
+    .inline-inputs {
+      display: flex;
+    }
+
+    .inline-inputs input[type="text"] {
+      flex: 1;
+      margin-right: 5px;
+    }
+
+    button.metal-button {
+      background-color: #444;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    button.metal-button:hover {
+      background-color: #4e4e4e;
+    }
+
+    button.metal-button:focus {
+      outline: none;
+    }
+
+    button.metal-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Formata SQL</h2>
+    <form>
+      <div class="inline-inputs">
+        <label for="antes">Antes:</label>
+        <input id="antes" value='" ' type="text">
+
+        <label for="depois">Depois:</label>
+        <input id="depois" value=' " +' type="text">
+
+        <label for="ultimo">Último:</label>
+        <input id="ultimo" value=' ";' type="text">
+
+      </div>
+
+      <label for="texto">Digite seu texto:</label>
+      <textarea id="texto" name="texto"></textarea>
+
+      <div class="inline-inputs">
+        <label for="substituiEsse">Substituir:</label>
+        <input id="substituiEsse" value='' type="text">
+
+        <label for="porEsse">→</label>
+        <input id="porEsse" value='' type="text">
+
+        <label for="remover">Remover:</label>
+        <input id="remover" value='	' type="text">
+      </div>
+
+
+      <textarea id="texto_saida" name="texto_saida"></textarea>
+
+      <button class="metal-button" type="button" onclick="adicionarAspas()">Adicionar aspas</button>
+      <button class="metal-button" type="button" onclick="reverterAspas()">Reverter aspas</button>
+    </form>
+  </div>
+
+  <script>
+    function pegarValores() {
+      antes = document.getElementById("antes").value;
+      depois = document.getElementById("depois").value;
+      ultimo = document.getElementById("ultimo").value;
+      texto = document.getElementById("texto");
+      texto_saida = document.getElementById("texto_saida");
+      remover = document.getElementById("remover").value;
+      substituiEsse = document.getElementById("substituiEsse").value;
+      porEsse = document.getElementById("porEsse").value;
+      linhas = texto.value.split("\n");
+      textoComAspas = "";
+    }
+
+    function adicionarAspas() {
+      pegarValores();
+
+      for (var i = 0; i < this.linhas.length; i++) {
+
+        if (i == this.linhas.length - 1) {
+          this.depois = this.ultimo;
+        }
+        if (this.linhas[i] == '') {
+          this.textoComAspas += this.linhas[i];
+        }
+        else {
+          this.textoComAspas += this.antes + this.linhas[i] + this.depois + "\n";
+        }
+      }
+
+      this.texto_saida.value = formataTexto(this.textoComAspas);
+    }
+
+    function reverterAspas() {
+      pegarValores();
+      //o código não está otimizado mas o objetivo era resolver uma situação de momento
+      this.texto.value = formataTexto(texto_saida.value).replaceAll(depois, " \n").replaceAll(antes, ' ').replaceAll(ultimo, "").replaceAll("\n\n", "\n");
+    }
+
+    function formataTexto(textoEntrada) {
+      return textoEntrada.replaceAll(this.substituiEsse, this.porEsse).replaceAll(this.remover, " ").replace(/\s{2,}/g, ' ').toUpperCase();
+    }
+
+  </script>
+</body>
+
+</html>
