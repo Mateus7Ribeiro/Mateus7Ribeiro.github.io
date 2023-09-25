@@ -21,6 +21,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     const sufixBranches = document.getElementById("sufixo").value.trim();   
     const cherryInput = document.getElementById("cherry").value;
     const removePull = document.getElementById("removePull").checked;
+    const removeInitialCheckout = document.getElementById("removeInitialCheckout").checked;
 
  
     // Divida as branches com base nas vírgulas
@@ -32,7 +33,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     resultadosDiv.innerHTML = ""; // Limpa quaisquer resultados anteriores
     
     const titleCommit = document.createElement("div");
-    titleCommit.innerHTML = `[SO-${osNumber}] fix(<edit>AtePac__</edit>) <edit>Insert here the commit message</edit>`;
+    titleCommit.innerHTML = `[SO-${osNumber}] fix(<edit>AtePac__</edit>) <edit>Insert here the commit message</edit> `;
     resultadosDiv.appendChild(titleCommit);
     //resultadosDiv.setAttribute("contenteditable","true");
     
@@ -40,8 +41,12 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         branch = branch.trim();
         const resultDiv = document.createElement("div");
         const branchVersion = branch.split('.').slice(-1);
-        resultDiv.innerHTML += `<br>git checkout ${branch}`;
-        resultDiv.innerHTML += `<br>git checkout <edit>${sufixBranches}${osNumber}_${branchVersion}</edit>`;
+        
+        if(!removeInitialCheckout){
+            resultDiv.innerHTML += `<br>git checkout ${branch}`;
+        }
+        
+        resultDiv.innerHTML += `<br>git checkout <edit>${sufixBranches}${osNumber}_${branchVersion}</edit> `;
         
         if(!removePull){
             resultDiv.innerHTML += `<br>git pull origin ${branch}`;
@@ -54,7 +59,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
             });
         }
         
-        resultDiv.innerHTML += `<br>git push origin <edit>mr_${osNumber}_${branchVersion}</edit>`;                
+        resultDiv.innerHTML += `<br>git push origin <edit>mr_${osNumber}_${branchVersion}</edit> `;                
         
         resultadosDiv.appendChild(resultDiv);
     });

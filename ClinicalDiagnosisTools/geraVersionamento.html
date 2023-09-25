@@ -12,14 +12,17 @@
         <input type="text" id="osNumber" name="osNumber"><br>
         
         <label for="branches">Branches (separadas por vírgula):</label>
-        <input type="text" id="branches" name="branches" value="dev, 5.00.1832, 4.02.1827, 4.02.1826, 4.01.1823" required>
+        <input type="text" id="branches" name="branches" value="art_diagnosis, 5.00.1832, 4.02.1827, 4.02.1826, 4.01.1823, 3.07.1820" required>
         <input type="text" size="5" id="sufixo" name="sufixo" value="-B mr_"><br>
         
         <label for="cherry">Cherry-pick (separados por vírgula):</label>
         <input type="text" id="cherry" name="cherry" value=""><br>
         
+        <label for="removeInitialCheckout">Remover checkout inicial (main branch)</label>
+        <input type="checkbox" id="removeInitialCheckout" name="removeInitialCheckout" value=""><br>
+        
         <label for="removePull">Remover comando Pull</label>
-        <input type="checkbox" id="removePull" name="removePull" value=""><br><br>
+        <input type="checkbox" id="removePull" name="removePull" checked><br><br>
     
         
         <input type="submit" value="Enviar">
