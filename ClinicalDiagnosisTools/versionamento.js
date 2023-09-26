@@ -1,5 +1,32 @@
 const urlParams = new URLSearchParams(window.location.search);
 
+function createLinksEdit() {
+    const linksGithubEdit = document.getElementById("links-github-edit");
+    const arrayDirectory = ['tasy','tasy-backend'];
+    linksGithubEdit.innerHTML = "";    
+    
+    getValuesForm();
+    const linksContainer = document.createElement("div");
+    const branchesArray = this.branchesInput.split(",");
+    
+    for(let branch of branchesArray) {
+        branch = branch.trim();
+        const linkSpan = document.createElement("span");
+        linkSpan.innerHTML += `${branch} -> `;
+        for(let directory of arrayDirectory){
+            const linkHref = document.createElement("a");
+            linkHref.href = `https://github.dev/philips-emr/${directory}/tree/${branch}`;
+            linkHref.textContent = ` ${directory} |`
+            
+            linkSpan.appendChild(linkHref);
+            linksContainer.appendChild(linkSpan);
+        }
+        linkSpan.innerHTML += `<br>`;
+    };
+    
+    linksGithubEdit.appendChild(linksContainer);
+}
+
 if(urlParams.size > 0) {
     applyValueToFieldId("osNumber");
     applyValueToFieldId("branches");
@@ -12,18 +39,27 @@ function applyValueToFieldId(value) {
     }
 }
 
+function getValuesForm(){
+    this.osNumber = document.getElementById("osNumber").value.trim();
+    this.branchesInput = document.getElementById("branches").value;   
+    this.sufixBranches = document.getElementById("sufixo").value.trim();   
+    this.cherryInput = document.getElementById("cherry").value;
+    this.removePull = document.getElementById("removePull").checked;
+    this.removeInitialCheckout = document.getElementById("removeInitialCheckout").checked;
+}
+
 document.getElementById("osForm").addEventListener("submit", (event) => {   
     
     event.preventDefault();
+    getValuesForm();
     // Obtenha os valores dos campos de entrada
-    const osNumber = document.getElementById("osNumber").value.trim();
-    const branchesInput = document.getElementById("branches").value;   
-    const sufixBranches = document.getElementById("sufixo").value.trim();   
-    const cherryInput = document.getElementById("cherry").value;
-    const removePull = document.getElementById("removePull").checked;
-    const removeInitialCheckout = document.getElementById("removeInitialCheckout").checked;
+    const osNumber = this.osNumber;
+    const branchesInput = this.branchesInput;
+    const sufixBranches = this.sufixBranches;
+    const cherryInput = this.cherryInput;
+    const removePull = this.removePull;
+    const removeInitialCheckout = this.removeInitialCheckout;
 
- 
     // Divida as branches com base nas vírgulas
     const branchesArray = branchesInput.split(",");
     const cherryArray = cherryInput.split(",");
@@ -68,5 +104,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     for (const edit of document.getElementsByTagName("edit")){
         edit.setAttribute("contenteditable","true");
     }
+    
   
 });
+

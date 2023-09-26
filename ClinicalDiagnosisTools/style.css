@@ -4,6 +4,10 @@ body {
     margin: 0;
     padding: 20px;
   }
+  
+  a {
+    cursor: pointer; 
+  }
 
   .container {
     max-width: 800px;
