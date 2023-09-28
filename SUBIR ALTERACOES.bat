@@ -7,7 +7,7 @@ git status
 set /p "var=Qual mensagem do commit? "
 echo %var%
 
-git commit -m %var%
+git commit -m "%var%"
 
 set /p "var=-----DESEJA SUBIR ALTERACOES?----- "
 
