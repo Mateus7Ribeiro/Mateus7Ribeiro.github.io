@@ -1,9 +1,38 @@
 const urlParams = new URLSearchParams(window.location.search);
 
+function createLinksPR() {
+    const linksGithubEdit = document.getElementById("links-github-edit");
+    const arrayDirectory = ['tasy','tasy-backend'];
+    linksGithubEdit.innerHTML = "";
+    getValuesForm();
+    const linksContainer = document.createElement("div");
+    const branchesArray = this.branchesInput.split(",");
+    
+    for(let branch of branchesArray) {
+        branch = branch.trim();
+        const branchVersion = branch.split('.').slice(-1);
+        const linkSpan = document.createElement("span");
+        const sufix = sufixBranches.split(" ");
+        
+        linkSpan.innerHTML += `${branch} -> `;
+        for(let directory of arrayDirectory){
+            const linkHref = document.createElement("a");
+            linkHref.href = `https://github.dev/philips-emr/${directory}/tree/${branch}`;
+            linkHref.href = `https://github.com/philips-emr/${directory}/compare/${branch}...${sufix[sufix.length-1]}${osNumber}_${branchVersion}`;
+            linkHref.textContent = ` ${directory} |`
+
+            linkSpan.appendChild(linkHref);
+            linksContainer.appendChild(linkSpan);
+        }
+        linkSpan.innerHTML += `<br>`;
+    };
+    
+    linksGithubEdit.appendChild(linksContainer);
+}
 function createLinksEdit() {
     const linksGithubEdit = document.getElementById("links-github-edit");
     const arrayDirectory = ['tasy','tasy-backend'];
-    linksGithubEdit.innerHTML = "";    
+    linksGithubEdit.innerHTML = "";
     
     getValuesForm();
     const linksContainer = document.createElement("div");
@@ -69,7 +98,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     resultadosDiv.innerHTML = ""; // Limpa quaisquer resultados anteriores
     
     const titleCommit = document.createElement("div");
-    titleCommit.innerHTML = `[SO-${osNumber}] fix(<edit>AtePac__</edit>) <edit>Insert here the commit message</edit> `;
+    titleCommit.innerHTML = `fix(<edit>AtePac__</edit>): <edit>Insert here the commit message</edit> [SO-${osNumber}] `;
     resultadosDiv.appendChild(titleCommit);
     //resultadosDiv.setAttribute("contenteditable","true");
     
@@ -77,6 +106,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         branch = branch.trim();
         const resultDiv = document.createElement("div");
         const branchVersion = branch.split('.').slice(-1);
+        const sufix = sufixBranches.split(" ");
         
         if(!removeInitialCheckout){
             resultDiv.innerHTML += `<br>git checkout ${branch}`;
@@ -95,7 +125,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
             });
         }
         
-        resultDiv.innerHTML += `<br>git push origin <edit>mr_${osNumber}_${branchVersion}</edit> `;                
+        resultDiv.innerHTML += `<br>git push origin <edit>${sufix[sufix.length-1]}${osNumber}_${branchVersion}</edit> `;                
         
         resultadosDiv.appendChild(resultDiv);
     });
