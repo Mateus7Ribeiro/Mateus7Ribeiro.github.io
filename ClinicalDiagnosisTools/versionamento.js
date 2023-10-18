@@ -74,10 +74,12 @@ function getValuesForm(){
     this.sufixBranches = document.getElementById("sufixo").value.trim();   
     this.cherryInput = document.getElementById("cherry").value;
     this.removePull = document.getElementById("removePull").checked;
+    this.removePush = document.getElementById("removePush").checked;
     this.removeInitialCheckout = document.getElementById("removeInitialCheckout").checked;
+    this.removeBranchCheckout = document.getElementById("removeBranchCheckout").checked;
 }
 
-document.getElementById("osForm").addEventListener("submit", (event) => {   
+document.getElementById("osForm").addEventListener("submit", (event) => {
     
     event.preventDefault();
     getValuesForm();
@@ -87,7 +89,9 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     const sufixBranches = this.sufixBranches;
     const cherryInput = this.cherryInput;
     const removePull = this.removePull;
+    const removePush = this.removePush;
     const removeInitialCheckout = this.removeInitialCheckout;
+    const removeBranchCheckout = this.removeBranchCheckout;
 
     // Divida as branches com base nas vírgulas
     const branchesArray = branchesInput.split(",");
@@ -116,8 +120,10 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
             resultDiv.innerHTML += `<br>git pull origin ${branch}`;
         }
         
-        resultDiv.innerHTML += `<br>git checkout <edit>${sufixBranches}${osNumber}_${branchVersion}</edit> `;
-        
+		if(!removeBranchCheckout){
+			resultDiv.innerHTML += `<br>git checkout <edit>${sufixBranches}${osNumber}_${branchVersion}</edit> `;
+        }
+		
         if(!cherryArray[0] == ''){
             cherryArray.forEach(function(cherryPick) {
                 cherryPick = cherryPick.trim();
@@ -125,8 +131,9 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
             });
         }
         
+		if(!removePush){
         resultDiv.innerHTML += `<br>git push origin <edit>${sufix[sufix.length-1]}${osNumber}_${branchVersion}</edit> `;                
-        
+        }
         resultadosDiv.appendChild(resultDiv);
     });
     
