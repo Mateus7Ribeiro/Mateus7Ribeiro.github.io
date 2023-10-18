@@ -112,11 +112,11 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
             resultDiv.innerHTML += `<br>git checkout ${branch}`;
         }
         
-        resultDiv.innerHTML += `<br>git checkout <edit>${sufixBranches}${osNumber}_${branchVersion}</edit> `;
-        
         if(!removePull){
             resultDiv.innerHTML += `<br>git pull origin ${branch}`;
         }
+        
+        resultDiv.innerHTML += `<br>git checkout <edit>${sufixBranches}${osNumber}_${branchVersion}</edit> `;
         
         if(!cherryArray[0] == ''){
             cherryArray.forEach(function(cherryPick) {
@@ -130,7 +130,8 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         resultadosDiv.appendChild(resultDiv);
     });
     
-    
+    createLinksPR();
+	
     for (const edit of document.getElementsByTagName("edit")){
         edit.setAttribute("contenteditable","true");
     }
