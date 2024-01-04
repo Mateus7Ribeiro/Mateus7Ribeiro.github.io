@@ -36,14 +36,14 @@
     }
 
     button {
-      padding: 10px;
+      padding: 5px;
     }
 
-    #resultado {
+    .code {
 	background-color: black;
 	color:#4b9d54;
 	width: 950px;
-	height: 65px;
+	min-height: 40px;
       margin-top: 20px;
       font-family: Consolas, monospace;
       white-space: pre-wrap;
@@ -55,7 +55,7 @@
 		background-color: #f1f1f1;
 		max-width: 1000px;
 		padding: 20px 30px;
-		margin-top: 30px;
+		margin-top: 60px;
 	}
 	#fonte {
 		margin: 8px;
@@ -77,16 +77,22 @@
     <button type="button" onclick="exibirDados()">Enviar</button>
   </form>
 
-  <div id="resultado">npm config set proxy http://ascpcamargo:Philips%402020@192.168.253.107:3128
+  <div id="resultado" class="code">npm config set proxy http://ascpcamargo:Philips%402020@192.168.253.107:3128
 <br>npm config set https-proxy http://ascpcamargo:Philips%402020@192.168.253.107:3128
-  </div>
-  <div id="fonte">
+ </div>
+  <div id="fonte"><br>
 	Baseado nas instruções de configuração desta
 	<a href="https://github.com/philips-emr/tasy/wiki/Setup-Tasy-for-Development#proxy-settings-optional">
 	Wiki
 	</a>
   </div>
+	<br><hr><br>
+	Para verificar as configurações:
+	<div class="code">npm config list</div>
 </div>
+
+
+
 
   <script>
     function exibirDados() {
@@ -102,7 +108,8 @@
  
 	  resultado.innerHTML = 'npm config set proxy http://' + usuario + ':' + senha + '@192.168.253.107:3128';
 	  resultado.innerHTML += '<br><br>npm config set https-proxy http://' + usuario + ':' + senha + '@192.168.253.107:3128';
-    }
+	  resultado.innerHTML += '<br><br>';
+	}
   </script>
 
 </body>
