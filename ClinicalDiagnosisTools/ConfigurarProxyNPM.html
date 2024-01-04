@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurar Proxy NPM</title>
+   <style>
+   a {
+	color:black;
+	font-weight: bold;
+   }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+
+	  display: flex;
+	justify-content: center;
+	align-items: flex-start;
+      height: 100vh; /* Isso garante que a altura da página seja totalmente coberta pela div centralizada. */
+      margin: 0;
+    }
+
+    form {
+      display: inline-block;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      padding: 5px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 10px;
+    }
+
+    #resultado {
+	background-color: black;
+	color:#4b9d54;
+	width: 950px;
+	height: 65px;
+      margin-top: 20px;
+      font-family: Consolas, monospace;
+      white-space: pre-wrap;
+      text-align: left;
+	  padding: 10px;
+    }
+	
+	#container {
+		background-color: #f1f1f1;
+		max-width: 1000px;
+		padding: 20px 30px;
+		margin-top: 30px;
+	}
+	#fonte {
+		margin: 8px;
+	}
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <h1>Configurar Proxy NPM</h1>
+
+  <form id="formulario">
+    <label for="usuario">Usuário:</label>
+    <input type="text" id="usuario" name="usuario" required>
+
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha" name="senha" required>
+
+    <button type="button" onclick="exibirDados()">Enviar</button>
+  </form>
+
+  <div id="resultado">npm config set proxy http://ascpcamargo:Philips%402020@192.168.253.107:3128
+<br>npm config set https-proxy http://ascpcamargo:Philips%402020@192.168.253.107:3128
+  </div>
+  <div id="fonte">
+	Baseado nas instruções de configuração desta
+	<a href="https://github.com/philips-emr/tasy/wiki/Setup-Tasy-for-Development#proxy-settings-optional">
+	Wiki
+	</a>
+  </div>
+</div>
+
+  <script>
+    function exibirDados() {
+      // Obter os valores dos campos de usuário e senha
+      var usuario = document.getElementById('usuario').value;
+      var senha = document.getElementById('senha').value;
+
+      // Codificar a senha no padrão de URL
+      senha = encodeURIComponent(senha);
+
+      // Concatenar os valores e exibir na tela
+      var resultado = document.getElementById('resultado');
+ 
+	  resultado.innerHTML = 'npm config set proxy http://' + usuario + ':' + senha + '@192.168.253.107:3128';
+	  resultado.innerHTML += '<br><br>npm config set https-proxy http://' + usuario + ':' + senha + '@192.168.253.107:3128';
+    }
+  </script>
+
+</body>
+</html>
