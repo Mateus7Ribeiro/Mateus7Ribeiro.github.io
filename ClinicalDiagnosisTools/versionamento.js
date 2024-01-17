@@ -10,7 +10,10 @@ function createLinksPR() {
     
     for(let branch of branchesArray) {
         branch = branch.trim();
-        const branchVersion = branch.split('.').slice(-1);
+        const branchVersion = branch;
+        if(quebraBranchVersao){
+            branchVersion = branchVersion.split('.').slice(-1);
+        }
         const linkSpan = document.createElement("span");
         const sufix = sufixBranches.split(" ");
         
@@ -140,10 +143,12 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
 		if(!removePush){
         resultDiv.innerHTML += `<br>git push origin <edit>${sufix[sufix.length-1]}${osNumber}_${branchVersion}</edit> `;                
         }
-        resultadosDiv.appendChild(resultDiv);
+        resultadosDiv.appendChild(resultDiv);        
+        
+        createLinksPR();
     });
     
-    createLinksPR();
+    
 	
     for (const edit of document.getElementsByTagName("edit")){
         edit.setAttribute("contenteditable","true");
