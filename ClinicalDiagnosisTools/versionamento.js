@@ -75,6 +75,7 @@ function getValuesForm(){
     this.cherryInput = document.getElementById("cherry").value;
     this.removePull = document.getElementById("removePull").checked;
     this.removePush = document.getElementById("removePush").checked;
+    this.quebraBranchVersao = document.getElementById("quebraBranchVersao").checked;
     this.removeInitialCheckout = document.getElementById("removeInitialCheckout").checked;
     this.removeBranchCheckout = document.getElementById("removeBranchCheckout").checked;
 }
@@ -90,6 +91,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     const cherryInput = this.cherryInput;
     const removePull = this.removePull;
     const removePush = this.removePush;
+    const quebraBranchVersao = this.quebraBranchVersao;
     const removeInitialCheckout = this.removeInitialCheckout;
     const removeBranchCheckout = this.removeBranchCheckout;
 
@@ -109,8 +111,12 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     branchesArray.forEach(function(branch) {
         branch = branch.trim();
         const resultDiv = document.createElement("div");
-        const branchVersion = branch.split('.').slice(-1);
+        let branchVersion = branch;
         const sufix = sufixBranches.split(" ");
+        
+        if(quebraBranchVersao){
+            branchVersion = branchVersion.split('.').slice(-1);
+        }
         
         if(!removeInitialCheckout){
             resultDiv.innerHTML += `<br>git checkout ${branch}`;
