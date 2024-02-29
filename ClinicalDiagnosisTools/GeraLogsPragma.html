@@ -25,6 +25,7 @@
 				<textarea placeholder="Digite os campos que deseja capturar (um campo por linha)" id="texto" name="texto" rows="4" cols="50" oninput="atualizarTexto(this.value)"></textarea>
 			</form>
 		<div id="textoDigitado"></div>
+		<br><i>*Campos em negrito <b>são</b> editáveis</i>
 	</div>
 
 <script>
@@ -43,7 +44,7 @@
                 divTexto.innerHTML += '|| CHR(10)|| \' <b>' + linha.replaceAll(',','') + '</b>=>\'||<b>' + linha.replaceAll(',','') + '</b><br>';
             }
         });
-		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),'<b>fantonow</b>',<b>nr_prescricao_p</b>);<br>   END ProcedureLog ;";
+		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),'<b>usuario</b>',<b>'nr_prescricao_p'</b>);<br>   END ProcedureLog ;";
     
 		for (const edit of document.getElementsByTagName("b")){
 			edit.setAttribute("contenteditable","true");
