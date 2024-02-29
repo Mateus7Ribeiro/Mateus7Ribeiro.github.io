@@ -1,12 +1,81 @@
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clinical diagnosis Tools</title>
-    <script>window.location.replace("formataQuery.html");</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu em Árvore</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .menu-item {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .parent {
+      cursor: pointer;
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin: 2px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      color: #555;
+    }
+    
+	.child {
+      //display: none;
+    }
+	
+	.child li a{
+	  margin: 5px 0;
+	  display: block;
+	  color: black;
+      text-decoration: none;
+	  background-color: #fdfdfd;
+    }
+	
+
+  </style>
 </head>
 <body>
+
+  <ul class="menu-item">
+    <li class="parent" onclick="toggleSubMenu(this)">Ferramentas
+      <ul class="child">
+        <li class=""><a href="formataQuery.html">Formatar Query SQL para código</a></li>
+        <li class=""><a href="geraversionamento.html">Ferramenta Versionamento GIT</a></li>
+        <li class=""><a href="ConfigurarProxyNPM.html">Configurar Proxy NPM</a></li>
+      </ul>
+    </li>
+	<!--
+    <li class="parent" onclick="toggleSubMenu(this)">Menu Pai 2
+      <ul class="child">
+        <li class="">Submenu 2.1</li>
+        <li class="">Submenu 2.2</li>
+      </ul>
+    </li>
+    <li class="parent" onclick="toggleSubMenu(this)">Menu Pai 3
+      <ul class="child">
+        <li class="">Submenu 3.1</li>
+        <li class="">Submenu 3.2</li>
+      </ul>
+    </li>
+	-->
+  </ul>
+
+  <script>
+	//var elementsChild = document.getElementsByClassName('child');
+	//Array.from(elementsChild).forEach(element => { element.style.display = 'none' });
+	
+    function toggleSubMenu(element) {
+      var childMenu = element.querySelector('.child');
+      childMenu.style.display = childMenu.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
 
 </body>
 </html>

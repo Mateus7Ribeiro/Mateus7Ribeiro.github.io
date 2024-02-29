@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário com Textbox</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    #textoDigitado {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 10px;
+        min-height: 100px;
+    }
+</style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Script de Logs PLSQL</h2>
+			<form>
+				<label for="texto">Campos para Captura:</label>
+				<textarea placeholder="Digite os campos que deseja capturar (um campo por linha)" id="texto" name="texto" rows="4" cols="50" oninput="atualizarTexto(this.value)"></textarea>
+			</form>
+		<div id="textoDigitado"></div>
+	</div>
+
+<script>
+    function atualizarTexto(valor) {
+        var linhas = valor.split('\n');
+        var divTexto = document.getElementById('textoDigitado');
+        divTexto.innerHTML = 'PROCEDURE&nbspProcedureLog(id_log&nbspvarchar2)<br>&nbsp&nbsp&nbspIS<br>&nbsp&nbsp&nbspBEGIN<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspgravar_log_lab_pragma(\'<b>5445</b>\',substr(<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspto_char(sysdate&nbsp,\'DDMMYYYYHH24MISS\')||\'&nbspid_log=>\'||id_log<br>		';
+		// Limpar o conteúdo existente
+		divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+		divTexto.innerHTML += "|| CHR(10)|| ' SYSDATE=>'||SYSDATE<br>";
+		
+        linhas.forEach(function(linha) {
+            if (linha.trim() !== '') { // Ignorar linhas vazias
+                //divTexto.innerHTML += 'Texto antes: ' + linha + ' Texto depois</br>';
+				divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                divTexto.innerHTML += '|| CHR(10)|| \' <b>' + linha.replaceAll(',','') + '</b>=>\'||<b>' + linha.replaceAll(',','') + '</b><br>';
+            }
+        });
+		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),'<b>fantonow</b>',<b>nr_prescricao_p</b>);<br>   END ProcedureLog ;";
+    
+		for (const edit of document.getElementsByTagName("b")){
+			edit.setAttribute("contenteditable","true");
+		}
+	}
+	
+
+</script>
+
+</body>
+</html>
+<!--
+PROCEDURE ProcedureLog(id_log varchar2)
+   IS
+   BEGIN
+      gravar_log_lab_pragma('5445',substr(
+             to_char(sysdate ,'DDMMYYYYHH24MISS')||' id_log=>'||id_log
+            || CHR(10)|| ' SYSDATE=>'||SYSDATE
+            || CHR(10)|| ' qt_hora_adicional_w=>'||qt_hora_adicional_w
+            || CHR(10)|| ' nr_seq_exame_w=>'||nr_seq_exame_w
+            || CHR(10)|| ' nr_seq_grupo_w=>'||nr_seq_grupo_w
+            || CHR(10)|| ' ie_dia_semana_w=>'||ie_dia_semana_w
+            || CHR(10)|| ' ie_data_regra_w=>'||ie_data_regra_w
+            || CHR(10)|| ' ie_exame_lab_dia_w=>'||ie_exame_lab_dia_w
+            || CHR(10)|| ' ie_atual_urgente_w=>'||ie_atual_urgente_w
+            ,1,1999),'fantonow',nr_prescricao_p);
+   END ProcedureLog ;
+   -->
