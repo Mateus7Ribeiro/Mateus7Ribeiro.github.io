@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Story Points</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+<h2>Calculadora Story Points</h2>
+
+<form id="formValores">
+  <br><label for="valoresInput">Story Points:</label>
+  <input type="text" id="valoresInput" name="valoresInput" placeholder="Digite ou cole os valores separados por 'x'"><br><br>
+  <button class="metal-button" type="button" onclick="calcular()">Calcular</button>
+</form>
+
+<div id="resultado"></div>
+</div>
+<script>
+function calcular() {
+  var valoresInput = document.getElementById("valoresInput").value;
+  var valoresArray = valoresInput.split("x").map(Number);
+
+  var soma = 0;
+  var contagem = {};
+  valoresArray.forEach(function(valor) {
+	if(valor!=0){
+    soma += valor;
+    contagem[valor] = (contagem[valor] || 0) + 1;
+	}
+  });
+  
+  if(soma!=0){
+	  var media = soma / valoresArray.length;
+	  
+	  var resultadoHTML = "<br><hr><h3>Resultado:</h3>";
+	  resultadoHTML += "<p>Média de valores: <b>[ " + media.toFixed(2) + " ]</b></p>";
+	  resultadoHTML += "<p>Contagem de incidência de cada valor:</p>";
+		resultadoHTML += "<table>" ;
+	  for (var valor in contagem) {
+		resultadoHTML += "<tr><td align='center'><b>[ " + valor + " ]</b></td><td>" + contagem[valor] + " votos<br></td></tr>";
+	  }
+		resultadoHTML += "</table>";
+	  
+	  document.getElementById("resultado").innerHTML = resultadoHTML;
+  }
+}
+</script>
+
+</body>
+</html>

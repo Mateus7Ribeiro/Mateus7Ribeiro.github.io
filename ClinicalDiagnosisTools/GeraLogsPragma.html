@@ -30,7 +30,9 @@
 
 <script>
     function atualizarTexto(valor) {
+		valor = quebrarVirgulas(valor);
         var linhas = valor.split('\n');
+
         var divTexto = document.getElementById('textoDigitado');
         divTexto.innerHTML = 'PROCEDURE&nbspProcedureLog(id_log&nbspvarchar2)<br>&nbsp&nbsp&nbspIS<br>&nbsp&nbsp&nbspBEGIN<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspgravar_log_lab_pragma(\'<b>5445</b>\',substr(<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspto_char(sysdate&nbsp,\'DDMMYYYYHH24MISS\')||\'&nbspid_log=>\'||id_log<br>		';
 		// Limpar o conteúdo existente
@@ -44,13 +46,23 @@
                 divTexto.innerHTML += '|| CHR(10)|| \' <b>' + linha.replaceAll(',','') + '</b>=>\'||<b>' + linha.replaceAll(',','') + '</b><br>';
             }
         });
-		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),'<b>usuario</b>',<b>'nr_prescricao_p'</b>);<br>   END ProcedureLog ;";
+		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),'<b>usuario</b>',<b>nr_prescricao_p</b>);<br>   END ProcedureLog ;";
     
 		for (const edit of document.getElementsByTagName("b")){
 			edit.setAttribute("contenteditable","true");
 		}
 	}
 	
+	function quebrarVirgulas(valor) {
+		valor = valor.replaceAll(',','\n');
+		var Texto = document.getElementById('texto');
+		valor = valor.replaceAll('\r\n','\n');
+		valor = valor.replaceAll('\n\n','\n');
+		valor = valor.replaceAll(' ','');
+		
+		Texto.value = valor;
+		return valor;
+	}
 
 </script>
 
