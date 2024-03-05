@@ -12,8 +12,10 @@
 
 <form id="formValores">
   <br><label for="valoresInput">Story Points:</label>
-  <input type="text" id="valoresInput" name="valoresInput" placeholder="Digite ou cole os valores separados por 'x'"><br><br>
+  <textarea type="text" id="valoresInput" name="valoresInput" placeholder="Digite ou cole os valores separados por 'x' ou ','" oninput="calcular()"></textarea>
+  <!--
   <button class="metal-button" type="button" onclick="calcular()">Calcular</button>
+  -->
 </form>
 
 <div id="resultado"></div>
@@ -21,7 +23,8 @@
 <script>
 function calcular() {
   var valoresInput = document.getElementById("valoresInput").value;
-  var valoresArray = valoresInput.split("x").map(Number);
+  valoresInput = valoresInput.replaceAll(",","x")
+  var valoresArray = valoresInput.split("x").map(Number).filter(valor => valor !== 0);
 
   var soma = 0;
   var contagem = {};
@@ -32,10 +35,11 @@ function calcular() {
 	}
   });
   
-  if(soma!=0){
-	  var media = soma / valoresArray.length;
+  var media = soma / valoresArray.length;
+  
+  if(soma!=0 && media){
 	  
-	  var resultadoHTML = "<br><hr><h3>Resultado:</h3>";
+	  var resultadoHTML = "<h3>Resultado:</h3>";
 	  resultadoHTML += "<p>Média de valores: <b>[ " + media.toFixed(2) + " ]</b></p>";
 	  resultadoHTML += "<p>Contagem de incidência de cada valor:</p>";
 		resultadoHTML += "<table>" ;
@@ -45,6 +49,9 @@ function calcular() {
 		resultadoHTML += "</table>";
 	  
 	  document.getElementById("resultado").innerHTML = resultadoHTML;
+  }
+  else {
+	document.getElementById("resultado").innerHTML = '';
   }
 }
 </script>
