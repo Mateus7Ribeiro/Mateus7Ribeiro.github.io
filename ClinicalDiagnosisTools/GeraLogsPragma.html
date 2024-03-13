@@ -29,24 +29,35 @@
 	</div>
 
 <script>
+	var urlAtual = window.location.href;
+	var urlClass = new URL(urlAtual);
+	var IDLOG = urlClass.searchParams.get("IDLOG");
+	var USER = urlClass.searchParams.get("USER");
+	var NR_PRESCRICAO = urlClass.searchParams.get("NR_PRESCRICAO");
+	atualizarTexto('');
+	
     function atualizarTexto(valor) {
 		valor = quebrarVirgulas(valor);
         var linhas = valor.split('\n');
 
         var divTexto = document.getElementById('textoDigitado');
-        divTexto.innerHTML = 'PROCEDURE&nbspProcedureLog(id_log&nbspvarchar2)<br>&nbsp&nbsp&nbspIS<br>&nbsp&nbsp&nbspBEGIN<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspgravar_log_lab_pragma(\'<b>5445</b>\',substr(<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspto_char(sysdate&nbsp,\'DDMMYYYYHH24MISS\')||\'&nbspid_log=>\'||id_log<br>		';
+        divTexto.innerHTML = 'PROCEDURE&nbspProcedureLog(id_log&nbspvarchar2)<br>&nbsp&nbsp&nbspIS<br>&nbsp&nbsp&nbspBEGIN<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspgravar_log_lab_pragma(\'';
+		divTexto.innerHTML += '\<b>' + (IDLOG || 4545) + '\</b>';
+		divTexto.innerHTML += '\',substr(<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspto_char(sysdate&nbsp,\'DD-MM-YYYY HH24:MI:SS\')<br>		';
 		// Limpar o conteúdo existente
-		divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
-		divTexto.innerHTML += "|| CHR(10)|| ' SYSDATE=>'||SYSDATE<br>";
+		//divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+		//divTexto.innerHTML += "|| CHR(10)|| ' SYSDATE=>'||SYSDATE<br>";
 		
         linhas.forEach(function(linha) {
             if (linha.trim() !== '') { // Ignorar linhas vazias
-                //divTexto.innerHTML += 'Texto antes: ' + linha + ' Texto depois</br>';
 				divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                 divTexto.innerHTML += '|| CHR(10)|| \' <b>' + linha.replaceAll(',','') + '</b>=>\'||<b>' + linha.replaceAll(',','') + '</b><br>';
             }
         });
-		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),'<b>usuario</b>',<b>nr_prescricao_p</b>);<br>   END ProcedureLog ;";
+		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),";
+		//divTexto.innerHTML += '\'\<b>' + (USER || 'usuario') + '\</b>\'';
+		divTexto.innerHTML += 'obter_usuario_ativo';
+		divTexto.innerHTML += ",<b>"+ (NR_PRESCRICAO || 'nr_prescricao_p') +"</b>,'<b>ds_integracao</b>');<br>   END ProcedureLog ;";
     
 		for (const edit of document.getElementsByTagName("b")){
 			edit.setAttribute("contenteditable","true");
@@ -68,20 +79,3 @@
 
 </body>
 </html>
-<!--
-PROCEDURE ProcedureLog(id_log varchar2)
-   IS
-   BEGIN
-      gravar_log_lab_pragma('5445',substr(
-             to_char(sysdate ,'DDMMYYYYHH24MISS')||' id_log=>'||id_log
-            || CHR(10)|| ' SYSDATE=>'||SYSDATE
-            || CHR(10)|| ' qt_hora_adicional_w=>'||qt_hora_adicional_w
-            || CHR(10)|| ' nr_seq_exame_w=>'||nr_seq_exame_w
-            || CHR(10)|| ' nr_seq_grupo_w=>'||nr_seq_grupo_w
-            || CHR(10)|| ' ie_dia_semana_w=>'||ie_dia_semana_w
-            || CHR(10)|| ' ie_data_regra_w=>'||ie_data_regra_w
-            || CHR(10)|| ' ie_exame_lab_dia_w=>'||ie_exame_lab_dia_w
-            || CHR(10)|| ' ie_atual_urgente_w=>'||ie_atual_urgente_w
-            ,1,1999),'fantonow',nr_prescricao_p);
-   END ProcedureLog ;
-   -->

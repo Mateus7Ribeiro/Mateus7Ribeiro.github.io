@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palavras Terminadas em "_p" ou "_w"</title>
+<style>
+
+
+</style>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+<textarea id="texto" rows="10" cols="50" oninput="extrairPalavras()"></textarea><br>
+<!-- <button onclick="extrairPalavras()">Extrair Palavras</button> -->
+
+<div id="tabela"></div>
+<div>
+	<textarea id="resultado" rows="10" cols="50" oninput="extrairPalavras()"></textarea><br>
+</div>
+</div>
+
+<script>
+function onlyUnique(value, index, array) {
+  return array.indexOf(value) === index;
+}
+
+function extrairPalavras() {
+    var texto = document.getElementById("texto").value;
+    var palavras = texto.match(/\b\w+_(p|w)\b/g);
+	
+    if (palavras) {
+		var palavrasUnicas = palavras.filter(onlyUnique);
+        var tabelaHTML = "<table><tr><th>Variáveis</th><th>Valores</th></tr>";
+		var textoModificado = texto;
+		
+        palavrasUnicas.forEach(function(palavra) {
+            tabelaHTML += "<tr><td>" + palavra + "</td>";
+            tabelaHTML += "<td>" + "<input id=''/>" + "</td></tr>";
+			textoModificado = textoModificado.replaceAll(palavra,":"+palavra+"");
+        });
+        tabelaHTML += "</table>";
+        document.getElementById("tabela").innerHTML = tabelaHTML;
+        document.getElementById("resultado").value = textoModificado;
+    } else {
+        document.getElementById("tabela").innerHTML = "Nenhuma palavra encontrada terminada em '_p' ou '_w'.";
+    }
+}
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palavras Terminadas em "_p" ou "_w"</title>
+<style>
+
+
+</style>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+<textarea id="texto" rows="10" cols="50" oninput="extrairPalavras()"></textarea><br>
+<!-- <button onclick="extrairPalavras()">Extrair Palavras</button> -->
+
+<div id="tabela"></div>
+<div>
+	<textarea id="resultado" rows="10" cols="50" oninput="extrairPalavras()"></textarea><br>
+</div>
+</div>
+
+<script>
+var textoModificadoCache;
+
+function onlyUnique(value, index, array) {
+  return array.indexOf(value) === index;
+}
+
+function substituirPalavras() {
+	var palavrasSubstituir = document.getElementById("palavrasSubstituir").value;
+	var linhas = palavrasSubstituir.split('\n');
+	var textoModificado = textoModificadoCache;
+	
+	linhas.forEach(
+		function(blocoPalavra){
+		//console.log(palavrasBind.split('\t'));
+		var arrPalavras = blocoPalavra.split('\t');
+		if(arrPalavras[0] && arrPalavras[1]){
+			textoModificado = textoModificado.replaceAll(":"+arrPalavras[0],arrPalavras[1]);
+		}
+	}
+	);
+	document.getElementById("resultado").value = textoModificado;
+}
+
+
+function extrairPalavras() {
+    var texto = document.getElementById("texto").value;
+    var palavras = texto.match(/\b\w+_(p|w)\b/g);
+	
+    if (palavras) {
+		var palavrasUnicas = palavras.filter(onlyUnique);
+        var tabelaHTML = "<textarea id='palavrasSubstituir' oninput='substituirPalavras()'>";
+		var textoModificado = texto;
+		
+        palavrasUnicas.forEach(function(palavra) {
+            tabelaHTML += "" + palavra + "\t";
+            tabelaHTML += "" + "\n";
+			textoModificado = textoModificado.replaceAll(palavra,":"+palavra+"");
+        });
+        tabelaHTML += "</textarea>";
+        document.getElementById("tabela").innerHTML = tabelaHTML;
+        document.getElementById("resultado").value = textoModificado;
+		textoModificadoCache = textoModificado;
+    } else {
+        document.getElementById("tabela").innerHTML = "Nenhuma palavra encontrada terminada em '_p' ou '_w'.";
+    }
+}
+
+
+
+</script>
+
+</body>
+</html>
