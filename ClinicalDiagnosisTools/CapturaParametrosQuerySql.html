@@ -3,21 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Palavras Terminadas em "_p" ou "_w"</title>
+<title>Captura Parâmetros e variáveis Query Sql</title>
 <style>
 
 
 </style>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-<textarea id="texto" rows="10" cols="50" oninput="extrairPalavras()"></textarea><br>
-<!-- <button onclick="extrairPalavras()">Extrair Palavras</button> -->
-
+<h2>Captura Parâmetros e variáveis Query Sql</h2>
+<label for="texto" >Query Original</label>
+<textarea placeholder="Cole aqui sua Query contendo variáveis seguindo o padrão de sufixo _p _w _ww" id="texto" spellcheck='false' oninput="extrairPalavras()"></textarea><br>
+<label for="tabela" id="tabela_label"></label>
 <div id="tabela"></div>
 <div>
-	<textarea id="resultado" rows="10" cols="50" oninput="extrairPalavras()"></textarea><br>
+	<label for="texto" >Modificado com :Binds</label>
+	<textarea placeholder="O resultado aparecerá aqui" id="resultado" spellcheck='false' oninput="extrairPalavras()"></textarea><br>
 </div>
 </div>
 
@@ -35,7 +37,7 @@ function substituirPalavras() {
 	
 	linhas.forEach(
 		function(blocoPalavra){
-		//console.log(palavrasBind.split('\t'));
+		//TODO HR TD → to_date('','DD-MM-YYYY')
 		var arrPalavras = blocoPalavra.split('\t');
 		if(arrPalavras[0] && arrPalavras[1]){
 			textoModificado = textoModificado.replaceAll(":"+arrPalavras[0],arrPalavras[1]);
@@ -48,11 +50,12 @@ function substituirPalavras() {
 
 function extrairPalavras() {
     var texto = document.getElementById("texto").value;
-    var palavras = texto.match(/\b\w+_(p|w)\b/g);
+	const sufixosPermitidos = ['p', 'w', 'ww'];
+    var palavras = matchWordsWithSuffix(texto, sufixosPermitidos);
 	
     if (palavras) {
 		var palavrasUnicas = palavras.filter(onlyUnique);
-        var tabelaHTML = "<textarea id='palavrasSubstituir' oninput='substituirPalavras()'>";
+        var tabelaHTML = "<textarea id='palavrasSubstituir' spellcheck='false' oninput='substituirPalavras()'>";
 		var textoModificado = texto;
 		
         palavrasUnicas.forEach(function(palavra) {
@@ -64,11 +67,16 @@ function extrairPalavras() {
         document.getElementById("tabela").innerHTML = tabelaHTML;
         document.getElementById("resultado").value = textoModificado;
 		textoModificadoCache = textoModificado;
+		document.getElementById("tabela_label").innerHTML = "Variáveis e Parâmetros encontrados (Digite valores)"
     } else {
-        document.getElementById("tabela").innerHTML = "Nenhuma palavra encontrada terminada em '_p' ou '_w'.";
+        document.getElementById("tabela").innerHTML = "Nenhuma palavra encontrada terminada em '_p', '_w' ou '_ww'.";
     }
 }
 
+function matchWordsWithSuffix(texto, suffixes) {
+    const regex = new RegExp(`\\b\\w+_(${suffixes.join('|')})\\b`, 'g');
+    return texto.match(regex);
+}
 
 
 </script>

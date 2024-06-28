@@ -50,12 +50,14 @@
 <body>
 	<h2>Clinical Diagnosis Tools</h2>
   <ul class="menu-item">
-    <li class="parent" onclick="toggleSubMenu(this)">Ferramentas
+    <li class="parent"><b onclick="toggleSubMenu()">Ferramentas</b>
       <ul class="child">
-        <li class=""><a href="formataQuery.html">Formatar Query SQL para código</a></li>
-        <li class=""><a href="geraversionamento.html">Ferramenta Versionamento GIT</a></li>
-        <li class=""><a href="ConfigurarProxyNPM.html">Configurar Proxy NPM</a></li>
-        <li class=""><a href="GeraLogsPragma.html">Gerar Script de Logs PLSQL</a></li>
+        <li class=""><a target="_blank" href="FormatarQuery.html">Formatar Query SQL para código</a></li>
+        <li class=""><a target="_blank" href="GerarVersionamento.html?osNumber=3186123&branches=art_diagnosis,%205.00.1832,%205.01.1835,%204.02.1826&cherry=2824b48cb7e972416e0f21d6abcfab977500409c">Ferramenta Versionamento GIT</a></li>
+        <li class=""><a target="_blank" href="ConfigurarProxyNPM.html">Configurar Proxy NPM</a></li>
+        <li class=""><a target="_blank" href="CapturaParametrosQuerySql.html">Capturar Parâmetros de uma Query SQL</a></li>
+        <li class=""><a target="_blank" href="GerarLogsPragma.html">Gerar Script de Logs PLSQL</a></li>
+        <li class=""><a target="_blank" href="CasosDeTeste">Gerador de Casos de Teste</a></li>
       </ul>
     </li>
 	<!--
@@ -78,8 +80,8 @@
 	//var elementsChild = document.getElementsByClassName('child');
 	//Array.from(elementsChild).forEach(element => { element.style.display = 'none' });
 	
-    function toggleSubMenu(element) {
-      var childMenu = element.querySelector('.child');
+    function toggleSubMenu() {
+      var childMenu = document.querySelector('.child');
       childMenu.style.display = childMenu.style.display === 'none' ? 'block' : 'none';
     }
   </script>

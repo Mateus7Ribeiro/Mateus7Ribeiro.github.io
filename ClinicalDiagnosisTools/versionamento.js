@@ -2,7 +2,7 @@ const urlParams = new URLSearchParams(window.location.search);
 
 function createLinksPR() {
     const linksGithubEdit = document.getElementById("links-github-edit");
-    const arrayDirectory = ['tasy','tasy-backend'];
+    const arrayRepository = document.getElementById("repository").value.split(',');
     linksGithubEdit.innerHTML = "";
     getValuesForm();
     const linksContainer = document.createElement("div");
@@ -18,13 +18,13 @@ function createLinksPR() {
         const sufix = sufixBranches.split(" ");
         
         linkSpan.innerHTML += `${branch} -> `;
-        for(let directory of arrayDirectory){
+        for(let repository of arrayRepository){
             const linkHref = document.createElement("a");
-            linkHref.href = `https://github.dev/philips-emr/${directory}/tree/${branch}`;
-            linkHref.href = `https://github.com/philips-emr/${directory}/compare/${branch}...${sufix[sufix.length-1]}${osNumber}_${branchVersion}`;
-            linkHref.textContent = ` ${directory} |`
+            //linkHref.href = `${repository}/tree/${branch}`;
+            linkHref.href = `${repository}/compare/${branch}...${sufix[sufix.length-1]}${osNumber}_${branchVersion}`;
+            linkHref.textContent = ` ${branch}${arrayRepository.length>1?' | ':''}`;
 
-            linkSpan.appendChild(linkHref);
+            linkSpan.appendChild(linkHref);           
             linksContainer.appendChild(linkSpan);
         }
         linkSpan.innerHTML += `<br>`;
