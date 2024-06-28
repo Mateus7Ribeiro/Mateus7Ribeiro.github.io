@@ -72,6 +72,7 @@ document.getElementById('calculate-combinations').addEventListener('click', () =
     combinations.forEach((combination, index) => {
         const row = document.createElement('tr');
         const indexCell = document.createElement('td');
+        indexCell.className = 'caso-teste-col'
         indexCell.innerText = `Caso de Teste ${index + 1}`;
         row.appendChild(indexCell);
         
