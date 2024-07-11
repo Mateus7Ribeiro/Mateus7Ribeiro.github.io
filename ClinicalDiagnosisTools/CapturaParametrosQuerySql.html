@@ -74,7 +74,7 @@ function extrairPalavras() {
 }
 
 function matchWordsWithSuffix(texto, suffixes) {
-    const regex = new RegExp(`\\b\\w+_(${suffixes.join('|')})\\b`, 'g');
+    const regex = new RegExp(`\\b\\w+_(${suffixes.join('|')})\\b`, 'gi');
     return texto.match(regex);
 }
 
