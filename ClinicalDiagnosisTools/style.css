@@ -39,6 +39,10 @@ body {
     box-sizing: border-box;
     resize: none;
   }
+  
+  textarea:read-only{
+    background: #fefef0;
+  }
 
   input[type="button"] {
     background-color: #4CAF50;

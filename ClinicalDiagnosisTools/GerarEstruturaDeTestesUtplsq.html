@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerar Estrutura de Testes UTPLSQL</title>
+<style>
+
+
+</style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+<h2>Gerar Estrutura de Testes UTPLSQL</h2>
+<label for="texto" >Variáveis do Objeto</label>
+<textarea placeholder="Cole aqui as variáveis do Objeto seguindo o padrão de sufixo _p" id="texto" spellcheck='false' oninput="extrairPalavras()"></textarea><br>
+<label for="tabela" id="tabela_label"></label>
+<div id="tabela"></div>
+<div id="tabela_null"></div>
+<div>
+    <label for="resultado" ></label>
+	<textarea placeholder="O resultado aparecerá aqui" id="resultado" spellcheck='false' readonly></textarea><br>
+</div>
+<div id="tabela_unicos"></div>
+</div>
+
+<script>
+var textoModificadoCache;
+
+function onlyUnique(value, index, array) {
+  return array.indexOf(value) === index;
+}
+
+function extrairPalavras() {
+    var texto = document.getElementById("texto").value;
+	const sufixosPermitidos = ['p']; //'w', 'ww'
+    var palavras = matchWordsWithSuffix(texto, sufixosPermitidos);
+	
+    if (palavras) {
+		var palavrasUnicas = palavras.filter(onlyUnique);
+        var tabelaHTML = "<textarea id='valores1' spellcheck='false' readonly>";
+        var tabela_nullHTML = "<textarea id='valores2' spellcheck='false' readonly>";
+        var tabela_unicos = "<textarea id='valores3' spellcheck='false' readonly>";
+        var getValuesFromParameters = "";
+		
+        palavrasUnicas.forEach(function(palavra) {
+            palavra_min = palavra.toLowerCase();
+            palavra_w = replaceLastOccurrence(palavra_min, '_p','_w');
+            
+            tabelaHTML += "" + palavra_min + "\t=>\t" + palavra_w + ",";
+            tabela_nullHTML += "" + palavra_w + "\t" + ":= NULL;";
+            tabela_unicos += "" + palavra_w + "\t" + "";
+            getValuesFromParameters += "" + palavra_w + " 	:= ut_tests_pck.get_parameter(nr_sequencia_validacao_w, '"+ palavra +"');";
+            tabelaHTML += "" + "\n";
+            tabela_nullHTML += "" + "\n";
+            getValuesFromParameters += "" + "\n";
+            tabela_unicos += "" + "\n";
+
+        });
+        tabelaHTML += "</textarea>";
+        tabela_unicos += "</textarea>";
+        tabela_nullHTML += "</textarea>";
+        document.getElementById("tabela").innerHTML = tabelaHTML;
+        document.getElementById("tabela_null").innerHTML = tabela_nullHTML;
+        document.getElementById("tabela_unicos").innerHTML = tabela_unicos;
+        document.getElementById("resultado").value = getValuesFromParameters;
+
+		document.getElementById("tabela_label").innerHTML = "Variáveis e Parâmetros tratados"
+    } else {
+        document.getElementById("tabela").innerHTML = "Nenhuma palavra encontrada terminada em '_p'.";
+        document.getElementById("tabela_null").innerHTML = "";
+    }
+}
+
+function matchWordsWithSuffix(texto, suffixes) {
+    const regex = new RegExp(`\\b\\w+_(${suffixes.join('|')})\\b`, 'gi');
+    return texto.match(regex);
+}
+
+function replaceLastOccurrence(text, pattern, replacement ) {
+    const lastIndex = text.lastIndexOf(pattern);
+    if( lastIndex === -1) {
+        return text;
+    }
+    return text.substring(0, lastIndex) + replacement;
+}
+
+</script>
+</body>
+</html>
