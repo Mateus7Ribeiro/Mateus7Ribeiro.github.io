@@ -48,7 +48,7 @@ function extrairPalavras() {
             tabelaHTML += "" + palavra_min + "\t=>\t" + palavra_w + ",";
             tabela_nullHTML += "" + palavra_w + "\t" + ":= NULL;";
             tabela_unicos += "" + palavra_w + "\t" + "";
-            getValuesFromParameters += "" + palavra_w + " 	:= ut_tests_pck.get_parameter(nr_sequencia_validacao_w, '"+ palavra +"');";
+            getValuesFromParameters += "" + palavra_w + " 	:= ut_tests_pck.get_parameter(nr_sequencia_validacao_w, '"+ palavra.toUpperCase() +"');";
             tabelaHTML += "" + "\n";
             tabela_nullHTML += "" + "\n";
             getValuesFromParameters += "" + "\n";
