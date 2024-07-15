@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+
+  .menu-item {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .parent {
+    cursor: pointer;
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin: 2px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: black;
+    
+  }
+  spam.titleItem {
+    font-weight: bold;
+  }
+  
+  .child {
+    
+  }
+  
+  .child li a{
+  margin: 5px 0;
+      display: block;
+      color: black;
+      text-decoration: none;
+      width: initial;
+      padding: 1px 5px;
+      font-weight: normal;
+  }
+  .child li a:hover{
+      color: #af7d22;
+  }

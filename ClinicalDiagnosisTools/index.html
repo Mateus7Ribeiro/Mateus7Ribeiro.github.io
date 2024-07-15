@@ -4,87 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clinical Diagnosis Tools</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-
-    .menu-item {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .parent {
-      cursor: pointer;
-      background-color: #f0f0f0;
-      padding: 10px;
-      margin: 2px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      color: black;
-	  font-weight: bold;
-    }
-    
-	.child {
-      
-    }
-	
-	.child li a{
-    margin: 5px 0;
-		display: block;
-		color: black;
-		text-decoration: none;
-		width: initial;
-		padding: 1px 5px;
-		font-weight: normal;
-    }
-	.child li a:hover{
-		color: #af7d22;
-	}
-	
-
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="menu.css">
 </head>
 <body>
-	<h2>Clinical Diagnosis Tools</h2>
-  <ul class="menu-item">
-    <li class="parent"><b onclick="toggleSubMenu()">Ferramentas</b>
-      <ul class="child">
-        <li class=""><a target="_blank" href="FormatarQuery.html">Formatar Query SQL para código</a></li>
-        <li class=""><a target="_blank" href="GerarVersionamento.html?osNumber=3186123&branches=art_diagnosis,%205.00.1832,%205.01.1835,%204.02.1826&cherry=2824b48cb7e972416e0f21d6abcfab977500409c">Ferramenta Versionamento GIT</a></li>
-        <li class=""><a target="_blank" href="ConfigurarProxyNPM.html">Configurar Proxy NPM</a></li>
-        <li class=""><a target="_blank" href="CapturaParametrosQuerySql.html">Capturar Parâmetros de uma Query SQL</a></li>
-        <li class=""><a target="_blank" href="GerarLogsPragma.html">Gerar Script de Logs PLSQL</a></li>
-        <li class=""><a target="_blank" href="CasosDeTeste">Gerador de Casos de Teste</a></li>
-      </ul>
-    </li>
-	<!--
-    <li class="parent" onclick="toggleSubMenu(this)">Menu Pai 2
-      <ul class="child">
-        <li class="">Submenu 2.1</li>
-        <li class="">Submenu 2.2</li>
-      </ul>
-    </li>
-    <li class="parent" onclick="toggleSubMenu(this)">Menu Pai 3
-      <ul class="child">
-        <li class="">Submenu 3.1</li>
-        <li class="">Submenu 3.2</li>
-      </ul>
-    </li>
-	-->
-  </ul>
+  <div class="container">
+    <h2>Clinical Diagnosis Tools</h2>
+    <ul class="menu-item">
+      <li class="parent">
+        <spam class="titleItem" onclick="toggleSubMenu('menu1')">Ferramentas Gerais</spam>
+        <ul class="menu1 child">
+          <li class=""><a target="_blank" href="GerarVersionamento.html?osNumber=3186123&branches=art_diagnosis,%205.00.1832,%205.01.1835,%204.02.1826&cherry=2824b48cb7e972416e0f21d6abcfab977500409c">Ferramenta Versionamento GIT</a></li>
+          <li class=""><a target="_blank" href="ConfigurarProxyNPM.html">Configurar Proxy NPM</a></li>
+          <li class=""><a target="_blank" href="CasosDeTeste">Gerador de Casos de Teste</a></li>
+        </ul>
+      </li>
+      <li class="parent">
+        <spam class="titleItem" onclick="toggleSubMenu('menu2')">Ferramentas SQL</spam>
+        <ul class="menu2 child">
+          <li class=""><a target="_blank" href="FormatarQuery.html">Formatar Query SQL para código</a></li>
+          <li class=""><a target="_blank" href="GerarLogsPragma.html">Gerar Script de Logs PLSQL</a></li>
+          <li class=""><a target="_blank" href="CapturaParametrosQuerySql.html">Capturar Parâmetros de uma Query SQL</a></li>
+          <li class=""><a target="_blank" href="GerarEstruturaDeTestesUtplsq.html">Gerar Estrutura Testes Utplsql</a></li>
+        </ul>
+      </li>
 
-  <script>
-	//var elementsChild = document.getElementsByClassName('child');
-	//Array.from(elementsChild).forEach(element => { element.style.display = 'none' });
-	
-    function toggleSubMenu() {
-      var childMenu = document.querySelector('.child');
-      childMenu.style.display = childMenu.style.display === 'none' ? 'block' : 'none';
-    }
-  </script>
+    </ul>
+  </div>
+  <script src="index.js"></script>
 
 </body>
 </html>
