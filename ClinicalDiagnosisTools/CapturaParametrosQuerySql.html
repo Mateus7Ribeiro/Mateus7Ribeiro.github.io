@@ -50,7 +50,8 @@ function substituirPalavras() {
 
 function extrairPalavras() {
     var texto = document.getElementById("texto").value;
-	const sufixosPermitidos = ['p', 'w', 'ww'];
+	const sufixosPermitidos = ['_p', '_w', '_ww'];
+	const prefixosPermitidos = [':'];
     var palavras = matchWordsWithSuffix(texto, sufixosPermitidos);
 	
     if (palavras) {
@@ -74,7 +75,7 @@ function extrairPalavras() {
 }
 
 function matchWordsWithSuffix(texto, suffixes) {
-    const regex = new RegExp(`\\b\\w+_(${suffixes.join('|')})\\b`, 'gi');
+    const regex = new RegExp(`\\b\\w+(${suffixes.join('|')})\\b`, 'gi');
     return texto.match(regex);
 }
 
