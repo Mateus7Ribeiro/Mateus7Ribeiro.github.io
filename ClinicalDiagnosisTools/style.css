@@ -58,7 +58,11 @@ body {
     margin-top: 10px;
     margin-bottom: 10px;
   }
-
+  
+  textarea.min {
+    height: 50px;
+  }
+  
   #texto_saida {
     margin-top: 10px;
   }

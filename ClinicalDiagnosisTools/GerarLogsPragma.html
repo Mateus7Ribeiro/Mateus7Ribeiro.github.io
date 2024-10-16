@@ -25,14 +25,18 @@
 				<textarea placeholder="Digite os campos que deseja capturar (um campo por linha)" id="texto" name="texto" rows="4" cols="50" oninput="atualizarTexto(this.value)"></textarea>
 			</form>
 		<div id="textoDigitado"></div>
-		<br><i>*Campos em negrito <b>são</b> editáveis</i>
+		<br><i>*Campos em negrito <b>são</b> editáveis</i><br><br><br>
+		<label for="consulta">Consulta:</label>
+		<textarea class="min" id="consulta"></textarea>
+ 		<label for="delete">Deletar:</label>
+		<textarea class="min" id="delete"></textarea>
+ <br><br>
 	</div>
 
 <script>
 	var urlAtual = window.location.href;
 	var urlClass = new URL(urlAtual);
 	var IDLOG = urlClass.searchParams.get("IDLOG")|| 45454;
-	//var USER = urlClass.searchParams.get("USER");
 	var NR_PRESCRICAO = urlClass.searchParams.get("NR_PRESCRICAO")|| 'nr_prescricao_p';
 	var NAME_LOG = urlClass.searchParams.get("NAME_LOG")||"LOG IDENTITY";
 	var DESCRICAO = urlClass.searchParams.get("DESCRICAO")||"DESCRICAO";
@@ -48,11 +52,8 @@
 		divTexto.innerHTML += '--- ' + (NAME_LOG) + ' INIT<br>';
 		divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
 		divTexto.innerHTML += 'gravar_log_lab_pragma(\'';
-		divTexto.innerHTML += '\<b>' + (IDLOG) + '\</b>';
+		divTexto.innerHTML += '\<b id="IDLOG">' + (IDLOG) + '\</b>';
 		divTexto.innerHTML += '\',substr(<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspto_char(sysdate&nbsp,\'DD-MM-YYYY HH24:MI:SS\')<br>		';
-		// Limpar o conteúdo existente
-		//divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
-		//divTexto.innerHTML += "|| CHR(10)|| ' SYSDATE=>'||SYSDATE<br>";
 		
         linhas.forEach(function(linha) {
             if (linha.trim() !== '') { // Ignorar linhas vazias
@@ -62,7 +63,6 @@
         });
 		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|| CHR(10)|| \' CallStack =>\' || dbms_utility.format_call_stack<br>";
 		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),";
-		//divTexto.innerHTML += '\'\<b>' + (USER || 'usuario') + '\</b>\'';
 		divTexto.innerHTML += 'obter_usuario_ativo';
 		divTexto.innerHTML += ",<b>"+ (NR_PRESCRICAO) +"</b>,'<b>"+ (DESCRICAO) +"</b>');<br>";
 		divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
@@ -84,6 +84,17 @@
 		Texto.value = valor;
 		return valor;
 	}
+	
+	function atualizaCamposAuxiliares() {
+		let valorIDLOG = document.getElementById("IDLOG").innerHTML;
+		const CONSULTAR = " SELECT * FROM log_lab \n where cd_log = '@IDLOG';";
+		const DELETAR = " DELETE * FROM log_lab \n where cd_log = '@IDLOG';";
+		document.getElementById("consulta").value = CONSULTAR.replaceAll('@IDLOG',valorIDLOG);
+		document.getElementById("delete").value = DELETAR.replaceAll('@IDLOG',valorIDLOG);
+	}
+	
+	document.getElementById("IDLOG").addEventListener("input", function() { atualizaCamposAuxiliares(); });
+	atualizaCamposAuxiliares();
 
 </script>
 
