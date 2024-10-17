@@ -37,7 +37,7 @@
 	var urlAtual = window.location.href;
 	var urlClass = new URL(urlAtual);
 	var IDLOG = urlClass.searchParams.get("IDLOG")|| 45454;
-	var NR_PRESCRICAO = urlClass.searchParams.get("NR_PRESCRICAO")|| 'nr_prescricao_p';
+	var NR_PRESCRICAO = urlClass.searchParams.get("NR_PRESCRICAO")|| '00000';
 	var NAME_LOG = urlClass.searchParams.get("NAME_LOG")||"LOG IDENTITY";
 	var DESCRICAO = urlClass.searchParams.get("DESCRICAO")||"DESCRICAO";
 	atualizarTexto('');
@@ -64,7 +64,7 @@
 		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|| CHR(10)|| \' CallStack =>\' || dbms_utility.format_call_stack<br>";
 		divTexto.innerHTML += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp,1,1999),";
 		divTexto.innerHTML += 'obter_usuario_ativo';
-		divTexto.innerHTML += ",<b>"+ (NR_PRESCRICAO) +"</b>,'<b>"+ (DESCRICAO) +"</b>');<br>";
+		divTexto.innerHTML += ",<b title='nr_prescricao_p'>"+ (NR_PRESCRICAO) +"</b>,'<b>"+ (DESCRICAO) +"</b>');<br>";
 		divTexto.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
 		divTexto.innerHTML += '--- ' + (NAME_LOG) + ' END<br>';
 		divTexto.innerHTML += "END ProcedureLog ;";
