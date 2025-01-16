@@ -1,4 +1,30 @@
 const urlParams = new URLSearchParams(window.location.search);
+const repositoryLinks = [
+    'https://github.com/philips-internal/emr-tasy-frontend', 
+    'https://github.com/philips-internal/emr-tasy-backend',
+    'https://github.com/philips-internal/cci-tws-exam-service',
+    'https://github.com/philips-internal/cci-tws-health-professional-application',
+    'https://github.com/philips-internal/cci-tws-patient-application',
+    'https://github.com/philips-internal/cci-tws-referring-physician-application'
+    ];
+
+const branchesValues = 'art_pas_exams,5.00.1832,5.01.1835,5.02.1838,5.02.1839'
+
+
+function preencheSelect(idSelect, items) {
+    const dropdown = document.getElementById(idSelect); 
+    
+    items.forEach(item => {
+      let option = document.createElement('option');
+      option.value = item;
+      option.text = item.replace('https://github.com/','');
+      dropdown.appendChild(option);
+    });
+}
+
+function preencheInputText(idInput, value) {
+    document.getElementById(idInput).value = value
+}
 
 function createLinksPR() {
     const linksGithubEdit = document.getElementById("links-github-edit");
@@ -11,16 +37,14 @@ function createLinksPR() {
     for(let branch of branchesArray) {
         branch = branch.trim();
         const branchVersion = branch;
-/*         if(quebraBranchVersao){
-            branchVersion = branchVersion.split('.').slice(-1);
-        } */
+
         const linkSpan = document.createElement("span");
         const sufix = sufixBranches.split(" ");
         
         linkSpan.innerHTML += `${branch} -> `;
         for(let repository of arrayRepository){
             const linkHref = document.createElement("a");
-            //linkHref.href = `${repository}/tree/${branch}`;
+
             linkHref.href = `${repository}/compare/${branch}...${sufix[sufix.length-1]}${osNumber}_${branchVersion}`;
             linkHref.textContent = ` ${branch}${arrayRepository.length>1?' | ':''}`;
 
@@ -32,6 +56,7 @@ function createLinksPR() {
     
     linksGithubEdit.appendChild(linksContainer);
 }
+
 function createLinksEdit() {
     const linksGithubEdit = document.getElementById("links-github-edit");
     const arrayDirectory = ['tasy','tasy-backend'];
@@ -59,11 +84,6 @@ function createLinksEdit() {
     linksGithubEdit.appendChild(linksContainer);
 }
 
-if(urlParams.size > 0) {
-    applyValueToFieldId("osNumber");
-    applyValueToFieldId("branches");
-    applyValueToFieldId("cherry");
-}
 
 function applyValueToFieldId(value) {
     if(urlParams.get(value)) {
@@ -78,7 +98,7 @@ function getValuesForm(){
     this.cherryInput = document.getElementById("cherry").value;
     this.removePull = document.getElementById("removePull").checked;
     this.removePush = document.getElementById("removePush").checked;
-    //this.quebraBranchVersao = document.getElementById("quebraBranchVersao").checked;
+
     this.removeInitialCheckout = document.getElementById("removeInitialCheckout").checked;
     this.removeBranchCheckout = document.getElementById("removeBranchCheckout").checked;
 }
@@ -94,7 +114,6 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
     const cherryInput = this.cherryInput;
     const removePull = this.removePull;
     const removePush = this.removePush;
-    //const quebraBranchVersao = this.quebraBranchVersao;
     const removeInitialCheckout = this.removeInitialCheckout;
     const removeBranchCheckout = this.removeBranchCheckout;
 
@@ -117,9 +136,6 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         let branchVersion = branch;
         const sufix = sufixBranches.split(" ");
         
-        /* if(quebraBranchVersao){
-            branchVersion = branchVersion.split('.').slice(-1);
-        } */
         
         if(!removeInitialCheckout){
             resultDiv.innerHTML += `<br>git checkout ${branch}`;
@@ -152,8 +168,15 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
 	
     for (const edit of document.getElementsByTagName("edit")){
         edit.setAttribute("contenteditable","true");
-    }
+    }    
     
-  
 });
 
+this.preencheSelect("repository", repositoryLinks);
+this.preencheInputText("branches", branchesValues);
+
+if(urlParams.size > 0) {
+    applyValueToFieldId("osNumber");
+    applyValueToFieldId("branches");
+    applyValueToFieldId("cherry");
+}

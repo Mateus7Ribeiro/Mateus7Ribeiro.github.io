@@ -7,70 +7,74 @@
 </head>
 <link rel="stylesheet" href="style.css">
 <body>
-  <form id="dataForm">
-    <div>
-      <label for="jsonData">JSON Data:</label>
-      <textarea id="jsonData" name="jsonData" rows="10" cols="50"></textarea>
-    </div>
-    <button type="button" onclick="displayData()">Display Data</button>
-  </form>
+  <div class="container">
+    <form id="dataForm">
+      <div>
+        <label for="jsonData">JSON Data:</label>
+        <textarea id="jsonData" name="jsonData" rows="10" cols="50"></textarea>
+      </div>
+      <button type="button" onclick="displayData()">Display Data</button>
+    </form>
+  </div>
+  <hr>
+  <div class="container large">
+    <table border="1">
+      <thead>
+        <tr id="tableHeader">
+          <!-- Table headers will be added here dynamically -->
+        </tr>
+      </thead>
+      <tbody id="dataTable">
+        <!-- Table rows will be added here dynamically -->
+      </tbody>
+    </table>
+  </div>
+    <script>
+      function displayData() {
+        const jsonData = document.getElementById('jsonData').value;
+        let data;
 
-  <table border="1">
-    <thead>
-      <tr id="tableHeader">
-        <!-- Table headers will be added here dynamically -->
-      </tr>
-    </thead>
-    <tbody id="dataTable">
-      <!-- Table rows will be added here dynamically -->
-    </tbody>
-  </table>
+        try {
+          data = JSON.parse(jsonData);
+        } catch (e) {
+          alert('Invalid JSON format');
+          return;
+        }
 
-  <script>
-    function displayData() {
-      const jsonData = document.getElementById('jsonData').value;
-      let data;
+        if (!Array.isArray(data)) {
+          alert('JSON should be an array of objects');
+          return;
+        }
 
-      try {
-        data = JSON.parse(jsonData);
-      } catch (e) {
-        alert('Invalid JSON format');
-        return;
-      }
+        // Clear the existing table
+        const tableHeader = document.getElementById('tableHeader');
+        const tableBody = document.getElementById('dataTable');
+        tableHeader.innerHTML = '';
+        tableBody.innerHTML = '';
 
-      if (!Array.isArray(data)) {
-        alert('JSON should be an array of objects');
-        return;
-      }
+        // Get the unique keys from the objects
+        const keys = [...new Set(data.flatMap(Object.keys))];
 
-      // Clear the existing table
-      const tableHeader = document.getElementById('tableHeader');
-      const tableBody = document.getElementById('dataTable');
-      tableHeader.innerHTML = '';
-      tableBody.innerHTML = '';
-
-      // Get the unique keys from the objects
-      const keys = [...new Set(data.flatMap(Object.keys))];
-
-      // Create table headers
-      keys.forEach(key => {
-        const th = document.createElement('th');
-        th.textContent = key;
-        tableHeader.appendChild(th);
-      });
-
-      // Create table rows
-      data.forEach(item => {
-        const row = document.createElement('tr');
+        // Create table headers
         keys.forEach(key => {
-          const td = document.createElement('td');
-          td.textContent = item[key] !== undefined ? item[key] : '';
-          td.textContent = td.textContent.toUpperCase();
-          row.appendChild(td);
+          const th = document.createElement('th');
+          th.textContent = key;
+          tableHeader.appendChild(th);
         });
-        tableBody.appendChild(row);
-      });
-    }
-  </script>
+
+        // Create table rows
+        data.forEach(item => {
+          const row = document.createElement('tr');
+          keys.forEach(key => {
+            const td = document.createElement('td');
+            td.textContent = item[key] !== undefined ? item[key] : '';
+            td.textContent = td.textContent.toUpperCase();
+            row.appendChild(td);
+          });
+          tableBody.appendChild(row);
+        });
+      }
+    </script>
+  
 </body>
 </html>

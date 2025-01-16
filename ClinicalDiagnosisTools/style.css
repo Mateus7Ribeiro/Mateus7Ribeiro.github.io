@@ -18,6 +18,10 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
+  .container.large {
+    max-width: 100% !important;
+  }
+  
   label {
     font-weight: bold;
     display: flex;
@@ -31,7 +35,8 @@ body {
   }
 
   input[type="text"],
-  textarea {
+  textarea,
+  select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
