@@ -1,3 +1,4 @@
+@echo off
 git status
 set /p "var=-----ADICIONAR ALTERACOES PARA STAGE?----- "
 git add .
@@ -14,3 +15,6 @@ set /p "var=-----DESEJA SUBIR ALTERACOES?----- "
 git push -u origin main
 
 set /p "var=-----FIM----- "
+
+
+@echo on
