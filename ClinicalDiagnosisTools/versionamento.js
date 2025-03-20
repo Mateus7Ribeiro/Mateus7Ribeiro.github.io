@@ -157,7 +157,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         }
         
 		if(!removePush){
-        resultDiv.innerHTML += `<br>git push origin <edit>${sufix[sufix.length-1]}${osNumber}_${branchVersion}</edit> `;                
+        resultDiv.innerHTML += `<br>pause && git push origin <edit>${sufix[sufix.length-1]}${osNumber}_${branchVersion}</edit> `;                
         }
         resultadosDiv.appendChild(resultDiv);        
         
