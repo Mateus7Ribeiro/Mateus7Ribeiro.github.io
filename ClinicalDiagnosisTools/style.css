@@ -113,3 +113,18 @@ edit {
     font-style: italic;
     background-color: cornsilk;
 }
+
+    .code {
+	background-color: black;
+	color:#4b9d54;
+		min-height: 40px;
+      margin-top: 20px;
+      font-family: Consolas, monospace;
+      white-space: pre-wrap;
+      text-align: left;
+	  padding: 10px;
+    border-top: #4b9d54 solid 4px;
+    }
+    .code b {
+        color: #ced5c2;
+    }

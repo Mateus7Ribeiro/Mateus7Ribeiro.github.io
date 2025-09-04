@@ -8,7 +8,7 @@ const repositoryLinks = [
     'https://github.com/philips-internal/cci-tws-referring-physician-application'
     ];
 
-const branchesValues = 'art_pas_exams,5.00.1832,5.01.1835,5.02.1838,5.02.1839'
+const branchesValues = 'art_pas_exams,5.04.1845,5.02.1839,5.02.1838,5.01.1835,dev,1.10.x,1.8.x,1.9.x'
 
 
 function preencheSelect(idSelect, items) {
