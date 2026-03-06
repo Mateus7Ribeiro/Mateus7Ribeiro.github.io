@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Defeito - Card</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .question-block {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .option-group {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .option-group label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .option-group input[type="checkbox"],
+        .option-group input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            margin-top: 8px;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .sub-option {
+            margin-left: 30px;
+            margin-top: 8px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #generateBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        #generateBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #copyBtn {
+            background: #28a745;
+            color: white;
+            display: none;
+        }
+
+        #copyBtn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        #clearBtn {
+            background: #dc3545;
+            color: white;
+        }
+
+        #clearBtn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            display: none;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .copied-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .inline-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📋 Formulário de Documentação de Defeito</h1>
+
+        <form id="defectForm">
+            <!-- Questão 1 -->
+            <div class="question-block">
+                <div class="question-title">1 - Como o defeito foi inserido?</div>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" name="inserido_organico" value="Orgânico">
+                        Orgânico (Entrou quando a versão foi criada a partir da dev)
+                    </label>
+                    <label>
+                        <input type="checkbox" name="inserido_versionado" value="Versionado">
+                        Versionado (Entrou forçado em versão já liberada no mercado)
+                    </label>
+                    <div class="sub-option">
+                        <label>
+                            <input type="radio" name="versionado_tipo" value="demanda legal">
+                            demanda legal
+                        </label>
+                        <label>
+                            <input type="radio" name="versionado_tipo" value="customização">
+                            customização
+                        </label>
+                        <label>
+                            <input type="radio" name="versionado_tipo" value="bug">
+                            bug
+                        </label>
+                        <label style="margin-top: 5px;">
+                            Obs: <input type="text" name="versionado_obs" placeholder="Observações adicionais">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questão 2 -->
+            <div class="question-block">
+                <div class="question-title">2 - Onde: Identificação da funcionalidade ou rotina onde o defeito ocorre
+                </div>
+                <textarea name="onde"
+                    placeholder="Ex: gerar mensalidade, liberação da prescrição, calcular conta paciente, WAvaliar, AutoComplete..."></textarea>
+            </div>
+
+            <!-- Questão 3 -->
+            <div class="question-block">
+                <div class="question-title">3 - Razão: Porque o defeito ocorre?</div>
+                <textarea name="razao" placeholder="Descreva a razão do defeito..."></textarea>
+            </div>
+
+            <!-- Questão 4 -->
+            <div class="question-block">
+                <div class="question-title">4 - Causa: Existe alguma alteração no código fonte que causou o problema?
+                </div>
+                <textarea name="causa"
+                    placeholder="Descreva o que causou o problema e adicione o Pull Request..."></textarea>
+            </div>
+
+            <!-- Questão 5 -->
+            <div class="question-block">
+                <div class="question-title">5 - Correção: Descreva como foi corrigido o defeito</div>
+                <textarea name="correcao"
+                    placeholder="Descreva as alterações necessárias e informe o Pull Request..."></textarea>
+            </div>
+
+            <!-- Questão 6 -->
+            <div class="question-block">
+                <div class="question-title">6 - Em qual versão o defeito foi gerado/introduzido?</div>
+                <textarea name="versao_gerada"
+                    placeholder="Se foi antes da última versão disponibilizada, por que não havia sido identificado até então?"></textarea>
+            </div>
+
+            <!-- Questão 7 -->
+            <div class="question-block">
+                <div class="question-title">7 - Medida preventiva: O que poderia ter feito para prevenir o problema?
+                </div>
+                <textarea name="preventiva" placeholder="Descreva as medidas preventivas..."></textarea>
+            </div>
+
+            <!-- Questão 8 -->
+            <div class="question-block">
+                <div class="question-title">8 - Natureza do problema</div>
+                <div class="option-group">
+                    <label>
+                        <input type="radio" name="natureza" value="Funcionalidade">
+                        Funcionalidade – comportamento incorreto em relação à especificação
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Interface / UI / UX">
+                        Interface / UI / UX – problemas visuais, layout ou navegação
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Desempenho">
+                        Desempenho – lentidão, travamento, consumo excessivo
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Segurança">
+                        Segurança – vulnerabilidades, falhas de autenticação, exposição de dados
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Compatibilidade">
+                        Compatibilidade – problemas em navegadores, dispositivos ou versões diferentes
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Validação / Dados">
+                        Validação / Dados – erros de cálculo, arredondamento, ou inconsistências de banco
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Integração">
+                        Integração – falhas em comunicação entre sistemas
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Usabilidade">
+                        Usabilidade – confusão de uso, mensagens pouco claras
+                    </label>
+                    <label>
+                        <input type="radio" name="natureza" value="Infraestrutura / Configuração">
+                        Infraestrutura / Configuração – ambiente, deploy, permissão, servidor, gestão da versão,
+                        bloqueios
+                    </label>
+                </div>
+            </div>
+
+            <!-- Questão 9 -->
+            <div class="question-block">
+                <div class="question-title">9 - Em quais versões as alterações foram aplicadas?</div>
+                <textarea name="versoes_aplicadas" placeholder="Liste as versões..."></textarea>
+            </div>
+
+            <div class="buttons">
+                <button type="button" id="generateBtn">✨ Gerar Texto</button>
+                <button type="button" id="copyBtn">📋 Copiar</button>
+                <button type="button" id="clearBtn">🗑️ Limpar</button>
+            </div>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <div class="copied-message" id="copiedMessage">✓ Copiado para a área de transferência!</div>
+
+    <script>
+        const form = document.getElementById('defectForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultDiv = document.getElementById('result');
+        const copiedMessage = document.getElementById('copiedMessage');
+
+        generateBtn.addEventListener('click', generateText);
+        copyBtn.addEventListener('click', copyToClipboard);
+        clearBtn.addEventListener('click', clearForm);
+
+        function generateText() {
+            const formData = new FormData(form);
+            let text = '';
+
+            // Questão 1
+            text += '1 - Como o defeito foi inserido?\n';
+            const organico = document.querySelector('input[name="inserido_organico"]').checked;
+            const versionado = document.querySelector('input[name="inserido_versionado"]').checked;
+            text += organico ? '[X]' : '[ ]';
+            text += ' Orgânico (Entrou quando a versão foi criada a partir da dev)\n';
+            text += versionado ? '[X]' : '[ ]';
+            text += ' Versionado (Entrou forçado em versão já liberada no mercado)\n';
+
+            const versionadoTipo = formData.get('versionado_tipo');
+            const versionadoObs = formData.get('versionado_obs');
+            text += versionadoTipo === 'demanda legal' ? '(X)' : '( )';
+            text += ' demanda legal\n';
+            text += versionadoTipo === 'customização' ? '(X)' : '( )';
+            text += ' customização ';
+            text += versionadoTipo === 'bug' ? '(X)' : '( )';
+            text += ' bug Obs: ' + (versionadoObs || '---------------------------------------------') + '\n';
+
+            // Questão 2
+            text += '\n2 - Onde: Identificação da funcionalidade ou rotina onde o defeito ocorre (gerar mensalidade, liberação da prescrição, calcular conta paciente, WAvaliar, AutoComplete…)\n';
+            text += 'R: ' + (formData.get('onde') || '') + '\n';
+
+            // Questão 3
+            text += '\n3 - Razão: Porque o defeito ocorre?\n';
+            text += 'R: ' + (formData.get('razao') || '') + '\n';
+
+            // Questão 4
+            text += '\n4- Causa: Existe alguma alteração no código fonte que causou o problema? Descreva o que causou o problema e adicione o Pull Request\n';
+            text += 'R: ' + (formData.get('causa') || '') + '\n';
+
+            // Questão 5
+            text += '\n5 - Correção: Descreva como foi corrigido o defeito e quais alterações foram necessárias e informe o Pull Request\n';
+            text += 'R: ' + (formData.get('correcao') || '') + '\n';
+
+            // Questão 6
+            text += '\n6 - Em qual versão o defeito foi gerado/introduzido? Se foi antes da última versão disponibilizada, por que não havia sido identificado até então? (nunca testamos?)\n';
+            text += (formData.get('versao_gerada') || '') + '\n';
+
+            // Questão 7
+            text += '\n7 - Medida preventiva: O que poderia ter feito para prevenir o problema?\n';
+            text += 'R: ' + (formData.get('preventiva') || '') + '\n';
+
+            // Questão 8
+            text += '\n8 - Natureza do problema\n';
+            const natureza = formData.get('natureza');
+            text += (natureza === 'Funcionalidade' ? '(X)' : '( )') + ' Funcionalidade – comportamento incorreto em relação à especificação.\n';
+            text += (natureza === 'Interface / UI / UX' ? '(X)' : '( )') + ' Interface / UI / UX – problemas visuais, layout ou navegação.\n';
+            text += (natureza === 'Desempenho' ? '(X)' : '( )') + ' Desempenho – lentidão, travamento, consumo excessivo.\n';
+            text += (natureza === 'Segurança' ? '(X)' : '( )') + ' Segurança – vulnerabilidades, falhas de autenticação, exposição de dados.\n';
+            text += (natureza === 'Compatibilidade' ? '(X)' : '( )') + ' Compatibilidade – problemas em navegadores, dispositivos ou versões diferentes.\n';
+            text += (natureza === 'Validação / Dados' ? '(X)' : '( )') + ' Validação / Dados – erros de cálculo, arredondamento, ou inconsistências de banco.\n';
+            text += (natureza === 'Integração' ? '(X)' : '( )') + ' Integração – falhas em comunicação entre sistemas.\n';
+            text += (natureza === 'Usabilidade' ? '(X)' : '( )') + ' Usabilidade – confusão de uso, mensagens pouco claras.\n';
+            text += (natureza === 'Infraestrutura / Configuração' ? '(X)' : '( )') + ' Infraestrutura / Configuração – ambiente, deploy, permissão, servidor, gestão da versão, bloqueios\n';
+
+            // Questão 9
+            text += '\n9 - Em quais versões as alterações foram aplicadas?\n';
+            text += 'R: ' + (formData.get('versoes_aplicadas') || '') + '\n';
+
+            resultDiv.textContent = text;
+            resultDiv.style.display = 'block';
+            copyBtn.style.display = 'inline-block';
+
+            // Scroll para o resultado
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function copyToClipboard() {
+            const text = resultDiv.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                copiedMessage.style.display = 'block';
+                setTimeout(() => {
+                    copiedMessage.style.display = 'none';
+                }, 3000);
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+
+        function clearForm() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                form.reset();
+                resultDiv.style.display = 'none';
+                copyBtn.style.display = 'none';
+            }
+        }
+
+        // Salvar no localStorage ao digitar (auto-save)
+        const inputs = form.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            // Carregar valor salvo
+            const savedValue = localStorage.getItem('defect_' + input.name);
+            if (savedValue && input.type === 'checkbox') {
+                input.checked = savedValue === 'true';
+            } else if (savedValue && input.type === 'radio') {
+                if (input.value === savedValue) input.checked = true;
+            } else if (savedValue) {
+                input.value = savedValue;
+            }
+
+            // Salvar ao alterar
+            input.addEventListener('change', () => {
+                if (input.type === 'checkbox') {
+                    localStorage.setItem('defect_' + input.name, input.checked);
+                } else if (input.type === 'radio') {
+                    localStorage.setItem('defect_' + input.name, input.value);
+                } else {
+                    localStorage.setItem('defect_' + input.name, input.value);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
