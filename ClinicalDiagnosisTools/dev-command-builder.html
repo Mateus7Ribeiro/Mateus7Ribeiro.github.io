@@ -1,0 +1,1099 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasy Dev Command Builder</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 span.logo {
+      background: #0ea5e9;
+      color: #fff;
+      border-radius: 8px;
+      padding: 3px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      border: 1px solid #334155;
+    }
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Select */
+    select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    select:focus {
+      border-color: #0ea5e9;
+    }
+
+    .env-url {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    /* Number inputs */
+    .inputs-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input[type=number] {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type=number]:focus {
+      border-color: #0ea5e9;
+    }
+
+    /* Tags */
+    .tag-input-wrapper {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      min-height: 44px;
+      padding: 6px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: flex-start;
+      cursor: text;
+      transition: border-color 0.15s;
+      position: relative;
+    }
+
+    .tag-input-wrapper:focus-within {
+      border-color: #0ea5e9;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #0ea5e920;
+      color: #38bdf8;
+      border: 1px solid #0ea5e940;
+      border-radius: 5px;
+      padding: 2px 8px 2px 10px;
+      font-size: 0.82rem;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    .tag button {
+      background: none;
+      border: none;
+      color: #38bdf8;
+      cursor: pointer;
+      padding: 0 2px;
+      font-size: 0.95rem;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+    }
+
+    .tag button:hover {
+      opacity: 1;
+    }
+
+    .tag-text-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      min-width: 120px;
+      flex: 1;
+      padding: 2px 4px;
+    }
+
+    .autocomplete-drop {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      z-index: 100;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px #00000066;
+    }
+
+    .autocomplete-item {
+      padding: 9px 14px;
+      font-size: 0.88rem;
+      font-family: monospace;
+      cursor: pointer;
+      color: #e2e8f0;
+      transition: background 0.1s;
+    }
+
+    .autocomplete-item:hover,
+    .autocomplete-item.active {
+      background: #0ea5e920;
+      color: #38bdf8;
+    }
+
+    /* Features */
+    .search-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px 10px 38px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input:focus {
+      border-color: #0ea5e9;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      pointer-events: none;
+    }
+
+    .features-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid #1e293b;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .feature-item:last-child {
+      border-bottom: none;
+    }
+
+    .feature-item:hover {
+      background: #1e293b;
+    }
+
+    .feature-item.selected {
+      background: #0ea5e910;
+    }
+
+    .feature-item input[type=checkbox] {
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      accent-color: #0ea5e9;
+      flex-shrink: 0;
+    }
+
+    .feature-form {
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #38bdf8;
+      flex-shrink: 0;
+      min-width: 130px;
+    }
+
+    .feature-en {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .feature-id {
+      font-size: 0.72rem;
+      color: #475569;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .features-count {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .features-count button {
+      font-size: 0.72rem;
+      color: #ef4444;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.1s;
+    }
+
+    .features-count button:hover {
+      background: #ef444420;
+    }
+
+    .selected-features {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      min-height: 28px;
+    }
+
+    .feat-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #8b5cf620;
+      color: #a78bfa;
+      border: 1px solid #8b5cf640;
+      border-radius: 5px;
+      padding: 2px 8px 2px 10px;
+      font-size: 0.78rem;
+      font-family: monospace;
+    }
+
+    .feat-tag button {
+      background: none;
+      border: none;
+      color: #a78bfa;
+      cursor: pointer;
+      padding: 0 2px;
+      opacity: 0.7;
+    }
+
+    .feat-tag button:hover {
+      opacity: 1;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #475569;
+      padding: 24px;
+      font-size: 0.88rem;
+    }
+
+    /* Command output */
+    .cmd-box {
+      background: #020817;
+      border-radius: 10px;
+      border: 1px solid #1e3a5f;
+      padding: 16px 18px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      color: #93c5fd;
+      line-height: 1.7;
+      word-break: break-all;
+      white-space: pre-wrap;
+      min-height: 64px;
+      position: relative;
+    }
+
+    .cmd-box .prompt {
+      color: #64748b;
+      user-select: none;
+    }
+
+    .copy-btn {
+      margin-top: 12px;
+      background: #0ea5e9;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .copy-btn:hover {
+      background: #0284c7;
+    }
+
+    .copy-btn:active {
+      transform: scale(0.97);
+    }
+
+    .copy-btn.copied {
+      background: #16a34a;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.7rem;
+      color: #64748b;
+      font-family: monospace;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 99px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 28px 0 8px;
+      font-size: 0.78rem;
+      color: #334155;
+      letter-spacing: 0.04em;
+    }
+
+    .footer a {
+      color: #475569;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      color: #94a3b8;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <h1><span class="logo">TASY</span> Dev Command Builder</h1>
+    <p class="subtitle">Build your <code
+        style="background:#1e293b;padding:1px 6px;border-radius:4px;font-size:0.85em">npm run dev</code> command
+      interactively</p>
+
+    <!-- Environment -->
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 8v4l3 3" />
+        </svg>
+        Environment
+      </div>
+      <select id="env-select" onchange="updateEnvUrl()">
+        <option value="">— select environment —</option>
+      </select>
+      <div class="env-url" id="env-url"></div>
+    </div>
+
+    <!-- Modules -->
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+        Modules
+      </div>
+      <div class="tag-input-wrapper" id="modules-wrapper" onclick="focusModuleInput()">
+        <div id="modules-tags"></div>
+        <input class="tag-text-input" id="module-input" placeholder="Type a module prefix..." autocomplete="off"
+          oninput="onModuleInput()" onkeydown="onModuleKeydown(event)" onfocus="onModuleFocus()"
+          onblur="onModuleBlur()">
+        <div class="autocomplete-drop" id="module-drop" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline points="9 11 12 14 22 4" />
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg>
+        Features <span class="badge" id="feat-badge">0 selected</span>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor"
+            stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </span>
+        <input class="search-input" id="feat-search" placeholder="Search by form name or description..."
+          oninput="filterFeatures()">
+      </div>
+      <div class="features-count">
+        <span id="feat-count-label">Showing top 80 of 1415 — search to filter</span>
+        <button onclick="clearFeatures()">Clear all</button>
+      </div>
+      <div class="features-list" id="features-list"></div>
+      <div class="selected-features" id="selected-features"></div>
+    </div>
+
+    <!-- Numeric options -->
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <line x1="12" y1="20" x2="12" y2="10" />
+          <line x1="18" y1="20" x2="18" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="16" />
+        </svg>
+        Options
+      </div>
+      <div class="inputs-row">
+        <div>
+          <label for="mem-input">--max_old_space_size (MB)</label>
+          <input type="number" id="mem-input" value="8000" min="512" max="32768" step="512" oninput="buildCommand()">
+        </div>
+        <div>
+          <label for="port-input">--port</label>
+          <input type="number" id="port-input" value="4000" min="1024" max="65535" oninput="buildCommand()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Command output -->
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline points="4 17 10 11 4 5" />
+          <line x1="12" y1="19" x2="20" y2="19" />
+        </svg>
+        Generated Command
+      </div>
+      <div class="cmd-box" id="cmd-output"></div>
+      <button class="copy-btn" id="copy-btn" onclick="copyCommand()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor"
+          stroke-width="2" viewBox="0 0 24 24">
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+        Copy to clipboard
+      </button>
+    </div>
+
+    <!-- History -->
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 8v4l3 3" />
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+        Saved Configurations
+      </div>
+      <div class="history-list" id="history-list">
+        <div class="history-empty">No saved configurations yet</div>
+      </div>
+      <div class="save-history-row">
+        <input class="save-history-input" id="history-name-input" placeholder="Configuration name..."
+          onkeydown="if(event.key==='Enter')saveToHistory()">
+        <button class="save-history-btn" onclick="saveToHistory()">Save Config</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Desenvolvido por <strong style="color:#475569">Mateus Ribeiro</strong>
+  </footer>
+
+  <script>
+    // ===================== DATA =====================
+    const ENVIRONMENTS = {
+      "local": {
+        "backend": "http://localhost:8084",
+        "native": "http://localhost:3069"
+      },
+      "docker": {
+        "backend": "http://host.docker.internal:8084"
+      },
+      "brazil": {
+        "backend": "https://dev-tasy.whebdc.com.br/"
+      },
+      "pre_main": {
+        "backend": "https://pre-main.devops.whebdc.com.br/"
+      },
+      "automation": {
+        "backend": "https://erp-hpms-automation.devops.whebdc.com.br/"
+      },
+      "pw-test": {
+        "backend": "https://pw-test.devops.whebdc.com.br/"
+      },
+      "india": {
+        "backend": "http://10.10.11.48:8080"
+      },
+      "1835": {
+        "backend": "https://version-1835.devops.whebdc.com.br/"
+      },
+      "1837": {
+        "backend": "https://version-1837.devops.whebdc.com.br/"
+      },
+      "1838": {
+        "backend": "https://version-1838.devops.whebdc.com.br/"
+      },
+      "1842": {
+        "backend": "https://version-1842.devops.whebdc.com.br/"
+      },
+      "1845": {
+        "backend": "https://version-1845.devops.whebdc.com.br/"
+      },
+      "loclatam": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:9113/"
+      },
+      "batutinhas": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:9171/"
+      },
+      "tech": {
+        "backend": "https://rd-bnu-technology.devops.whebdc.com.br/"
+      },
+      "pfcs": {
+        "backend": "http://srv-dev-tsy01.whebdc.com.br:8042/"
+      },
+      "billpharm": {
+        "backend": "https://billing-pharmacy.devops.whebdc.com.br/"
+      },
+      "ops": {
+        "backend": "https://ops.devops.whebdc.com.br/"
+      },
+      "order": {
+        "backend": "https://rd-bnu-clinical-order.devops.whebdc.com.br/"
+      },
+      "records": {
+        "backend": "https://clinical-records.devops.whebdc.com.br/"
+      },
+      "specialties": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:9116/"
+      },
+      "supply": {
+        "backend": "https://supply-chain-tax.devops.whebdc.com.br/"
+      },
+      "acute_care": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:10011/"
+      },
+      "oncology": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:9105/"
+      },
+      "stranger": {
+        "backend": "https://rd-bnu-clinical-order-defect.devops.whebdc.com.br/"
+      },
+      "pas": {
+        "backend": "https://admission-discharge-transfer.devops.whebdc.com.br/"
+      },
+      "chewbacca": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:10030/"
+      },
+      "diagnosis": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:9123/"
+      },
+      "financial_accounting": {
+        "backend": "https://financial-accounting.devops.whebdc.com.br/"
+      },
+      "pas_exams": {
+        "backend": "https://srv-kubnode-01.whebdc.com.br:10038/"
+      }
+    };
+    const FUNCTIONS = [{ "id": "55555", "form": "AGFA_dfm", "en": "AGFA", "pt": "AGFA" }, { "id": "-2013", "form": "AteDis_AC", "en": "Devices Placed Into the Patient", "pt": "Dispositivos Instalados no Paciente" }, { "id": "-2235", "form": "AteDis_CC", "en": "Devices Placed Into the Patient", "pt": "Dispositivos Instalados no Paciente" }, { "id": "99056", "form": "AteDis_DU", "en": "Devices Used by the Patient", "pt": "Dispositivos Utilizados no Paciente" }, { "id": "-2010", "form": "AteDis_UD", "en": "Patient Device Changes", "pt": "Alterações nos Dispositivos do Paciente" }, { "id": "-2011", "form": "AteDis_UN", "en": "New Device", "pt": "Novo Dispositivo" }, { "id": "2681", "form": "AteIOS_F1", "en": "iOS - Electronic Patient Chart", "pt": "iOS - PEP" }, { "id": "200", "form": "AtePac", "en": "Patient encounter", "pt": "Atendimento paciente" }, { "id": "-2025", "form": "AtePac_A0", "en": "Surgery Graphs", "pt": "Gráficos da Cirurgia" }, { "id": "820", "form": "AtePac_A1", "en": "Exam Schedule", "pt": "Agenda de Exames" }, { "id": "866", "form": "AtePac_A2", "en": "Service Schedule", "pt": "Agenda de Serviços" }, { "id": "868", "form": "AtePac_A3", "en": "Digital Interventional Suite - DIS", "pt": "Digital Interventional Suite - DIS" }, { "id": "-1007", "form": "AtePac_A4", "en": "Global Schedule", "pt": "Agenda Global" }, { "id": "8013", "form": "AtePac_A4-", "en": "Inactive", "pt": "Inativo" }, { "id": "870", "form": "AtePac_A5", "en": "Surgeon\u0027s Schedule", "pt": "Agenda do Cirurgião" }, { "id": "871", "form": "AtePac_A6", "en": "Surgical Schedule Management", "pt": "Gestão da Agenda Cirúrgica" }, { "id": "872", "form": "AtePac_A7", "en": "Perioperative Electronic Patient Chart", "pt": "Prontuário Eletrônico Perioperatório - PEPO" }, { "id": "873", "form": "AtePac_A8", "en": "Perioperative Items Settings", "pt": "Cadastro dos Itens Perioperatórios" }, { "id": "-9", "form": "AtePac_A9", "en": "Surgery Graphs", "pt": "Gráficos da Cirurgia" }, { "id": "-2260", "form": "AtePac_AA", "en": "Encounter Attachments", "pt": "Anexos do Atendimento" }, { "id": "-926", "form": "AtePac_AB", "en": "Antimicrobials", "pt": "Antimicrobianos" }, { "id": "1355", "form": "AtePac_AC", "en": "Multiparameter Flowsheet", "pt": "Análise dos Parâmetros Assistenciais do Paciente - APAP" }, { "id": "10020", "form": "AtePac_AD", "en": "Lost and Found Control", "pt": "Controle de Achados e Perdidos" }, { "id": "7032", "form": "AtePac_AE", "en": "Alerts and Events Management", "pt": "Gestão de Alertas e Eventos" }, { "id": "10000", "form": "AtePac_AF", "en": "Management of Future Encounter", "pt": "Gestão de Atendimento Futuro" }, { "id": "2707", "form": "AtePac_AH", "en": "Admission Panel", "pt": "Painel internação" }, { "id": "61", "form": "AtePac_AI", "en": "Exam Internal Control", "pt": "Controle Interno de Exames" }, { "id": "9027", "form": "AtePac_AJ", "en": "CPOE - Antimicrobial Medicines", "pt": "REP - Medicamentos Antimicrobianos" }, { "id": "-25", "form": "AtePac_AL", "en": "Alerts", "pt": "Alertas" }, { "id": "7025", "form": "AtePac_AM", "en": "Order Dispensing (New)", "pt": "Atendimento da Prescrição (Nova)" }, { "id": "869", "form": "AtePac_AN", "en": "Integrated Schedule", "pt": "Agenda Integrada" }, { "id": "1110", "form": "AtePac_AO", "en": "Bedside Check", "pt": "Checagem Beira-Leito" }, { "id": "-975", "form": "AtePac_AP", "en": "Professional Notifications", "pt": "Alertas aos Profissionais" }, { "id": "7035", "form": "AtePac_AR", "en": "Archetype", "pt": "Arquétipo" }, { "id": "-970", "form": "AtePac_AS", "en": "Safety Warnings", "pt": "Alertas de Segurança" }, { "id": "368", "form": "AtePac_AT", "en": "List of Encounters", "pt": "Lista de Atendimentos" }, { "id": "944", "form": "AtePac_AV", "en": "Structured Assessments", "pt": "Avaliações Estruturadas" }, { "id": "2468", "form": "AtePac_AW", "en": "Modified Ashworth Scale", "pt": "Escala Modificada de Ashworth" }, { "id": "874", "form": "AtePac_B2", "en": "Electronic Pre-Anesthetic Assessment", "pt": "Avaliação Pré-Anestésica Eletrônica - APAE" }, { "id": "7005", "form": "AtePac_B3", "en": "OPSM Boxes Management", "pt": "Gestão das Caixas de OPME" }, { "id": "-2009", "form": "AtePac_BC", "en": "Barcode", "pt": "Código de Barras" }, { "id": "425", "form": "AtePac_BD", "en": "Phrase Builder", "pt": "Phrase Builder" }, { "id": "2101", "form": "AtePac_BI", "en": "Biobank", "pt": "Biobanco" }, { "id": "9902", "form": "AtePac_BL", "en": "Human Milk Bank Management", "pt": "Gestão de Banco de Leite" }, { "id": "432", "form": "AtePac_BM", "en": "Body Site Management", "pt": "Gerenciamento do Local do Corpo" }, { "id": "359", "form": "AtePac_BO", "en": "Clinical Board", "pt": "Clinical Board" }, { "id": "379", "form": "AtePac_BR", "en": "Generate bed need", "pt": "Gerar necessidade de vaga" }, { "id": "821", "form": "AtePac_C1", "en": "Consultation Schedule", "pt": "Agenda de Consultas" }, { "id": "9039", "form": "AtePac_C2", "en": "Exams Call Panel", "pt": "Painel de Chamadas de Exames" }, { "id": "9901", "form": "AtePac_C3", "en": "Water Control", "pt": "Controle de Água" }, { "id": "10055", "form": "AtePac_C4", "en": "Electronic Control of Assistance Processes", "pt": "Controle Eletrônico dos Processos Assistenciais - CLEPA" }, { "id": "-3005", "form": "AtePac_C5", "en": "Carpool Lookup", "pt": "Consulta de Carona Amiga" }, { "id": "-3006", "form": "AtePac_C6", "en": "Surgery review", "pt": "Revisão de cirurgia" }, { "id": "1903", "form": "AtePac_CA", "en": "Therapeutic Dose Calculator", "pt": "Calculadora de Dose Terapêutica" }, { "id": "-2170", "form": "AtePac_CB", "en": "Prescription Copy", "pt": "Cópia da Prescrição" }, { "id": "1132", "form": "AtePac_CC", "en": "Call Panel", "pt": "Painel de Chamadas" }, { "id": "-1006", "form": "AtePac_CD", "en": "Change Diagnosis Status", "pt": "Mudar Status Diagnóstico" }, { "id": "57", "form": "AtePac_CE", "en": "Nursing Records", "pt": "Cadastros de Enfermagem" }, { "id": "-1002", "form": "AtePac_CE", "en": "Nursing Records", "pt": "Cadastros de Enfermagem" }, { "id": "2222", "form": "AtePac_CF", "en": "Fraction Management", "pt": "Gestão de Fracionamento" }, { "id": "99023", "form": "AtePac_CG", "en": "Patient Chart Settings", "pt": "Cadastros PEP" }, { "id": "1129", "form": "AtePac_CG", "en": "Patient Chart Settings", "pt": "Cadastros PEP" }, { "id": "996", "form": "AtePac_CH", "en": "Check-up", "pt": "Check-up" }, { "id": "9029", "form": "AtePac_CI", "en": "CPOE - Dose Calculation / Infusion Rate", "pt": "REP - Cálculo de Dose / Velocidade de Infusão" }, { "id": "9021", "form": "AtePac_CJ", "en": "Schedule Call Panel", "pt": "Painel de Chamadas do Agendamento" }, { "id": "9028", "form": "AtePac_CK", "en": "CPOE - Therapeutic Dosage Calculator", "pt": "REP - Calculadora de Dose Terapêutica" }, { "id": "-2012", "form": "AtePac_CL", "en": "Order Batch Consultation", "pt": "Consulta Lote de Prescrição" }, { "id": "1140", "form": "ATEPAC_CM", "en": "SISCOLO report", "pt": "Laudo SISCOLO" }, { "id": "420", "form": "AtePac_CN", "en": "Calculation Mechanisms", "pt": "Mecanismos de Cálculo" }, { "id": "1906", "form": "AtePac_CO", "en": "Outpatient Oncology", "pt": "Oncologia Ambulatorial" }, { "id": "1007", "form": "AtePac_CP", "en": "Medical Record Internal Control (MRIC)", "pt": "Controle Interno de Prontuário (CIP)" }, { "id": "-980", "form": "AtePac_CR", "en": "Standard ICD", "pt": "CID Rotina" }, { "id": "-7001", "form": "AtePac_CS", "en": "Clipboard", "pt": "Área de transferência" }, { "id": "2812", "form": "AtePac_CT", "en": "Contingency", "pt": "Contingência" }, { "id": "1905", "form": "AtePac_CU", "en": "Resume", "pt": "Currículo" }, { "id": "8014", "form": "AtePac_CV", "en": "Visitor Control", "pt": "Controle de Visitas" }, { "id": "-1009", "form": "AtePac_CV-", "en": "Visitor Control", "pt": "Controle de Visitas" }, { "id": "446", "form": "AtePac_CW", "en": "Case Management", "pt": "Central de Episódios" }, { "id": "-2002", "form": "AtePac_D1", "en": "Text Search Tool", "pt": "Localizador de texto" }, { "id": "148", "form": "AtePac_D2", "en": "Report Monitoring", "pt": "Acompanhamento de Laudos" }, { "id": "-1000", "form": "ATEPAC_D3", "en": "Insurance Documentation", "pt": "Documentação do Convênio" }, { "id": "931", "form": "AtePac_D5", "en": "Surgeries - Physician\u0027s Report", "pt": "Cirurgias - Relatório do Médico" }, { "id": "171", "form": "AtePac_D8", "en": "Care Revenue Consultation", "pt": "Consulta Receita de Atendimentos" }, { "id": "59", "form": "AtePac_DA", "en": "Incidents in the Work Shift (Old)", "pt": "Ocorrências no Turno de Trabalho (Antigo" }, { "id": "338", "form": "AtePac_DB", "en": "Clinical Panorama", "pt": "Panorama Clínico" }, { "id": "99050", "form": "AtePac_DC", "en": "Delivery Center", "pt": "Central de Entregas" }, { "id": "-6936", "form": "AtePac_DD", "en": "Document scanning", "pt": "Digitalização de documentos" }, { "id": "-18", "form": "AtePac_DE", "en": "Selection of diets", "pt": "Seleção de dietas" }, { "id": "-59", "form": "AtePac_DF", "en": "Shift-change incident", "pt": "Ocorrência de passagem de turno" }, { "id": "138", "form": "AtePac_DH", "en": "Issuing Procedure Prescription", "pt": "Emissão Prescrição Procedimentos" }, { "id": "3250", "form": "AtePac_DI", "en": "Internal Diagnoses", "pt": "Diagnósticos Internos" }, { "id": "97", "form": "AtePac_DJ", "en": "Diet Map (Old)", "pt": "Mapa de Dietas (Antigo)" }, { "id": "91", "form": "AtePac_DK", "en": "Prescription Issue by Time", "pt": "Emissão das Prescrições por Horário" }, { "id": "106", "form": "AtePac_DL", "en": "Patient Quotation", "pt": "Orçamento de Pacientes" }, { "id": "94", "form": "AtePac_DM", "en": "Oncology", "pt": "Oncologia" }, { "id": "17", "form": "AtePac_DO", "en": "Processes", "pt": "Processos" }, { "id": "145", "form": "Atepac_DP", "en": "Discharge Processes", "pt": "Processos de Alta" }, { "id": "139", "form": "AtePac_DQ", "en": "Prescription Check - Barcode", "pt": "Conferência da Prescrição - Barras" }, { "id": "62", "form": "AtePac_DR", "en": "Pending Prescribed Procedures", "pt": "Procedimentos Prescritos Pendentes" }, { "id": "95", "form": "AtePac_DV", "en": "Protocols", "pt": "Protocolos" }, { "id": "-208", "form": "AtePac_DX", "en": "Find Protocol Phrases (Old)", "pt": "Obter Frases Protocolo (Antiga)" }, { "id": "4200", "form": "AtePac_E1", "en": "Patient Chart Export", "pt": "Emissão de Prontuários" }, { "id": "166", "form": "AtePac_E2", "en": "Medical Report Location Register (Old)", "pt": "Registro da Localização do Laudos (Antigo)" }, { "id": "168", "form": "AtePac_E3", "en": "Patients in Encounter View", "pt": "Pacientes na Visão do Atendimento" }, { "id": "-38", "form": "AtePac_E4", "en": "Find Equipment", "pt": "Localizar Equipamento" }, { "id": "-214", "form": "AtePac_E5", "en": "Find Available Encounter Unit", "pt": "Obter Unidade de Atendimento Livre" }, { "id": "-317", "form": "AtePac_E6", "en": "Department Passage", "pt": "Passagem de Setor" }, { "id": "895", "form": "AtePac_E7", "en": "Patients in Waiting Line", "pt": "Pacientes em Fila de Espera" }, { "id": "896", "form": "AtePac_E8", "en": "HAIs Medicine Control", "pt": "Liberação Medicamentos CIH" }, { "id": "945", "form": "AtePac_E9", "en": "Histopathology Report", "pt": "Laudo de Anatomia Patológica" }, { "id": "951", "form": "Atepac_EA", "en": "Medical report measures", "pt": "Medidas de Laudos" }, { "id": "898", "form": "AtePac_EB", "en": "Consultation Schedule (Old)", "pt": "Agenda Consulta (Antiga)" }, { "id": "901", "form": "AtePac_EC", "en": "Patient Surgery", "pt": "Cirurgia de Pacientes" }, { "id": "381", "form": "AtePac_ED", "en": "Electronic Outpatient Chart", "pt": "Prontuário Eletrônico de Paciente Ambulatorial - PEPA" }, { "id": "7036", "form": "AtePac_ED", "en": "Issuing of Encounters", "pt": "Emissão de Atendimentos" }, { "id": "7012", "form": "AtePac_EE", "en": "External Lab Results Entry", "pt": "Digitação de Resultado de Exames Laboratoriais Externos" }, { "id": "904", "form": "AtePac_EF", "en": "Immunization Control (Old)", "pt": "Controle de Imunizações (Antiga)" }, { "id": "96", "form": "Atepac_EG", "en": "Nursing", "pt": "Enfermagem" }, { "id": "281", "form": "AtePac_EH", "en": "Electronic Patient Chart", "pt": "Prontuário Eletrônico Paciente - PEP" }, { "id": "75", "form": "AtePac_EI", "en": "Bed Services Management", "pt": "Gestão de Serviços de Leito" }, { "id": "269", "form": "AtePac_Ej", "en": "Patient\u0027s belongings (Old)", "pt": "Pertences do Paciente (Antigo)" }, { "id": "910", "form": "Atepac_EK", "en": "Dressing", "pt": "Curativo" }, { "id": "900", "form": "AtePac_EL", "en": "Surgery Management", "pt": "Gestão de Cirurgias" }, { "id": "998", "form": "AtePac_EM", "en": "Emergency Order", "pt": "Prescrição de Emergência" }, { "id": "912", "form": "AtePac_EN", "en": "Nutrition", "pt": "Nutrição" }, { "id": "903", "form": "AtePac_EO", "en": "Immunization Control", "pt": "Controle de Imunizações" }, { "id": "-325", "form": "AtePac_EP", "en": "Routine Exams and Procedures Order", "pt": "Prescrição dos Exames e Procedimentos de Rotina" }, { "id": "3111", "form": "AtePac_ER", "en": "Movement of Patients", "pt": "Movimentação de Pacientes" }, { "id": "289", "form": "AtePac_Es", "en": "Medical Encounter", "pt": "Atendimento Médico" }, { "id": "3004", "form": "AtePac_ET", "en": "Insurance Authorization", "pt": "Autorização Convênio" }, { "id": "3006", "form": "AtePac_EU", "en": "Authorization of Special Materials", "pt": "Autorização de Materiais Especiais" }, { "id": "1122", "form": "AtePac_Ex", "en": "Prescription Performance (new)", "pt": "Execução Prescrição (nova)" }, { "id": "-2003", "form": "AtePac_EZ", "en": "Daily Charge Exemption", "pt": "Dispensa de Cobrança Diária" }, { "id": "-15", "form": "AtePac_F0", "en": "Transfer of Expenses", "pt": "Transferência de Gastos" }, { "id": "47", "form": "AtePac_F1", "en": "Non-Approved Medication Management", "pt": "Liberação Medicamentos Não Padronizados" }, { "id": "21", "form": "AtePac_F2", "en": "Admission Entry and ED", "pt": "Entrada Internação e PS" }, { "id": "34", "form": "AtePac_F3", "en": "Medical Diagnosis", "pt": "Diagnóstico Médico" }, { "id": "23", "form": "AtePac_F5", "en": "Patient Progress", "pt": "Evolução Paciente" }, { "id": "24", "form": "AtePac_F6", "en": "Order Processing", "pt": "Execução Prescrição" }, { "id": "68", "form": "AtePac_F7", "en": "Authorization Management (Old)", "pt": "Gerenciamento de Autorização (Antiga)" }, { "id": "916", "form": "AtePac_F8", "en": "Patient Registration", "pt": "Entrada Única de Pacientes" }, { "id": "28", "form": "AtePac_F9", "en": "Patient Medical Report", "pt": "Laudo Paciente" }, { "id": "42", "form": "AtePac_FA", "en": "Patient Material Return", "pt": "Devolução Material Paciente" }, { "id": "43", "form": "AtePac_FB", "en": "Patient Material Return (New)", "pt": "Devolução Material Paciente (Nova)" }, { "id": "382", "form": "AtePac_FC", "en": "Pharmacy Parameters", "pt": "Parâmetros da Farmácia" }, { "id": "99011", "form": "AtePac_FC", "en": "Encounter Examination", "pt": "Atendimento Exame" }, { "id": "46", "form": "AtePac_FD", "en": "Medical Record Control", "pt": "Controle de Prontuários" }, { "id": "924", "form": "AtePac_FE", "en": "Computerized Provider Order Entry - CPOE", "pt": "Prescrição Eletrônica Paciente - REP" }, { "id": "30", "form": "AtePac_FF", "en": "Births", "pt": "Nascimentos" }, { "id": "10015", "form": "AtePac_FG", "en": "Outpatient Pharmacy", "pt": "Farmácia Ambulatorial" }, { "id": "950", "form": "AtePac_FH", "en": "Computerized Provider Order Entry - Therapeutic Plan (CPOE)", "pt": "Prescrição Eletrônica Paciente - Plano Terapêutico (REP - PT)" }, { "id": "22", "form": "AtePac_FI", "en": "Medical Prescription (Old)", "pt": "Prescrição Médica (Antiga)" }, { "id": "9008", "form": "AtePac_FJ", "en": "CPOE - Computerized Provider Order Entry", "pt": "REP - Prescrição Eletrônica do Paciente" }, { "id": "99012", "form": "AtePac_FL", "en": "Medical Form", "pt": "Ficha Médica" }, { "id": "44", "form": "AtePac_FN", "en": "Hospital Occupancy", "pt": "Ocupação Hospitalar" }, { "id": "169", "form": "AtePac_FO", "en": "Patient Images", "pt": "Imagens Paciente" }, { "id": "36", "form": "AtePac_FQ", "en": "Order Dispensing", "pt": "Atendimento da Prescrição" }, { "id": "-209", "form": "AtePac_FR", "en": "Find Protocol Phrases", "pt": "Obter Frases Protocolo" }, { "id": "39", "form": "AtePac_FT", "en": "Old Schedule Books", "pt": "Agendas Antigas" }, { "id": "1003", "form": "AtePac_FU", "en": "Nutrition Management", "pt": "Gestão da Nutrição" }, { "id": "10028", "form": "AtePac_FV", "en": "Issuance of the patient\u0027s diets", "pt": "Emissão de dietas do paciente" }, { "id": "48", "form": "AtePac_FW", "en": "Transfer Between Encounters", "pt": "Transferência entre Atendimentos" }, { "id": "-102", "form": "AtePac_Fx", "en": "Encounter Search Tool", "pt": "Localizador de Atendimento" }, { "id": "41", "form": "AtePac_FY", "en": "Patient Movement (Old)", "pt": "Movimentação do Paciente (Antiga)" }, { "id": "2223", "form": "AtePac_FZ", "en": "Menu", "pt": "Cardápio" }, { "id": "275", "form": "AtePac_G1", "en": "Healthcare Quality Management - HQM", "pt": "Gestão de Qualidade Assistencial - GQA" }, { "id": "341", "form": "AtePac_G2", "en": "Population Management", "pt": "Gestão Populacional" }, { "id": "367", "form": "AtePac_G3", "en": "Regulation Management", "pt": "Gestão da Regulação" }, { "id": "10212", "form": "AtePac_G6", "en": "Issuance of Examination Management report", "pt": "Emissão de relatório Gestão de Exame" }, { "id": "10019", "form": "AtePac_G9", "en": "Java Report Printing", "pt": "Impressão de Relatório Java" }, { "id": "1011", "form": "AtePac_GA", "en": "Electronic Patient Chart Access Management", "pt": "Gestão de Acessos PEP" }, { "id": "9047", "form": "AtePac_GB", "en": "Report Delivery Management", "pt": "Gestão de Entregas de Laudos" }, { "id": "-19", "form": "AtePac_GC", "en": "Electronic Patient Chart Graphs", "pt": "Gráficos do Prontuário Eletrônico de Paciente" }, { "id": "3112", "form": "AtePac_GD", "en": "Electronic Medication Administration Record - Dispensing Management - eMAR-DM", "pt": "Gestão de Dispensação dos Processos ADEP - GEDIPA" }, { "id": "942", "form": "AtePac_GE", "en": "Exam Management", "pt": "Gestão de Exames" }, { "id": "7010", "form": "AtePac_GF", "en": "Order Management by the Clinical Pharmacy", "pt": "Gestão das Prescrições pela Farmácia Clínica" }, { "id": "875", "form": "AtePac_GG", "en": "Scheduling Stages Management", "pt": "Gestão das Etapas do Agendamento - GETA" }, { "id": "99018", "form": "AtePac_GH", "en": "Office Management", "pt": "Gestão de Consultórios" }, { "id": "7043", "form": "AtePac_GI", "en": "Infection Prevention and Control Management", "pt": "Gestão de CCIH" }, { "id": "1135", "form": "AtePac_GL", "en": "Glossary Consultation", "pt": "Consulta Glossário" }, { "id": "1950", "form": "AtePac_GM", "en": "Sample Management", "pt": "Gestão das Amostras" }, { "id": "7015", "form": "AtePac_GN", "en": "Order Management by the Nursing Team", "pt": "Gestão das Prescrições pela Enfermagem" }, { "id": "1801", "form": "AtePac_GO", "en": "Pain Management", "pt": "Gestão da Dor" }, { "id": "941", "form": "AtePac_GP", "en": "Health Information Management", "pt": "Gestão de Prontuários" }, { "id": "3132", "form": "ATEPAC_GR", "en": "Radiotherapy Management", "pt": "Gestão da Radioterapia" }, { "id": "1136", "form": "AtePac_GS", "en": "Intakes \u0026 outputs", "pt": "Ganhos e perdas" }, { "id": "1700", "form": "AtePac_GT", "en": "Transcription Management", "pt": "Gestão de Transcrição" }, { "id": "1002", "form": "AtePac_GV", "en": "Bed Management", "pt": "Gestão de Vagas" }, { "id": "9020", "form": "AtePac_GW", "en": "eMAR-DM - eMAR Process Dispensing Management", "pt": "GEDIPA - Gestão de Dispensação de Processos ADEP" }, { "id": "10030", "form": "AtePac_H1", "en": "Enter Information With Consultation (New)", "pt": "Digitar Informação com Consulta (Nova)" }, { "id": "266", "form": "AtePac_H2", "en": "EHR - Clinical Record consultation", "pt": "Consulta de EHR - Registro Clínico" }, { "id": "-2040", "form": "ATEPAC_HB", "en": "Medicine Administration in Dialysis", "pt": "Administração de Medicamentos na Diálise" }, { "id": "867", "form": "AtePac_HC", "en": "Home Care Management", "pt": "Gestão de Home Care" }, { "id": "7009", "form": "AtePac_HD", "en": "Kidney Failure Management", "pt": "Gestão de Insuficiência Renal" }, { "id": "7047", "form": "AtePac_HE", "en": "EHR - Clinical Record", "pt": "EHR - Registro Clínico" }, { "id": "9935", "form": "AtePac_HF", "en": "Health Fitness Program", "pt": "Health Fitness Program" }, { "id": "1119", "form": "AtePac_HI", "en": "History of Electronic Medication Administration Record - eMAR", "pt": "Hist Adm Eletrônica da Prescrição - ADEP" }, { "id": "433", "form": "AtePac_HL", "en": "HL7 Interfaces", "pt": "HL7 Interfaces" }, { "id": "-3010", "form": "AtePac_HR", "en": "Previous template records", "pt": "Registros anteriores dos templates" }, { "id": "9090", "form": "AtePac_HS", "en": "Routine Health History", "pt": "Históricos de Saúde de Rotina" }, { "id": "-6700", "form": "AtePac_HT", "en": "Registrations", "pt": "Registros" }, { "id": "10031", "form": "AtePac_I9", "en": "Report Results Generator", "pt": "Gerador de Resultados de Laudo" }, { "id": "-6950", "form": "AtePac_IC", "en": "Image capture", "pt": "Captura de imagens" }, { "id": "8008", "form": "AtePac_ID", "en": "Tubes \u0026 Lines Order", "pt": "Prescrição de Dispositivos" }, { "id": "395", "form": "AtePac_IH", "en": "In network", "pt": "Conveniado" }, { "id": "9017", "form": "AtePac_IJ", "en": "CPOE - Prescription Inconsistencies", "pt": "REP - Inconsistências da Prescrição" }, { "id": "99013", "form": "AtePac_IL", "en": "Medical Report Infrastructure", "pt": "Infraestrutura Laudo" }, { "id": "3007", "form": "AtePac_IM", "en": "Images", "pt": "Imagens" }, { "id": "10033", "form": "ATEPAC_IN", "en": "Nutrition integration", "pt": "Integração da nutrição" }, { "id": "-924", "form": "AtePac_IP", "en": "Electronic Patient Chart Inconsistencies", "pt": "Inconsistências Prescrição Eletrônica Paciente" }, { "id": "-107", "form": "AtePac_IR", "en": "Pre-CPOE protocol items", "pt": "Itens de protocolo Pré-REP" }, { "id": "-6930", "form": "AtePac_JW", "en": "Integrated Medical Reports Editor", "pt": "Editor de Laudos Integrado" }, { "id": "932", "form": "AtePac_K1", "en": "Incidents During Working Hours", "pt": "Ocorrências no Turno de Trabalho" }, { "id": "3838", "form": "AtePac_KC", "en": "Medicine Compounding Center", "pt": "Central de Mesclas - CPM" }, { "id": "9044", "form": "AtePac_LA", "en": "Medicine Production", "pt": "Produção de Medicamentos" }, { "id": "366", "form": "AtePac_LE", "en": "Waiting List", "pt": "Lista de Espera" }, { "id": "99010", "form": "AtePac_LI", "en": "Medical Report Processing", "pt": "Central de Laudos" }, { "id": "994", "form": "AtePac_LL", "en": "Medical Report Location Register", "pt": "Registro da Localização dos Laudos" }, { "id": "376", "form": "AtePac_LM", "en": "Macro Locator", "pt": "Localizador de Macros" }, { "id": "7029", "form": "AtePac_LP", "en": "Order Batch Dispensing", "pt": "Atendimento do Lote da Prescrição" }, { "id": "-2240", "form": "AtePac_LQ", "en": "Questionnaire questions search tool", "pt": "Localizador de perguntas de questionário" }, { "id": "7030", "form": "AtePac_LR", "en": "Dispensing Batch Management", "pt": "Gestão dos Lotes da Dispensação" }, { "id": "-1988", "form": "AtePac_LT", "en": "Electronic Outpatient Chart", "pt": "Prontuário Eletrônico de Paciente Ambulatorial - PEPA" }, { "id": "6201", "form": "AtePac_LX", "en": "Drug interactions", "pt": "Interações medicamentosas" }, { "id": "2815", "form": "AtePac_M1", "en": "Manchester Risk Score", "pt": "Classificação de Risco Manchester" }, { "id": "-2070", "form": "AtePac_MA", "en": "Pathology Medical Report Elaboration", "pt": "Montagem de Laudo de Patologia" }, { "id": "-2230", "form": "AtePac_MB", "en": "Standard information of the medicine", "pt": "Informações padrão do medicamento" }, { "id": "1000", "form": "AtePac_MD", "en": "Diet Map", "pt": "Mapa de Dietas" }, { "id": "9960", "form": "AtePac_ME", "en": "Medical Letter", "pt": "Carta Médica" }, { "id": "322", "form": "AtePac_MH", "en": "Manchester records", "pt": "Cadastros do Manchester" }, { "id": "471", "form": "AtePac_MI", "en": "MIPRES Administrator", "pt": "Administrador MIPRES" }, { "id": "7031", "form": "AtePac_ML", "en": "Issuance of the Order Batch", "pt": "Emissão do Lote da Prescrição" }, { "id": "-2225", "form": "AtePac_MP", "en": "Standard measures", "pt": "Medidas padrão" }, { "id": "4051", "form": "AtePac_MQ", "en": "Chemotherapy occupancy map", "pt": "Mapa de ocupação da quimioterapia" }, { "id": "-1010", "form": "AtePac_MR", "en": "Standard medicine", "pt": "Medicamentos de rotina" }, { "id": "6542", "form": "AtePac_MS", "en": "Oncology routine medicines/procedures", "pt": "Medicamentos/procedimentos de rotina oncologia" }, { "id": "-6937", "form": "AtePac_MU", "en": "Common MULTIMED", "pt": "MultiMED Comuns" }, { "id": "-2150", "form": "AtePac_MX", "en": "Exams Related to the Medicine", "pt": "Exames Relacionados ao Medicamento" }, { "id": "10026", "form": "AtePac_NE", "en": "Patient Anesthetic Form", "pt": "Ficha Anestésica Eletrônica do Paciente - FANEP" }, { "id": "-40", "form": "AtePac_NG", "en": "Nutrition Protocols", "pt": "Protocolos de Nutrição" }, { "id": "7020", "form": "AtePac_NI", "en": "Devices Record", "pt": "Cadastro de Dispositivos Utilizados no Paciente" }, { "id": "431", "form": "AtePac_NM", "en": "Nutrition Intake Manager", "pt": "Gestão de Ingestão Nutricional" }, { "id": "1133", "form": "AtePac_NR", "en": "Nutrition Records", "pt": "Cadastros de Nutrição" }, { "id": "7022", "form": "AtePac_NS", "en": "HAIs Management", "pt": "Gestão NISS" }, { "id": "373", "form": "ATEPAC_NT", "en": "Nutrition Service Panel", "pt": "Painel de Serviços da Nutrição" }, { "id": "442", "form": "AtePac_NU", "en": "Nursing summary", "pt": "Sumário de Enfermagem" }, { "id": "-2105", "form": "AtePac_O1", "en": "Order History", "pt": "Consulta da Prescrição" }, { "id": "-7000", "form": "AtePac_O2", "en": "Selection Screen", "pt": "Tela de Seleção" }, { "id": "340", "form": "AtePac_OC", "en": "Case Summary", "pt": "Resumo do Episódio" }, { "id": "2314", "form": "AtePac_OE", "en": "CPOE", "pt": "CPOE" }, { "id": "3010", "form": "AtePac_OF", "en": "Ophthalmology", "pt": "Oftalmologia" }, { "id": "1004", "form": "AtePac_ON", "en": "Nutrition Guidance", "pt": "Orientação Nutricional" }, { "id": "10025", "form": "AtePac_OP", "en": "OPM Production Management", "pt": "Gestão de Produção de OPM" }, { "id": "380", "form": "AtePac_OQ", "en": "Chemotherapy Occupation Management", "pt": "Gestão de Ocupação da Quimioterapia" }, { "id": "424", "form": "AtePac_OT", "en": "Ontologies", "pt": "Ontologias" }, { "id": "490", "form": "AtePac_OZ", "en": "OPM Order", "pt": "Prescrição OPM" }, { "id": "-26", "form": "AtePac_P1", "en": "Dilution Function", "pt": "Função de Diluição" }, { "id": "922", "form": "AtePac_P2", "en": "Professional Scheduling Management", "pt": "Gestão de Escalação de Profissionais" }, { "id": "-2050", "form": "ATEPAC_P3", "en": "Routine Order", "pt": "Prescrição de Rotina" }, { "id": "9030", "form": "AtePac_P4", "en": "Emergency Department Panel", "pt": "Painel do Pronto Atendimento" }, { "id": "9037", "form": "AtePac_P5", "en": "Emergency Department Triage", "pt": "Triagem do Pronto Atendimento" }, { "id": "9042", "form": "AtePac_P6", "en": "Department Map", "pt": "Mapa dos Setores" }, { "id": "10029", "form": "AtePac_P7", "en": "Chronic Patient Management", "pt": "Gestão de Pacientes Crônicos" }, { "id": "99054", "form": "AtePac_P9", "en": "Clinical parameters", "pt": "Parâmetros assistenciais" }, { "id": "935", "form": "AtePac_PA", "en": "Emergency Department", "pt": "Pronto Atendimento" }, { "id": "9091", "form": "AtePac_PB", "en": "Management of Patients in Rehabilitation", "pt": "Gestão de Pacientes em Reabilitação" }, { "id": "-16", "form": "AtePac_PC", "en": "Prescription Copy", "pt": "Cópia de Prescrição" }, { "id": "402", "form": "AtePac_PC", "en": "Clinical Panorama Panel", "pt": "Painel do Panorama Clínico" }, { "id": "-996", "form": "AtePac_PD", "en": "Collective Order", "pt": "Prescrição Coletiva" }, { "id": "-1004", "form": "AtePac_PE", "en": "SNCP - Standardized Nursing Care Plan", "pt": "SAE - Sistematização da Assistência de Enfermagem" }, { "id": "201", "form": "AtePac_PEP", "en": "Electronic Patient Chart\u0027s Patient Encounter", "pt": "Atendimento Paciente PEP" }, { "id": "-2222", "form": "AtePac_PF", "en": "Electronic Process for Handling Orders / Fractionation", "pt": "Processo Eletrônico de Manipulação de Ordens / Fracionamento" }, { "id": "1113", "form": "AtePac_PG", "en": "Electronic Medication Administration Record - eMAR", "pt": "Adm. Eletrônica da Prescrição - ADEP" }, { "id": "9022", "form": "AtePac_PH", "en": "CPOE - Prescription Copy", "pt": "REP - Cópia da Prescrição" }, { "id": "286", "form": "AtePac_PI", "en": "Intervention protocols", "pt": "Protocolos de intervenção" }, { "id": "9010", "form": "AtePac_PJ", "en": "eMAR - Electronic Medication Administration Record", "pt": "ADEP - Administração eletrônica da prescrição" }, { "id": "-350", "form": "AtePac_PK", "en": "Routine Exams and Procedures Order (New)", "pt": "Prescrição dos Exames e Procedimentos de Rotina (Nova)" }, { "id": "7011", "form": "AtePac_PL", "en": "External Imaging/Diagnostic Service Results Entry", "pt": "Digitação de Resultados de Exames Não Laboratoriais Externos" }, { "id": "2020", "form": "AtePac_PM", "en": "Electronic Patient Chart Data Module", "pt": "PEP Data Module" }, { "id": "-2226", "form": "AtePac_PN", "en": "Routine Scheduling Procedure", "pt": "Procedimento de Agendamento de Rotina" }, { "id": "7044", "form": "AtePac_PO", "en": "Professional Services Management", "pt": "Gestão de Serviços Profissionais" }, { "id": "991", "form": "AtePac_PP", "en": "Patient Belongings", "pt": "Pertences Paciente" }, { "id": "9898", "form": "AtePac_PQ", "en": "AtePac_PO", "pt": "AtePac_PO" }, { "id": "-1113", "form": "AtePac_PR", "en": "Closed Loop Medicine Administration Process - CLMAP", "pt": "Processo Hermético de Administração de Medicamentos - PHARM" }, { "id": "1290", "form": "AtePac_PS", "en": "Electronic Order Administration Management", "pt": "Gestão da Administração Eletrônica da Prescrição" }, { "id": "1134", "form": "AtePac_PT", "en": "Protocol Record", "pt": "Cadastro de Protocolos" }, { "id": "99024", "form": "AtePac_PT", "en": "Protocol Record", "pt": "Cadastro de Protocolos" }, { "id": "-7005", "form": "AtePac_PX", "en": "PBS", "pt": "PBS" }, { "id": "10211", "form": "AtePac_QE", "en": "Patient\u0027s Electronic Questionnaire", "pt": "Questionário Eletrônico do Paciente" }, { "id": "865", "form": "AtePac_QP", "en": "Chemotherapy Schedule", "pt": "Agenda de Quimioterapia" }, { "id": "100", "form": "AtePac_QT", "en": "Questionnaire", "pt": "Questionário" }, { "id": "-151", "form": "AtePac_R0", "en": "Hospital Occupancy Report", "pt": "Relat Ocupação Hospitalar" }, { "id": "-2100", "form": "AtePac_R2", "en": "Summary of Order", "pt": "Resumo da Prescrição" }, { "id": "8055", "form": "AtePac_R3", "en": "Sample Traceability", "pt": "Rastreabilidade de Amostras" }, { "id": "-2110", "form": "AtePac_R4", "en": "Protocol Summary", "pt": "Resumo Protocolo" }, { "id": "914", "form": "AtePac_R8", "en": "Reception", "pt": "Recepção" }, { "id": "396", "form": "AtePac_RA", "en": "Review Encounter Classification", "pt": "Revisão da Classificação do Atendimento" }, { "id": "3033", "form": "AtePac_RC", "en": "Radiotherapy - pending items", "pt": "Radioterapia - pendências" }, { "id": "1009", "form": "AtePac_RE", "en": "Exam Results Management", "pt": "Gestão de Resultados de Exames" }, { "id": "203", "form": "AtePac_REP", "en": "CPOE Patient Encounter", "pt": "Atendimento Paciente REP" }, { "id": "10230", "form": "AtePac_RG", "en": "Encounters Regulation", "pt": "Regulação de Atendimentos" }, { "id": "5484", "form": "AtePac_RH", "en": "Human Reproduction", "pt": "Reprodução Humana" }, { "id": "484", "form": "AtePac_RJ", "en": "Prescriptions", "pt": "Receitas" }, { "id": "-995", "form": "AtePac_RL", "en": "Items received by the patient", "pt": "Recebimento do Paciente" }, { "id": "1908", "form": "AtePac_RM", "en": "Standard Prescription", "pt": "Receita Padrão" }, { "id": "-150", "form": "AtePac_RN", "en": "Hospital Occupancy Report - Landscape", "pt": "Relatório Ocupação Hospitalar - Paisagem" }, { "id": "10027", "form": "AtePac_RO", "en": "Patient Guidance Registry", "pt": "Registro de Orientações ao Paciente" }, { "id": "3031", "form": "AtePac_RP", "en": "Radiotherapy Management - Planning", "pt": "Gestão de Radioterapia - Planejamento" }, { "id": "101", "form": "AtePac_RQ", "en": "Questionnaire Response Management", "pt": "Gestão de Respostas do Questionário" }, { "id": "7026", "form": "AtePac_RR", "en": "Meal Reservation Management", "pt": "Gestão de Reserva de Refeições" }, { "id": "99009", "form": "AtePac_RS", "en": "Radiotherapy call panel", "pt": "Painel de chamadas da radioterapia" }, { "id": "3032", "form": "AtePac_RT", "en": "Treatment Application by Technician", "pt": "Aplicação do Tratamento pelo Técnico" }, { "id": "3030", "form": "AtePac_RX", "en": "Radiotherapy Management", "pt": "Gestão de Radioterapia" }, { "id": "9095", "form": "AtePac_SA", "en": "Health Professional Assistance Systematization", "pt": "SAPS - Sistematização da Assistência do Profissional de Saúde" }, { "id": "355", "form": "AtePac_SC", "en": "Mentor", "pt": "Mentor" }, { "id": "354", "form": "AtePac_SD", "en": "Clinical Decision Support - Mentor", "pt": "Suporte à Decisão Clínica (SDC) - Mentor" }, { "id": "10021", "form": "AtePac_SE", "en": "Waiting Number Management", "pt": "Gerenciamento de Senhas" }, { "id": "449", "form": "AtePac_SH", "en": "Scheduling details", "pt": "Detalhes do agendamento" }, { "id": "1137", "form": "AtePac_SI", "en": "Notification and Investigation Form", "pt": "SINAN - Ficha de Notificação e Investigação" }, { "id": "1139", "form": "ATEPAC_SM", "en": "SISMAMA medical report", "pt": "Laudo SISMAMA" }, { "id": "99020", "form": "AtePac_SN", "en": "Check of Order\u0027s Exams", "pt": "Conferência de Exames da Prescrição" }, { "id": "99055", "form": "ATEPAC_SO", "en": "Sepsis Management", "pt": "Gestão de Sepse" }, { "id": "8012", "form": "AtePac_SP", "en": "Preoperative Structured Nursing Care Plan", "pt": "Sistematização da Assistência de Enfermagem Peroperatória - SAEP" }, { "id": "8010", "form": "AtePac_SS", "en": "Anesthetist Work Schedule Management", "pt": "Gestão da Escala de Anestesistas" }, { "id": "2811", "form": "AtePac_SU", "en": "Electronic Patient Summary", "pt": "Sumário Eletrônico do Paciente - SUEP" }, { "id": "445", "form": "AtePac_SX", "en": "External systems for integration", "pt": "Sistemas externos para integração" }, { "id": "-2200", "form": "AtePac_T1", "en": "TNM Search Tool", "pt": "Localizador de TNM" }, { "id": "252", "form": "AtePac_T2", "en": "Therapeutic Plan Management", "pt": "Gestão dos Planos Terapêuticos" }, { "id": "1351", "form": "AtePac_TA", "en": "Meetings and Minutes", "pt": "Controle de Reuniões e Atas" }, { "id": "99015", "form": "AtePac_TF", "en": "Change Patient Line", "pt": "Troca de Fila de Paciente" }, { "id": "423", "form": "AtePac_TM", "en": "Audio Video Communication", "pt": "Comunicação por Áudio e Vídeo" }, { "id": "989", "form": "AtePac_TP", "en": "Regulation", "pt": "Regulação" }, { "id": "10050", "form": "AtePac_TR", "en": "Patient Transport Management", "pt": "Gestão de Transporte de Pacientes" }, { "id": "3113", "form": "AtePac_TS", "en": "Patient Transfer", "pt": "Transferência de Pacientes" }, { "id": "697", "form": "AtePac_TV", "en": "Risk Assessment for Venous Thromboembolism (VTE)", "pt": "Avaliação de Risco para Tromboembolismo Venoso (TEV)" }, { "id": "7006", "form": "AtePac_TX", "en": "Transplant Management", "pt": "Gestão de Transplante" }, { "id": "970", "form": "AtePac_VA", "en": "Scheduling Check", "pt": "Consulta de Agendamentos" }, { "id": "344", "form": "AtePac_VE", "en": "Case Validation", "pt": "Validação do Episódio" }, { "id": "8030", "form": "AtePac_VI", "en": "Integrated View of Electronic Orders", "pt": "Visualização Integrada das Prescrições Eletrônicas - VIPE" }, { "id": "8050", "form": "AtePac_VM", "en": "Integrated Item View", "pt": "Visualização Integrada do Item - VINI" }, { "id": "-349", "form": "AtePac_VT", "en": "Insurance Token Validator", "pt": "Validador de Token do Convênio" }, { "id": "357", "form": "AtePac_WL", "en": "Task List", "pt": "Lista de Tarefas" }, { "id": "358", "form": "atepac_wl", "en": "Worklist", "pt": "Lista de trabalho" }, { "id": "-1012", "form": "AtePac_XR", "en": "Standard Requests", "pt": "Solicitações Padrão" }, { "id": "483", "form": "AtePac_XS", "en": "Previous medical reports", "pt": "Laudos anteriores" }, { "id": "99667", "form": "AtePacES", "en": "Intelligent Data Structuring", "pt": "Estruturação Inteligente de Dados" }, { "id": "-119", "form": "AtePacFM", "en": "Internal prescription report", "pt": "Relatório interno prescrição" }, { "id": "99072", "form": "AtePacMC", "en": "Care Plan", "pt": "Plano de Cuidado" }, { "id": "1123", "form": "AteSus_A8", "en": "SUS AIH", "pt": "SUS AIH" }, { "id": "997", "form": "AteSUS_AH", "en": "AIH Procedure Execution", "pt": "Execução de Procedimento AIH" }, { "id": "1141", "form": "AteSus_AT", "en": "SUS Update Management", "pt": "Gestão de Atualizações SUS" }, { "id": "1125", "form": "AteSus_B8", "en": "SUS BPA", "pt": "SUS BPA" }, { "id": "1001", "form": "AteSus_BP", "en": "BPA Procedure Execution", "pt": "Execução de Procedimentos BPA" }, { "id": "1142", "form": "AteSus_CD", "en": "SUS CDS", "pt": "SUS CDS" }, { "id": "177", "form": "AteSUS_F0", "en": "Age Group Registration (SUS)", "pt": "Cadastro de Faixa Etária (SUS)" }, { "id": "128", "form": "AteSUS_F1", "en": "SUS Patient Report (old) DO NOT USE", "pt": "Laudo Paciente SUS (antigo) NÃO USAR" }, { "id": "131", "form": "AteSUS_F3", "en": "SUS Parameters Record", "pt": "Cadastro de Parâmetros do SUS" }, { "id": "19", "form": "AteSUS_F5", "en": "SUS Protocol", "pt": "Protocolo SUS" }, { "id": "136", "form": "AteSUS_F6", "en": "BPA Procedure Price Registration", "pt": "Cadastro de Preço Procedimento BPA" }, { "id": "134", "form": "AteSUS_F8", "en": "AIH Procedure Prices", "pt": "Preços Procedimentos AIH" }, { "id": "144", "form": "AteSUS_FB", "en": "SUS Professional Activity Registration", "pt": "Cadastro de Atividade Profissional SUS" }, { "id": "205", "form": "AteSUS_FC", "en": "AIH Procedure Execution (old)", "pt": "Execução de procedimento AIH (antiga)" }, { "id": "930", "form": "AteSus_FD", "en": "Execution of APAC Procedures", "pt": "Execução de Procedimentos APAC" }, { "id": "202", "form": "AteSUS_FE", "en": "BPA Procedure Execution (old)", "pt": "Execução de Procedimentos BPA (antiga)" }, { "id": "939", "form": "AteSus_FF", "en": "Consult AIH Procedure Prices", "pt": "Consulta Preços Procedimentos AIH" }, { "id": "1006", "form": "AteSus_GA", "en": "SUS Authorization Management", "pt": "Gestão de Autorizações SUS" }, { "id": "1117", "form": "AteSus_GC", "en": "SUS Card Manager", "pt": "Gerenciador Cartão SUS" }, { "id": "1130", "form": "AteSus_LP", "en": "SUS Patient Report", "pt": "SUS Laudo Paciente" }, { "id": "1124", "form": "AteSus_P8", "en": "SUS APAC", "pt": "SUS APAC" }, { "id": "1143", "form": "AteSus_PG", "en": "PGS SUS", "pt": "SUS PGS" }, { "id": "1131", "form": "AteSus_PO", "en": "SUS FPO", "pt": "SUS FPO" }, { "id": "1138", "form": "AteSus_RT", "en": "SUS Insurance Return", "pt": "Retorno Convênio SUS" }, { "id": "1126", "form": "AteSus_SU", "en": "Unified SUS Management", "pt": "Gestão SUS Unificado - GSU" }, { "id": "980", "form": "CenCom_F1", "en": "Purchase Center", "pt": "Central de Compras" }, { "id": "406", "form": "CenMat_F1", "en": "CSSD Management", "pt": "Gestão de CME" }, { "id": "405", "form": "CenMat_F5", "en": "Package Control", "pt": "Controle dos Conjuntos" }, { "id": "407", "form": "CenMat_F6", "en": "Physical Items Record", "pt": "Cadastro de Itens Físicos" }, { "id": "410", "form": "CenReq_F1", "en": "Kit Requisition", "pt": "Requisição de Conjuntos" }, { "id": "-2255", "form": "CenReq_LC", "en": "Assembly Search Tool", "pt": "Localizador de Conjuntos" }, { "id": "617", "form": "CihGra_F1", "en": "HAIs Indicator Graphs", "pt": "CIH Gráficos" }, { "id": "-623", "form": "CihGra_R1", "en": "Report from Nosocomial Infection Surveillance Committee", "pt": "Relatório Comissão de Controle de Infecção Hospitalar" }, { "id": "651", "form": "CihOco_F1", "en": "HAIs Incident Form", "pt": "CIH Ficha Ocorrência" }, { "id": "936", "form": "CihOco_F2", "en": "HAIs Incident Form", "pt": "Ficha de Ocorrência CIH" }, { "id": "1302", "form": "CihOco_F3", "en": "Incident Form Register", "pt": "Registro de Ficha de Ocorrência" }, { "id": "610", "form": "CihRel_f1", "en": "HAIs Antibiotics Report", "pt": "CIH Relatório Antibióticos" }, { "id": "611", "form": "CihRel_f2", "en": "HAIs Patients Report", "pt": "CIH Relatório Pacientes" }, { "id": "612", "form": "CihRel_F3", "en": "Microorganisms and Cultures Report (Function)", "pt": "Relatório de Micro-organismos e Culturas (Função)" }, { "id": "613", "form": "CihRel_F4", "en": "Monthly Summary and Hospital Infection Indicators", "pt": "Resumo Mensal e Indicadores de I.H" }, { "id": "614", "form": "CihRel_F5", "en": "Topographies and Procedures Report (Function)", "pt": "Relatório de Topografias e Procedimentos (Função)" }, { "id": "615", "form": "CihRel_F6", "en": "Percentage Report", "pt": "Relatório de Percentuais" }, { "id": "616", "form": "CihRel_F7", "en": "Surgeries Report", "pt": "Relatório de Cirurgias" }, { "id": "-610", "form": "CIHREL_R1", "en": "HAIs - Antibiotics Report", "pt": "CIH - Relatório de Antibióticos" }, { "id": "-611", "form": "CihRel_R2", "en": "Report - Patients by Date of Discharge", "pt": "Relatório - Pacientes por Data de Alta" }, { "id": "-613", "form": "CihRel_R3", "en": "Microorganisms and Cultures Report", "pt": "Relatório de Micro-organismo e Culturas (Relatório)" }, { "id": "-612", "form": "CihRel_R4", "en": "Report of Microorganisms by Unit", "pt": "Relatório Micro-organismos por Unidade" }, { "id": "-614", "form": "CihRel_R5", "en": "Report - Patients by Hospital Infection", "pt": "Relatório - Pacientes por Infecção Hospitalar" }, { "id": "-615", "form": "CihRel_r6", "en": "Monthly Summary Report", "pt": "Relatório Resumo Mensal" }, { "id": "-617", "form": "CihRel_R7", "en": "Topographies and Procedures Report", "pt": "Relatório de Topografias e Procedimentos" }, { "id": "-618", "form": "CihRel_R8", "en": "Nosocomial Infection Surveillance Percentage Report", "pt": "Relatório Percentual de Controle de Infecção Hospitalar" }, { "id": "-620", "form": "CihRel_RA", "en": "Report of Nosocomial Infection Rate per Type of Surgery", "pt": "Relatório Taxa de I.H. por Tipo de Cirurgia" }, { "id": "-628", "form": "CihRel_Rd", "en": "Resistance Profile Report", "pt": "Relatório Perfil de Resistência" }, { "id": "-624", "form": "CihRel_Re", "en": "Report of Cultures run on discharged patients", "pt": "Relatório Culturas realizadas em pacientes com alta" }, { "id": "-626", "form": "CihRel_Rg", "en": "Hospital Infection Indicators Report", "pt": "Relatório Indicadores de I.H." }, { "id": "-629", "form": "CihRel_Ri", "en": "Hospital Infection Control Report", "pt": "Relatório Controle de I.H." }, { "id": "-631", "form": "CihRel_RJ", "en": "Health Department Report", "pt": "Relatório da Secretaria da Saúde" }, { "id": "486", "form": "CMDK_RC", "en": "Development Kit - Rules and Settings", "pt": "Kit de Desenvolvimento - Regras e Configurações" }, { "id": "2424", "form": "CodEon_A1", "en": "Tasy Electronic Communication", "pt": "Noticiário Eletrônico Tasy" }, { "id": "267", "form": "ComApr_F2", "en": "Pending Approvals", "pt": "Aprovações Pendentes" }, { "id": "938", "form": "ComApr_FX", "en": "Consult Purchase Details of the Item", "pt": "Consulta Dados de Compra do Item" }, { "id": "99073", "form": "ComCad_PR", "en": "Pre Registration", "pt": "Pré Cadastro" }, { "id": "915", "form": "ComCot_FS", "en": "Purchase Quotation", "pt": "Cotação de Compra" }, { "id": "-206", "form": "ComCot_R2", "en": "Quotation report", "pt": "Relatório cotação" }, { "id": "920", "form": "ComGes_F1", "en": "Supply Management", "pt": "Gestão de Fornecimento" }, { "id": "1771", "form": "ComGes_F2", "en": "Purchase E-Mail Sending Management", "pt": "Gestão de Envio de E-mail do Compras" }, { "id": "918", "form": "ComLic_f1", "en": "Bidding", "pt": "Licitação" }, { "id": "952", "form": "ComLic_F2", "en": "Bidding Register", "pt": "Registro de Licitação" }, { "id": "953", "form": "ComLic_F3", "en": "Purchase register", "pt": "Registro de Compra" }, { "id": "954", "form": "ComLic_F4", "en": "Item Search Tool by Price Record", "pt": "Localizador itens Registo preço" }, { "id": "917", "form": "ComOrd_F7", "en": "Purchase Order", "pt": "Ordem Compra" }, { "id": "-146", "form": "ComOrd_fy", "en": "Purchase Order Search Tool", "pt": "Localizador de Ordem de Compra" }, { "id": "193", "form": "ComRel_F1", "en": "Report Purchase Request", "pt": "Rel Solicitação Compras" }, { "id": "197", "form": "ComRel_F2", "en": "Report Purchase Request", "pt": "Rel Solicitação de Compra" }, { "id": "198", "form": "ComRel_F3", "en": "Report Purchase Order", "pt": "Rel Ordem de Compra" }, { "id": "124", "form": "ComSol_F2", "en": "Purchase Request Issue", "pt": "Emissão da Solicitação de Compra" }, { "id": "126", "form": "ComSol_F3", "en": "Issuing Requests/Order/Authorizations", "pt": "Emissão Solicitações/Ordem/Autorizações" }, { "id": "913", "form": "ComSol_FS", "en": "Purchase Request", "pt": "Solicitação de Compra" }, { "id": "-147", "form": "ComSol_FY", "en": "Find Purchase Request", "pt": "Localizar Solicitação de Compra" }, { "id": "2530", "form": "ConInt_IP", "en": "Philips International Control", "pt": "Controle Internacional Philips" }, { "id": "-175", "form": "Cor_PesRD", "en": "People control report", "pt": "Relatório do controle de pessoas" }, { "id": "70002", "form": "CorAp70002", "en": "HSDP Console", "pt": "HSDP Console" }, { "id": "70007", "form": "CorAp70007", "en": "Sending a newsletter to the recipient audiences", "pt": "Envio de uma newsletter aos públicos destinatários" }, { "id": "70019", "form": "CorAp70019", "en": "Lector", "pt": "Lector" }, { "id": "70021", "form": "CorAp70021", "en": "HSDP Console", "pt": "HSDP Console" }, { "id": "70026", "form": "CorAp70026", "en": "Philips Website", "pt": "Site Philips" }, { "id": "70029", "form": "CorAp70029", "en": "ANGIOLOGY", "pt": "ANGIOLOGIA" }, { "id": "70038", "form": "CorAp70038", "en": "Procedure description", "pt": "Desc proc" }, { "id": "70046", "form": "CorAp70046", "en": "Root node", "pt": "Nó raiz" }, { "id": "1010", "form": "CorAte_CD", "en": "ICD 10 Search Tool", "pt": "Localizador de CID 10" }, { "id": "-1040", "form": "CorAte_CI", "en": "ICF Classification Finder", "pt": "Localizador de Classificação CIF" }, { "id": "995", "form": "CorAte_CM", "en": "ICD Morphology Consultation", "pt": "Consulta CID Morfologia" }, { "id": "279", "form": "CorAte_CP", "en": "Patient Account Search Tool", "pt": "Localizador de Conta Paciente" }, { "id": "-1020", "form": "CorAte_CS", "en": "ICD Code Search Tool", "pt": "Localizador Doença CID" }, { "id": "350", "form": "CorAte_DR", "en": "Diagnosis Related Group (DRG)", "pt": "Grupo de Diagnósticos Relacionados (DRG)" }, { "id": "99070", "form": "CorAte_EP", "en": "Medical Controlling", "pt": "Gestão de Episódios" }, { "id": "1", "form": "CorAte_F2", "en": "Organizational Structure", "pt": "Estrutura Atendimento" }, { "id": "15", "form": "CorAte_F6", "en": "Accommodation Types", "pt": "Tipos de Acomodação" }, { "id": "25", "form": "CorAte_F7", "en": "Procedures", "pt": "Procedimentos" }, { "id": "1300", "form": "CorAte_F9", "en": "Department Temperature Control", "pt": "Controle de Temperatura dos Setores" }, { "id": "909", "form": "CorAte_FA", "en": "Structured Assessments Settings", "pt": "Cadastro Avaliações" }, { "id": "5000", "form": "CorAte_FB", "en": "Departmental File Management", "pt": "Gestão de Arquivo Setorial" }, { "id": "9016", "form": "CorAte_FE", "en": "Disease Search Tool (ICD 10)", "pt": "Localizador de Doenças (CID 10)" }, { "id": "123", "form": "CorAte_FG", "en": "ICD 10 Search", "pt": "Consulta CID 10" }, { "id": "-201", "form": "CorAte_FQ", "en": "Bed Reservation", "pt": "Reserva de Leito" }, { "id": "-402", "form": "CorAte_FQ-", "en": "Bed Reservation", "pt": "Reserva de Leito" }, { "id": "140", "form": "CorAte_FW", "en": "Procedure Table Check", "pt": "Consulta à Tabela de Procedimentos" }, { "id": "-5", "form": "CorAte_fx", "en": "Find Procedure", "pt": "Obter Procedimento" }, { "id": "-4", "form": "CorAte_FZ", "en": "Get Encounter Department", "pt": "Obter Setor Atendimento" }, { "id": "-1050", "form": "CorAte_PD", "en": "Localizador de procedimento CIE9", "pt": "Localizador de procedimento CIE9" }, { "id": "947", "form": "CorAte_PI", "en": "Internal Exams and Procedures", "pt": "Exames e Procedimentos Internos" }, { "id": "1127", "form": "CorAte_PS", "en": "Unified table of SUS procedures", "pt": "SUS Procedimentos Tabela Unificada" }, { "id": "9014", "form": "CorAte_XX", "en": "Exams and Procedures Search Tool", "pt": "Localizador de Exames e Procedimentos" }, { "id": "49", "form": "CorBi_E1", "en": "Dashboards", "pt": "Dashboards" }, { "id": "3011", "form": "CorCad_CN", "en": "National Record of Healthcare Establishments", "pt": "Cadastro Nacional de Estabelecimentos de Saúde (CNES)" }, { "id": "3001", "form": "CorCad_F1", "en": "Core Tables Settings", "pt": "Cadastros Gerais" }, { "id": "3002", "form": "CorCad_F2", "en": "Find Registry", "pt": "Localizar Cadastro" }, { "id": "791", "form": "CorCad_F3", "en": "Private", "pt": "Particular" }, { "id": "9006", "form": "CorCad_F4", "en": "Private", "pt": "Particular" }, { "id": "3008", "form": "CorCad_F5", "en": "Find Insurance by Code", "pt": "Localizar Convênio pelo Código" }, { "id": "5001", "form": "CorCad_F6", "en": "Chat", "pt": "Chat" }, { "id": "3009", "form": "CorCad_F7", "en": "On-duty and On-call Schedule", "pt": "Escala de Plantões e Sobreavisos" }, { "id": "243", "form": "CorCad_F8", "en": "Problems", "pt": "Problemas" }, { "id": "7023", "form": "CorCad_FA", "en": "Internal Structure Record", "pt": "Cadastro de Estruturas Internas" }, { "id": "401", "form": "CorCad_LS", "en": "Service Search Tool", "pt": "Localizador de Serviços" }, { "id": "400", "form": "CorCad_SE", "en": "Services Record", "pt": "Cadastro de Serviços" }, { "id": "981", "form": "CorCom_PC", "en": "Supply Planning and Control - SPC", "pt": "Planejamento e Controle de Suprimentos - PCS" }, { "id": "1200", "form": "CorCon_F1", "en": "Contract Control", "pt": "Controle de Contratos" }, { "id": "928", "form": "CorCon_F2", "en": "Control of External Projects and Resources", "pt": "Controle de Projetos e Recursos Externos" }, { "id": "8020", "form": "CorCon_GC", "en": "Commercial Management", "pt": "Gestão Comercial" }, { "id": "1301", "form": "CorCon_RO", "en": "Laundry", "pt": "Rouparia" }, { "id": "853", "form": "CorCpa_EF", "en": "Loan and Financing Management", "pt": "Gestão de Empréstimos e Financiamentos" }, { "id": "851", "form": "CorCpa_F1", "en": "Accounts Payable", "pt": "Títulos a Pagar" }, { "id": "940", "form": "CorCpa_f2", "en": "Payables (New)", "pt": "Títulos a Pagar (Novo)" }, { "id": "854", "form": "CorCpa_F4", "en": "Accounts Payable Search Tool", "pt": "Consulta de Títulos a Pagar" }, { "id": "855", "form": "CorCpa_F5", "en": "Bordereau Payable", "pt": "Borderô a Pagar" }, { "id": "-850", "form": "CorCpa_F6", "en": "Accounts Payable Splitting", "pt": "Desdobramento de Títulos a Pagar" }, { "id": "857", "form": "CorCpa_F8", "en": "E-payment", "pt": "Pagamento Escritural" }, { "id": "858", "form": "CorCpa_F9", "en": "Advance Paid", "pt": "Adiantamento Pago" }, { "id": "8559", "form": "CorCpa_FA", "en": "Approval of Payments", "pt": "Aprovação de Pagamentos" }, { "id": "908", "form": "CorCpa_Fi", "en": "Accounts Payable Interface Generation", "pt": "Geração Interface Contas a Pagar" }, { "id": "-821", "form": "CorCpa_FT", "en": "Tax Generation", "pt": "Geração de Tributos" }, { "id": "9051", "form": "CorCpa_NC", "en": "Control of Credit Invoices (Payable)", "pt": "Controle de Notas de Crédito (A Pagar)" }, { "id": "-851", "form": "CorCpa_R1", "en": "Accounts payable report", "pt": "Relatório de títulos a pagar" }, { "id": "-855", "form": "CorCpa_R5", "en": "Payment Bordereau Report", "pt": "Relatório de Borderô de Pagamento" }, { "id": "385", "form": "CorCre_CC", "en": "Commitment Letter Management", "pt": "Gestão de Cartas Compromisso" }, { "id": "880", "form": "CorCre_CP", "en": "Receivables Loss Control", "pt": "Controle de Perdas do Contas a Receber" }, { "id": "9055", "form": "CorCre_CR", "en": "Wrongly Received Amounts Control", "pt": "Controle de Recebimentos Indevidos" }, { "id": "9930", "form": "CorCre_DR", "en": "Distribution of Bank Revenue", "pt": "Distribuição de Receitas Bancárias" }, { "id": "801", "form": "CorCre_F1", "en": "Maintenance of Accounts Receivable", "pt": "Manutenção de Títulos a Receber" }, { "id": "802", "form": "CorCre_F2", "en": "Advance Payment Entry", "pt": "Digitação de Adiantamentos" }, { "id": "815", "form": "CorCre_F3", "en": "E-Collection", "pt": "Cobrança Escritural" }, { "id": "943", "form": "CorCre_F4", "en": "Receivables (New)", "pt": "Títulos a Receber (Novo)" }, { "id": "3020", "form": "CorCre_F5", "en": "Card Administration", "pt": "Administração de Cartões" }, { "id": "808", "form": "CorCre_F8", "en": "Report Advances", "pt": "Rel. Adiantamentos" }, { "id": "809", "form": "CorCre_F9", "en": "Bordereau Receivable", "pt": "Borderô Recebimento" }, { "id": "810", "form": "CorCre_FA", "en": "Check Management", "pt": "Administração de Cheques" }, { "id": "811", "form": "CorCre_FB", "en": "Contribution Control", "pt": "Controle de Contribuições" }, { "id": "-814", "form": "CorCre_FC", "en": "Invoice Breakdown", "pt": "Desdobramento Título" }, { "id": "-815", "form": "CorCre_FD", "en": "Amounts Pending", "pt": "Valores Pendentes" }, { "id": "812", "form": "CorCre_FF", "en": "Pending Advances Consultation", "pt": "Consulta Adiantamentos Pendentes" }, { "id": "5516", "form": "CorCre_FP", "en": "Accounts Receivable Parameters", "pt": "Parâmetros do Contas a Receber" }, { "id": "859", "form": "CorCre_FU", "en": "Query of Accounts Receivable", "pt": "Consulta de Títulos a Receber" }, { "id": "-12", "form": "CorCre_Fy", "en": "Find Advance", "pt": "Localiza Adiantamento" }, { "id": "-807", "form": "CorCre_R7", "en": "Accounts Receivable Report", "pt": "Relatório de Títulos a Receber" }, { "id": "-808", "form": "CorCre_R8", "en": "Report of Advances", "pt": "Relatório de Adiantamentos" }, { "id": "-809", "form": "CorCre_R9", "en": "Check Report", "pt": "Relatório de Cheques" }, { "id": "-811", "form": "CorCre_RB", "en": "Taxpayer Report", "pt": "Relatório de Contribuintes" }, { "id": "-812", "form": "CorCre_RC", "en": "Contribution Report", "pt": "Relatório de Contribuições" }, { "id": "-813", "form": "CorCre_RD", "en": "Contribution Report", "pt": "Relatório de Contribuições" }, { "id": "704", "form": "CorCrg_F1", "en": "AMB Load", "pt": "Carga AMB" }, { "id": "705", "form": "CorCrg_F2", "en": "Loads", "pt": "Cargas" }, { "id": "700", "form": "CorCrg_FA", "en": "Postal code load", "pt": "Carga CEP" }, { "id": "701", "form": "CorCrg_FB", "en": "Brasíndice Load", "pt": "Carga Brasíndice" }, { "id": "702", "form": "CorCrg_FC", "en": "SUS Load", "pt": "Carga SUS" }, { "id": "703", "form": "CorCrg_FD", "en": "Ciefas Load", "pt": "Carga Ciefas" }, { "id": "7101", "form": "CorCtb_CC", "en": "Accounting Reconciliation", "pt": "Conciliação Contábil" }, { "id": "135", "form": "CorCtb_F1", "en": "Accounting Batch Generation", "pt": "Geração do Lote Contábil" }, { "id": "137", "form": "CorCtb_F2", "en": "Type of Accounting Batch/Accounting Events", "pt": "Tipo de Lote Contábil/Eventos Contábeis" }, { "id": "923", "form": "CorCtb_F4", "en": "Accounting", "pt": "Contabilidade" }, { "id": "925", "form": "CorCtb_F5", "en": "Accounting Budget", "pt": "Orçamento Contábil" }, { "id": "937", "form": "CorCtb_F6", "en": "Asset Control", "pt": "Controle de Patrimônio" }, { "id": "8016", "form": "CorCtb_F7", "en": "Accounting Batch Analysis", "pt": "Análise do Lote Contábil" }, { "id": "8000", "form": "CorCtb_F8", "en": "Budget Planning", "pt": "Planejamento Orçamentário" }, { "id": "7100", "form": "CorCtb_FF", "en": "Flex File Report", "pt": "Flex File" }, { "id": "7050", "form": "CorCtb_PC", "en": "Accounting Parameters", "pt": "Parâmetros Contabilidade" }, { "id": "-123", "form": "CorCtb_R3", "en": "Accounting Movement Report", "pt": "Relatório de Movimento Contábil" }, { "id": "360", "form": "corEisBT", "en": "Beta Partnership Management", "pt": "Gestão de Parceiros Beta" }, { "id": "929", "form": "CorEme_F1", "en": "Emergency Services", "pt": "Serviços de Emergência" }, { "id": "477", "form": "CorEtq_AN", "en": "Integration Control - ANMAT", "pt": "Controle de Integração - ANMAT" }, { "id": "440", "form": "CorEtq_CE", "en": "Execution of Emergency Card", "pt": "Execução do Cartão Emergencial" }, { "id": "143", "form": "CorEtq_ES", "en": "Stock Management", "pt": "Administração de Estoques" }, { "id": "132", "form": "CorEtq_F1", "en": "Material Record", "pt": "Cadastro de Materiais" }, { "id": "116", "form": "CorEtq_F9", "en": "Barcode Issue", "pt": "Emissão Código de Barras" }, { "id": "130", "form": "CorEtq_Fa", "en": "Consumption of Material/Medication by Barcode", "pt": "Consumo de Materiais/Medic. por Barras" }, { "id": "112", "form": "CorEtq_FD", "en": "Material kit", "pt": "Kit de materiais" }, { "id": "-204", "form": "CorEtq_FF", "en": "Barcode", "pt": "Código de Barras" }, { "id": "-75", "form": "CorEtq_FG", "en": "Topography Search Tool", "pt": "Localizador de Topografias" }, { "id": "-315", "form": "CorEtq_FL", "en": "User Guidance", "pt": "Orientações ao Usuário" }, { "id": "-899", "form": "CorEtq_FM", "en": "Stock kit search tool", "pt": "Localizador de Kit de Estoque" }, { "id": "1580", "form": "CorEtq_FN", "en": "Medicine", "pt": "Medicamento" }, { "id": "270", "form": "CorEtq_FO", "en": "Receipt Inspection", "pt": "Inspeção Recebimento" }, { "id": "-1001", "form": "CorEtq_FP", "en": "Medicine Consultation", "pt": "Consulta Medicamento" }, { "id": "-124", "form": "CorEtq_FQ", "en": "Find Medicines/Materials", "pt": "Localizar Medicamentos/Materiais" }, { "id": "9013", "form": "CorEtq_FR", "en": "Materials and Medicines Search Tool", "pt": "Localizador de Materiais e Medicamentos" }, { "id": "-122", "form": "CorEtq_fu", "en": "Locate Material Kit", "pt": "Localizar Kit Material" }, { "id": "9900", "form": "CorEtq_GM", "en": "Material Record Management", "pt": "Gestão do Cadastro de Materiais" }, { "id": "50", "form": "CorEtq_KT", "en": "Material kit", "pt": "Kit material" }, { "id": "161", "form": "CorEtq_NC", "en": "Invoice Report per General Ledger Account", "pt": "Relatórios de Notas por Conta Contábil" }, { "id": "465", "form": "CorEtq_NM", "en": "Integration Control - SNCM", "pt": "Controle de Integração - SNCM" }, { "id": "220", "form": "CorEtq_RQ", "en": "Chemotherapy Resupply", "pt": "Ressuprimento Quimioterapia" }, { "id": "221", "form": "CorEtq_TQ", "en": "Chemotherapy Stock Transfer", "pt": "Transferência Estoque Quimioterapia" }, { "id": "146", "form": "CorEtq_TR", "en": "Stock Transfer Control", "pt": "Controle Transferências de Estoque" }, { "id": "5515", "form": "CorFin_CC", "en": "Unidentified Credit Control", "pt": "Controle de Créditos não Identificados" }, { "id": "5514", "form": "CorFin_CN", "en": "Negotiation of Receivables", "pt": "Negociação de Contas a Receber" }, { "id": "861", "form": "CorFin_CP", "en": "Charging Notification to Patient", "pt": "Comunicação de Cobrança ao Paciente" }, { "id": "9054", "form": "CorFin_DI", "en": "Identified Cash Deposits Control", "pt": "Controle de Depósitos Identificados" }, { "id": "9056", "form": "CorFin_EC", "en": "Accounts Reconciliation", "pt": "Encontro de Contas" }, { "id": "830", "form": "CorFin_F1", "en": "Cash Flow", "pt": "Fluxo de Caixa" }, { "id": "813", "form": "CorFin_F2", "en": "Treasury", "pt": "Tesouraria" }, { "id": "814", "form": "CorFin_F3", "en": "Banking Management", "pt": "Controle Bancário" }, { "id": "860", "form": "CorFin_F4", "en": "Billing", "pt": "Cobrança" }, { "id": "1120", "form": "CorFin_F5", "en": "Financial Transaction Record", "pt": "Cadastro de Transações Financeiras" }, { "id": "1118", "form": "CorFin_F6", "en": "Changing Invoice Classification", "pt": "Alteração de Classificação de Títulos" }, { "id": "7002", "form": "CorFin_F7", "en": "Philips Travel Management", "pt": "Gestão de Viagens Philips" }, { "id": "5500", "form": "CorFin_F8", "en": "Tax Control", "pt": "Controle de Arrecadações" }, { "id": "3050", "form": "CorFin_F9", "en": "Tax Follow-Up", "pt": "Acompanhamento de Tributos" }, { "id": "816", "form": "CorFin_FA", "en": "Rules for Financial Transaction Automation", "pt": "Regras de Automação de Transação Financeira" }, { "id": "5513", "form": "CorFin_FC", "en": "Financial Records", "pt": "Cadastros Financeiros" }, { "id": "9905", "form": "CorFin_FE", "en": "Deed Inconsistencies", "pt": "Inconsistências Escriturais" }, { "id": "5511", "form": "CorFin_FF", "en": "Financial Closure", "pt": "Fechamento Financeiro" }, { "id": "5512", "form": "CorFin_FG", "en": "Financial Sheet", "pt": "Ficha Financeira" }, { "id": "899", "form": "CorFin_FI", "en": "Financial Transaction Inconsistencies", "pt": "Inconsistências de Transações Financeiras" }, { "id": "835", "form": "CorFin_FO", "en": "Collection Agency Submission Management", "pt": "Gestão de Envio ao Órgão de Cobrança" }, { "id": "-820", "form": "CorFin_Fx", "en": "Find Transaction", "pt": "Localizar Transação" }, { "id": "-2004", "form": "CorFin_Fy", "en": "Find Transaction (CB)", "pt": "Localizar Transação (CB)" }, { "id": "456", "form": "CorFin_PF", "en": "Financial Panorama", "pt": "Panorama Financeiro" }, { "id": "8001", "form": "CorFin_QR", "en": "Financial QR Code Preview", "pt": "Visualização de QR Code Financeiro" }, { "id": "-2005", "form": "CorFin_R1", "en": "Cash Flow Report", "pt": "Relatório de Fluxo de Caixa" }, { "id": "9053", "form": "CorFin_RC", "en": "Collection Record", "pt": "Registro de Cobrança" }, { "id": "817", "form": "CorFin_RT", "en": "Invoice receipt", "pt": "Recebimento de títulos" }, { "id": "7003", "form": "CorFin_VI", "en": "Travel Management", "pt": "Controle de Viagens" }, { "id": "316", "form": "CorGer_DC", "en": "Checkout and Documents Management", "pt": "Gestão de Caixas e Documentos" }, { "id": "53", "form": "CorGer_F3", "en": "Postal Code Record", "pt": "Cadastro de CEP" }, { "id": "127", "form": "CorGer_F8", "en": "Check Entry", "pt": "Digitação de Cheques" }, { "id": "911", "form": "CorGer_FA", "en": "Company/Establishment/Accounts/Cost Center", "pt": "Empresa/Estabelecimento/Contas/CC" }, { "id": "60", "form": "CorGer_FB", "en": "Product Structure (Materials/Proced) - Inativa07/05/2009", "pt": "Estrutura de Produtos (Materiais/Proced) - Inativa07/05/2009" }, { "id": "-192", "form": "Corger_FW", "en": "Bank Search Tool", "pt": "Localizador de Bancos" }, { "id": "-6", "form": "CorGer_FX", "en": "Find postal code", "pt": "Localizar CEP" }, { "id": "1902", "form": "CorGer_TI", "en": "TISS Integrations", "pt": "Integrações TISS" }, { "id": "7027", "form": "CorGpi_F1", "en": "Project and Investment Management", "pt": "Gestão de Projetos e Investimentos" }, { "id": "7054", "form": "CorGpi_F2", "en": "GPI - Budget Data Consultation", "pt": "GPI - Consulta dados do orçamento" }, { "id": "271", "form": "CORHIT_SW", "en": "Philips Excellence Management", "pt": "Philips Excellence Management" }, { "id": "454", "form": "CorInt_AR", "en": "Root Cause Analysis", "pt": "Análise de Causa Raiz" }, { "id": "1752", "form": "CorInt_CO", "en": "Management for integration - Request", "pt": "Gerenciamento para integração - Solicitação" }, { "id": "120", "form": "CorInt_F1", "en": "Purchase Integration", "pt": "Integração de compras" }, { "id": "1750", "form": "CorInt_F2", "en": "Management for OPSM Integration", "pt": "Gerenciamento para Integração OPME" }, { "id": "361", "form": "CorInt_PN", "en": "Integration panel", "pt": "Painel de integrações" }, { "id": "1751", "form": "CorInt_SU", "en": "Management for Integration", "pt": "Gerenciamento para Integração" }, { "id": "10040", "form": "CorLab_A1", "en": "Antibiogram", "pt": "Antibiograma (Nova)" }, { "id": "-2265", "form": "CorLab_CC", "en": "Blood cell counter", "pt": "Contador de células de sangue" }, { "id": "10207", "form": "CorLab_DA", "en": "Entry and Approval of Laboratory Test Results", "pt": "Digitação e Aprovação de Resultados de Exames Laboratoriais" }, { "id": "-397", "form": "CorLab_EX", "en": "Routine Test and Procedure Order", "pt": "Prescrição de Exames e Procedimentos de Rotina" }, { "id": "7008", "form": "CorLab_F0", "en": "Results Check", "pt": "Consulta de Resultados" }, { "id": "720", "form": "CorLab_F1", "en": "Old Laboratory Tests", "pt": "Exames Laboratório Antigo" }, { "id": "721", "form": "CorLab_F2", "en": "Laboratory Entry", "pt": "Entrada Laboratório" }, { "id": "722", "form": "CorLab_f3", "en": "Laboratory Management/LIS", "pt": "Exames Pendentes" }, { "id": "-715", "form": "CorLab_F4", "en": "Antibiogram", "pt": "Antibiograma" }, { "id": "723", "form": "CorLab_F5", "en": "Lab Test Consultation", "pt": "Consulta de Exames" }, { "id": "56", "form": "CorLab_F6", "en": "Issuance of Lab Tests", "pt": "Emissão de Exames do Laboratório" }, { "id": "724", "form": "CorLab_F7", "en": "Prescription Sample", "pt": "Amostra da Prescrição" }, { "id": "725", "form": "CorLab_F8", "en": "Exam Batch", "pt": "Lote de Exame" }, { "id": "719", "form": "CorLab_F9", "en": "Laboratory Interface", "pt": "Interface Laboratório" }, { "id": "718", "form": "CorLab_FA", "en": "External Exam Batch", "pt": "Lote de Exames Externos" }, { "id": "-712", "form": "Corlab_FB", "en": "External exams batches Search Tool", "pt": "Localizador de lotes de exames externos" }, { "id": "167", "form": "CorLab_FC", "en": "Result Location Record", "pt": "Registro da Localização de Resultados" }, { "id": "746", "form": "CorLab_FD", "en": "Laboratory Tests", "pt": "Exames de Laboratório" }, { "id": "8051", "form": "CorLab_FE", "en": "External Results Generation", "pt": "Geração de Resultados Externos" }, { "id": "9032", "form": "CorLab_FF", "en": "Patient Exams Consultation", "pt": "Consulta de Exames do Paciente" }, { "id": "10016", "form": "CorLab_FG", "en": "Laboratory File Generation", "pt": "Geração de Arquivos do Laboratório" }, { "id": "-6960", "form": "CorLab_FH", "en": "Status Passage of Lab Tests", "pt": "Passagem de Status de Exames Laboratoriais" }, { "id": "10034", "form": "CorLab_Fr", "en": "Issuance of Laboratory Requests", "pt": "Emissão de Requisições Laboratoriais" }, { "id": "-711", "form": "CorLab_FY", "en": "Laboratory Tests Search Tool", "pt": "Localizador de Exames Laboratoriais" }, { "id": "10100", "form": "CorLab_GC", "en": "Integration Contingency Management", "pt": "Gestão de contingências de integrações" }, { "id": "10070", "form": "CorLab_GO", "en": "Management of Incoming Batch Incidents", "pt": "Gestão de Ocorrências do Lote de Entrada" }, { "id": "487", "form": "CorLab_GR", "en": "Lab Results Management", "pt": "Gestão de Resultados Laboratoriais" }, { "id": "99022", "form": "CorLab_IL", "en": "Laboratory Interfacing", "pt": "Interfaceamento de Laboratório" }, { "id": "10209", "form": "CorLab_IM", "en": "Printing of Laboratory Tests Map", "pt": "Impressão de Mapa de Exames Laboratoriais" }, { "id": "10060", "form": "CorLab_LE", "en": "Laboratory Management of Neonatal Triage", "pt": "Gestão Laboratorial de Triagem Neonatal" }, { "id": "10080", "form": "CorLab_LP", "en": "Laboratory Parameters", "pt": "Parâmetros do Laboratório" }, { "id": "9048", "form": "CorLab_PC", "en": "Lab Call Panel", "pt": "Painel de Chamadas do Laboratório" }, { "id": "10210", "form": "CorLab_PI", "en": "Laboratory Information Panel", "pt": "Painel de Informações Laboratoriais" }, { "id": "-727", "form": "Corlab_R4", "en": "Specific Work Map", "pt": "Mapa de Trabalho Específico" }, { "id": "-728", "form": "Corlab_R7", "en": "Lab Result Layout", "pt": "Layout Resultado Lab" }, { "id": "-723", "form": "Corlab_RB", "en": "Work Map", "pt": "Mapa de Trabalho" }, { "id": "728", "form": "CorLab_SO", "en": "Biological Sample Bank Management", "pt": "Gestão de Soroteca" }, { "id": "-6970", "form": "CorLab_TR", "en": "Sample Transport Control", "pt": "Controle de Transporte das Amostras" }, { "id": "9950", "form": "CorMan_AG", "en": "Agile Management", "pt": "Gestão Ágil" }, { "id": "10110", "form": "CorMan_AT", "en": "Activities Schedule", "pt": "Agenda de Atividades" }, { "id": "10090", "form": "CorMan_AV", "en": "Version Change", "pt": "Alteração Versão" }, { "id": "295", "form": "CorMan_CM", "en": "Maintenance Records", "pt": "Cadastros da Manutenção" }, { "id": "99017", "form": "CorMan_CP", "en": "Control of Process and Stages PRP/NPI", "pt": "Controle de Processo e Etapas  PRP/NPI" }, { "id": "298", "form": "CorMan_EQ", "en": "Equipment Control", "pt": "Controle de Equipamentos" }, { "id": "299", "form": "CorMan_F1", "en": "Service Order", "pt": "Ordem de Serviço" }, { "id": "-296", "form": "CorMan_F2", "en": "Equipment history", "pt": "Histórico equipamento" }, { "id": "8011", "form": "CorMan_F3", "en": "Philips Development and Technology Management", "pt": "Gestão do Desenvolvimento e Tecnologia Philips" }, { "id": "99016", "form": "CorMan_F4", "en": "Nonnuli", "pt": "Nonnuli" }, { "id": "-299", "form": "CorMan_fx", "en": "Service Order Search Tool", "pt": "Localizador de Ordem de Serviço" }, { "id": "-297", "form": "CorMan_fy", "en": "Location Finder", "pt": "Localizador de Localização" }, { "id": "-298", "form": "CorMan_fz", "en": "Equipment Search Tool", "pt": "Localizador de Equipamentos" }, { "id": "296", "form": "CorMan_GO", "en": "Service Order Management", "pt": "Gestão de Ordens de Serviço" }, { "id": "3", "form": "CorMan_GP", "en": "Priority Management", "pt": "Gestão de Prioridades" }, { "id": "288", "form": "CorMan_LO", "en": "Development Activities", "pt": "Atividades Desenvolvimento" }, { "id": "99014", "form": "CorMan_OP", "en": "Pending SO Management", "pt": "Gestão das OSs Pendentes" }, { "id": "10091", "form": "CorMan_OR", "en": "Organization chart", "pt": "Organograma" }, { "id": "297", "form": "CorMan_OS", "en": "Service Order", "pt": "Ordem de Serviço (Nova)" }, { "id": "10220", "form": "CorMan_PO", "en": "Service order control panel", "pt": "Service order control panel" }, { "id": "309", "form": "CorMan_QT", "en": "SO Questionnaire", "pt": "Questionário OS" }, { "id": "294", "form": "CorMan_RI", "en": "Inspection Route", "pt": "Rota de Inspeção" }, { "id": "2300", "form": "CorMan_SO", "en": "Technology Activities", "pt": "Atividades da Tecnologia" }, { "id": "7040", "form": "CorMap_F1", "en": "Processes Mapping", "pt": "Mapeamento de Processos" }, { "id": "8015", "form": "CorMap_F2", "en": "Process Diagram", "pt": "Diagrama de Processo" }, { "id": "-2030", "form": "CorMap_Fx", "en": "Process Object Data", "pt": "Dados do Objeto do Processo" }, { "id": "-2035", "form": "CorMap_Fy", "en": "Process Data", "pt": "Dados do Processo" }, { "id": "7504", "form": "CorNfe_F4", "en": "Credit note", "pt": "Nota de Crédito" }, { "id": "7506", "form": "CorNfe_F5", "en": "Invoice Check", "pt": "Consulta de Notas Fiscais" }, { "id": "7505", "form": "CorNfe_F6", "en": "Invoice Search Tool", "pt": "Localizador de Notas Fiscais" }, { "id": "45", "form": "CorNfe_F7", "en": "Invoice Return", "pt": "Devolução de Nota Fiscal" }, { "id": "40", "form": "CorNfe_F8", "en": "Invoice", "pt": "Nota Fiscal" }, { "id": "9909", "form": "CorNfe_F9", "en": "E-Invoice Follow-Up", "pt": "Acompanhamento de Nota Fiscal Eletrônica" }, { "id": "472", "form": "CorNfe_P1", "en": "Pre-invoice", "pt": "Pré-nota" }, { "id": "-77", "form": "CorNfs_R1", "en": "Invoice Watermark Report", "pt": "Relatório Nota Fiscal Marca d\u0027agua" }, { "id": "-17", "form": "CorNfs_Ra", "en": "Invoices Printing", "pt": "Impressão de notas fiscais" }, { "id": "365", "form": "CorOpe_DS", "en": "Philips Operational Dashboards", "pt": "Philips Operational Dashboards" }, { "id": "416", "form": "CorOpe_GO", "en": "Philips Service Order Management", "pt": "Gestão de Ordens de Serviço Philips" }, { "id": "426", "form": "CorOpe_RN", "en": "Customer Release Notes", "pt": "Customer Release Notes" }, { "id": "1770", "form": "CorPar_SU", "en": "Supply Parameter Management", "pt": "Gerenciamento dos Parâmetros de Suprimentos" }, { "id": "982", "form": "CorPCS_01", "en": "Supply Planning and Control - SPC", "pt": "Planejamento e Controle de Suprimentos - PCS" }, { "id": "-6971", "form": "CorPes_AD", "en": "Addresses", "pt": "Endereços" }, { "id": "9052", "form": "CorPes_CC", "en": "Contact Catalog", "pt": "Catálogo de Contatos" }, { "id": "13", "form": "CorPes_CN", "en": "CNS Person Record", "pt": "Cadastro de pessoas CNS" }, { "id": "419", "form": "CorPes_CR", "en": "Patient card reader", "pt": "Leitor cartão paciente" }, { "id": "9049", "form": "CorPes_CS", "en": "National Record of SUS Users", "pt": "Cadastro Nacional de Usuários SUS" }, { "id": "6", "form": "CorPes_F2", "en": "Legal Entity", "pt": "Pessoa Jurídica" }, { "id": "4", "form": "CorPes_F7", "en": "Physician Record", "pt": "Cadastro Médico" }, { "id": "5", "form": "CorPes_F8", "en": "Master Person Index", "pt": "Cadastro Completo de Pessoas" }, { "id": "63", "form": "CorPes_F9", "en": "Professional Access Management", "pt": "Gestão de Acesso de Profissionais" }, { "id": "7500", "form": "CorPes_FA", "en": "Person/Legal Entity Consultation", "pt": "Consulta de Pessoa Física/Pessoa Jurídica" }, { "id": "32", "form": "CorPes_FB", "en": "Simplified Register of People", "pt": "Cadastro Simplificado de Pessoas" }, { "id": "921", "form": "CorPes_FC", "en": "Insurance, Prices and Rules Record", "pt": "Cadastro de Convênios, Preços e Regras" }, { "id": "175", "form": "CorPes_FD", "en": "Legal Person Control", "pt": "Controle de Pessoas" }, { "id": "-2020", "form": "CorPes_FE", "en": "Find external persons", "pt": "Localizar pessoas externo" }, { "id": "230", "form": "CorPes_FF", "en": "Employees Record", "pt": "Cadastro de Funcionários" }, { "id": "-8", "form": "CorPes_Fi", "en": "Find System Printers", "pt": "Localizar Impressoras do Sistema" }, { "id": "-110", "form": "CorPes_fu", "en": "Find Legal Entities", "pt": "Localizar Pessoas Jurídicas" }, { "id": "-756", "form": "CorPes_FY", "en": "Physician Search Tool", "pt": "Localizador de Médicos" }, { "id": "-2", "form": "CorPes_FZ", "en": "Find Person", "pt": "Localizar Pessoas" }, { "id": "3016", "form": "CorPes_GC", "en": "Insurance Rule Management", "pt": "Gestão das Regras de Convênio" }, { "id": "421", "form": "CorPes_PC", "en": "Consent Record", "pt": "Cadastro de Consentimento" }, { "id": "7001", "form": "CorPla_F1", "en": "Strategic Planning", "pt": "Planejamento Estratégico" }, { "id": "7024", "form": "CorPla_F2", "en": "BSC - Balanced Scorecard", "pt": "BSC - Balanced Scorecard" }, { "id": "-2015", "form": "CorPla_F4", "en": "Strategic Planning Tree", "pt": "Arvore do Planejamento Estratégico" }, { "id": "7033", "form": "CorPla_F5", "en": "BSC - Indicator information", "pt": "BSC - Informação do Indicador" }, { "id": "-6935", "form": "CorPla_ME", "en": "Strategy map", "pt": "Mapa estratégico" }, { "id": "1286", "form": "CorPLS_A1", "en": "HPMS - Beneficiary Cadastral Movement", "pt": "OPS - Movimentação Cadastral de Beneficiários" }, { "id": "1361", "form": "CorPLS_AA", "en": "HPMS - Authorization Analysis", "pt": "OPS - Análise de Autorização" }, { "id": "1371", "form": "CorPLS_AB", "en": "HPMS - Beneficiary - s Admission or Discharge Communication", "pt": "OPS - Comunicação de Internação ou Alta do Beneficiário" }, { "id": "1317", "form": "CorPLS_AC", "en": "HPMS - Medical Accounts Analysis", "pt": "OPS - Análise de Contas Médicas" }, { "id": "1349", "form": "CorPLS_AD", "en": "OPS - Analysis of Discussion of the Contestation and Denial Appeal", "pt": "OPS - Análise de Discussão da Contestação e Recurso de Glosa" }, { "id": "1357", "form": "CorPLS_AE", "en": "HPMS - Alerts and Events Management", "pt": "OPS - Gestão de Alertas e Eventos" }, { "id": "1369", "form": "CorPLS_AF", "en": "OPS - Adjustments for Re-invoicing", "pt": "OPS - Ajustes para Refaturamento" }, { "id": "1296", "form": "CorPLS_AG", "en": "HPMS - Appeal", "pt": "OPS - Agravo" }, { "id": "1343", "form": "CorPLS_AI", "en": "HPMS - Exchange Authorizations", "pt": "OPS - Autorizações Intercâmbio" }, { "id": "1397", "form": "CorPLS_AL", "en": "HPMS - Concurrent Audit", "pt": "OPS - Auditoria Concorrente" }, { "id": "1365", "form": "CorPLS_AM", "en": "HPMS - Medical Accounts Analysis (New)", "pt": "OPS - Análise de Contas Médicas (Nova)" }, { "id": "1326", "form": "CorPLS_AN", "en": "HPMS - Analysis Groups Control", "pt": "OPS - Controle dos Grupos de Análise" }, { "id": "1284", "form": "CorPLS_AP", "en": "HPMS - Medical Production Analysis Management", "pt": "OPS - Gestão de Análise de Produção Médica" }, { "id": "1280", "form": "CorPLS_AR", "en": "HPMS - Analysis of Results", "pt": "OPS - Análise de Resultados" }, { "id": "1348", "form": "CorPLS_AS", "en": "HPMS - Post-Established Cost Analysis", "pt": "OPS - Análise de Custo Pós-Estabelecido" }, { "id": "1263", "form": "CorPLS_AT", "en": "Call Center", "pt": "Atendimento (Call Center)" }, { "id": "1270", "form": "CorPLS_AU", "en": "HPMS - Management of Authorization Analysis", "pt": "OPS - Gestão de Análise de Autorizações" }, { "id": "1314", "form": "CorPLS_AV", "en": "HPMS - Production - Valuation Adjustment", "pt": "OPS - Produção - Ajuste de Valorização" }, { "id": "1318", "form": "CorPLS_BI", "en": "HPMS - Consultation of Exchange Beneficiary Data", "pt": "OPS - Consulta Dados Beneficiário Intercâmbio" }, { "id": "1265", "form": "CorPLS_BO", "en": "HPMS - Bonus", "pt": "OPS - Bonificações" }, { "id": "1333", "form": "CorPLS_BT", "en": "HPMS - Beneficiary in Treatment", "pt": "OPS - Beneficiário em Tratamento" }, { "id": "444", "form": "CorPLS_C1", "en": "HPMS - Provider Relationship Management", "pt": "OPS - Gestão de Relacionamento com Prestadores" }, { "id": "1240", "form": "CorPLS_CA", "en": "HPMS - Work Accident Notice (CAT)", "pt": "OPS - Comunicação de Acidente de Trabalho (CAT)" }, { "id": "1382", "form": "CorPLS_CB", "en": "HPMS- Control of Co-participations and Post-established", "pt": "OPS - Controle de Coparticipações e Pós-estabelecidos" }, { "id": "1275", "form": "CorPLS_CC", "en": "HPMS - Clearing House", "pt": "OPS - Câmara de Compensação" }, { "id": "1324", "form": "CorPLS_CD", "en": "HPMS - Default Control", "pt": "OPS - Controle de Inadimplência" }, { "id": "1283", "form": "CorPLS_CE", "en": "HPMS - Financial Events and Incidents Control", "pt": "OPS - Controle de Eventos e Ocorrências Financeiras" }, { "id": "1243", "form": "CorPLS_CG", "en": "HPMS - Loads", "pt": "OPS - Cargas" }, { "id": "1273", "form": "CorPLS_CI", "en": "HPMS - Beneficiary Identification", "pt": "OPS - Identificação de Beneficiários" }, { "id": "1341", "form": "CorPLS_CL", "en": "HPMS - Encounter Location Control", "pt": "OPS - Controle de Locais de Atendimento" }, { "id": "1261", "form": "CorPLS_CM", "en": "HPMS - Medical Cooperatives", "pt": "OPS - Cooperativas Médicas" }, { "id": "1241", "form": "CorPLS_CN", "en": "HPMS - Delay Notification Control", "pt": "OPS - Controle de Notificações de Atraso" }, { "id": "1279", "form": "CorPLS_CO", "en": "HPMS - Cooperative Members Management", "pt": "OPS - Gestão de Cooperados" }, { "id": "1298", "form": "CorPLS_CP", "en": "HPMS - Price Rules and Criteria", "pt": "OPS - Regras e Critérios de Preço" }, { "id": "1229", "form": "CorPLS_CR", "en": "HPMS - Reimbursement Control", "pt": "OPS - Controle de Reembolsos" }, { "id": "1316", "form": "CorPLS_CS", "en": "HPMS - Safe Communication Software (SCS)", "pt": "OPS - Software de Comunicação Segura (SCS)" }, { "id": "1313", "form": "CorPLS_CT", "en": "HPMS - Accounting Criteria", "pt": "OPS - Critérios Contábeis" }, { "id": "1339", "form": "CorPLS_CV", "en": "HPMS - Sales Commission Control", "pt": "OPS - Controle de Comissões de Venda" }, { "id": "1330", "form": "CorPLS_CW", "en": "HPMS - Web External Communication", "pt": "OPS - Comunicação Externa Web" }, { "id": "343", "form": "CorPLS_DA", "en": "HPMS - Actuarial Data Management", "pt": "OPS - Gestão de Dados Atuariais" }, { "id": "1267", "form": "CorPLS_DF", "en": "HPMS - Discount in payroll", "pt": "OPS - Desconto em Folha" }, { "id": "1227", "form": "CorPLS_DI", "en": "HPMS - DIOPS - Periodic Information Document", "pt": "OPS - DIOPS - Documento de Informações Periódicas" }, { "id": "1307", "form": "CorPLS_DL", "en": "HPMS - Pre-existing Diseases and Injuries (PDI)", "pt": "OPS - Doenças e Lesões Preexistentes (DLP)" }, { "id": "1392", "form": "CorPLS_DM", "en": "HPMS - Data Module", "pt": "OPS - Data Module" }, { "id": "489", "form": "CorPLS_DR", "en": "HPMS - Provider Network Sizing", "pt": "OPS - Dimensionamento de Rede" }, { "id": "1234", "form": "CorPLS_DS", "en": "HPMS - Health Statement", "pt": "OPS - Declaração de Saúde" }, { "id": "1386", "form": "CorPLS_EA", "en": "HPMS - ANS Monitoring - Data delivery to ANS", "pt": "OPS - Monitoramento ANS - Envio de dados para ANS" }, { "id": "353", "form": "CorPLS_EC", "en": "HPMS - Digital Correspondence Control", "pt": "OPS - Controle de Correspondência Digital" }, { "id": "1378", "form": "CorPLS_EG", "en": "HPMS - Production - Denial Appeal", "pt": "OPS - Produção - Recurso de Glosa" }, { "id": "261", "form": "CorPLS_EM", "en": "HPMS - Email Delivery Management", "pt": "OPS - Gestão de Envio de E-mails" }, { "id": "1370", "form": "CorPLS_EP", "en": "HPMS - Sending Medical Services Suppliers Registry Information (CPM)", "pt": "OPS - Envio de Informações Cadastrais de Prestadores Médicos (CPM)" }, { "id": "1236", "form": "CorPLS_EQ", "en": "HPMS - Analysis for Membership of Beneficiaries", "pt": "OPS - Análise para Adesão de Beneficiários" }, { "id": "1291", "form": "CorPLS_ER", "en": "HPMS - Authorization Requirement Operation", "pt": "OPS - Execução da Requisição para Autorização" }, { "id": "1213", "form": "CorPLS_ET", "en": "HPMS - TISS Eligibility Requests", "pt": "OPS - Solicitações Elegibilidade TISS" }, { "id": "1398", "form": "CorPLS_EX", "en": "HPMS - Surgical Execution", "pt": "OPS - Execução Cirúrgica" }, { "id": "1201", "form": "CorPLS_F1", "en": "HPMS - Register of Products", "pt": "OPS - Cadastro de Produtos" }, { "id": "1202", "form": "CorPLS_F2", "en": "HPMS - Contract Management", "pt": "OPS - Gestão de Contratos" }, { "id": "1203", "form": "CorPLS_F3", "en": "HPMS - Providers", "pt": "OPS - Prestadores" }, { "id": "1204", "form": "CorPLS_F4", "en": "HPMS - Authorizations", "pt": "OPS - Autorizações" }, { "id": "1205", "form": "CorPLS_F5", "en": "HPMS - Monthly Payment", "pt": "OPS - Mensalidade" }, { "id": "1206", "form": "CorPLS_F6", "en": "HPMS - Salespeople and Commission Management", "pt": "OPS - Gestão de Vendedores e Comissões" }, { "id": "1207", "form": "CorPLS_F7", "en": "HPMS - Beneficiary Price Increase (Old)", "pt": "OPS - Reajuste de Preços de Beneficiários (Antiga)" }, { "id": "1208", "form": "CorPLS_F8", "en": "HPMS - Medical Accounts Management", "pt": "OPS - Gestão de Contas Médicas" }, { "id": "1209", "form": "CorPLS_F9", "en": "HPMS - Rule Registry", "pt": "OPS - Cadastro de Regras" }, { "id": "1356", "form": "CorPLS_FA", "en": "HPMS - Billing", "pt": "OPS - Faturamento" }, { "id": "1226", "form": "CorPLS_FC", "en": "HPMS - ID Cart Control", "pt": "OPS - Controle de Carteira de Identificação" }, { "id": "1215", "form": "CorPLS_FD", "en": "HPMS - Beneficiary Dossier", "pt": "OPS - Dossiê Beneficiário" }, { "id": "1220", "form": "CorPLS_FF", "en": "HPMS - Person Registration", "pt": "OPS - Cadastro Pessoa Física" }, { "id": "78", "form": "CorPLS_FG", "en": "HPMS - General Use Statement (A580)", "pt": "OPS - Fatura de Uso Geral (A580)" }, { "id": "1214", "form": "CorPLS_FI", "en": "HPMS - SIB - Beneficiary Information System", "pt": "OPS - SIB - Sistema de Informação de Beneficiários" }, { "id": "1211", "form": "CorPLS_FM", "en": "HPMS - Material Record", "pt": "OPS - Cadastro de Materiais" }, { "id": "1210", "form": "CorPLS_FP", "en": "HPMS - Price Check", "pt": "OPS - Consulta de Preços" }, { "id": "1388", "form": "CorPLS_FR", "en": "HPMS - Payment Control by Franchise", "pt": "OPS - Controle de Pagamentos por Franquia" }, { "id": "1297", "form": "CorPLS_FT", "en": "HPMS - Invoices for the Clearing House (A600)", "pt": "OPS - Faturas para Câmara de Compensação (A600)" }, { "id": "1216", "form": "CorPLS_FW", "en": "HPMS - Beneficiary Search Tool", "pt": "OPS - Localizador de Beneficiários" }, { "id": "1225", "form": "CorPLS_FX", "en": "HPMS - Insurance Management", "pt": "OPS - Gestão de Operadoras" }, { "id": "1219", "form": "CorPLS_FZ", "en": "HPMS - Health Products Search Tool", "pt": "OPS - Localizador de Produtos de Saúde" }, { "id": "1274", "form": "CorPLS_GA", "en": "Service Management (Call Center)", "pt": "Gestão de Atendimentos (Call Center)" }, { "id": "1384", "form": "CorPLS_GB", "en": "HPMS - Generation of Booklets", "pt": "OPS - Geração de Boletos" }, { "id": "1237", "form": "CorPLS_GC", "en": "HPMS - Commercial Management", "pt": "OPS - Gestão Comercial" }, { "id": "337", "form": "CorPLS_GG", "en": "HPMS - Company Denial Appeals", "pt": "OPS - Recursos de Glosas de Empresas" }, { "id": "1353", "form": "CorPLS_GI", "en": "HPMS - TISS file sending", "pt": "OPS - Envio de arquivo GISS" }, { "id": "1374", "form": "CorPLS_GL", "en": "HPMS - Form Attachment Authorization", "pt": "OPS - Autorização Anexo Guias" }, { "id": "1230", "form": "CorPLS_GM", "en": "HPMS - Medical Guide", "pt": "OPS - Guia Médico" }, { "id": "1306", "form": "CorPLS_GO", "en": "HPMS - Denials and Incidents", "pt": "OPS - Glosas e Ocorrências" }, { "id": "1321", "form": "CorPLS_GP", "en": "HPMS - Package Management", "pt": "OPS - Gestão de Pacotes" }, { "id": "457", "form": "CorPLS_GP1", "en": "HPMS - Pendencies and Calls Management", "pt": "OPS - Gestão de Pendências e Chamados" }, { "id": "1359", "form": "CorPLS_GR", "en": "HPMS - Reference form Search Tool", "pt": "OPS - Localizador de Guia Referência" }, { "id": "268", "form": "CorPLS_GS", "en": "HPMS - Contract Rescission Management", "pt": "OPS - Gestão de Rescisão de Contrato" }, { "id": "1277", "form": "CorPLS_IC", "en": "HPMS - Exchange Contracts", "pt": "OPS - Contratos de Intercâmbio" }, { "id": "1312", "form": "CorPLS_IF", "en": "HPMS - Pre-Payment Exchange Billing", "pt": "OPS - Faturamento Intercâmbio de Pré-Pagamento" }, { "id": "1293", "form": "CorPLS_IN", "en": "HPMS - Exchange Accounts", "pt": "OPS - Contas de Intercâmbio" }, { "id": "1366", "form": "CorPLS_IO", "en": "HPMS - Exchange Inconsistencies", "pt": "OPS - Inconsistências de Intercâmbio" }, { "id": "1390", "form": "CorPLS_IP", "en": "HPMS - Exchange Providers", "pt": "OPS - Prestadores de Intercâmbio" }, { "id": "1244", "form": "CorPLS_LA", "en": "HPMS - Automatic Entry Rules", "pt": "OPS - Regras de Lançamento Automático" }, { "id": "1320", "form": "CorPLS_LB", "en": "HPMS - Maintenance of Bonus", "pt": "OPS - Manutenção de Bonificações" }, { "id": "1288", "form": "CorPLS_LC", "en": "HPMS - Maintenance of Needs", "pt": "OPS - Manutenção de Carências" }, { "id": "1322", "form": "CorPLS_LD", "en": "HPMS - Charge Form Return Record", "pt": "OPS - Registro de Devolução de Guias de Cobrança" }, { "id": "1336", "form": "CorPLS_LE", "en": "HPMS - Service Groups Search Tool", "pt": "OPS - Localizador de Grupos de Serviços" }, { "id": "1269", "form": "CorPLS_LG", "en": "HPMS - Payers Search Tool", "pt": "OPS - Localizador de Pagadores" }, { "id": "1360", "form": "CorPLS_LN", "en": "HPMS - Operator Search Tool", "pt": "OPS - Localizador de Operadoras" }, { "id": "1345", "form": "CorPLS_LO", "en": "HPMS - Contract Groups Search Tool", "pt": "OPS - Localizador de Grupos de Contratos" }, { "id": "1222", "form": "CorPLS_LP", "en": "HPMS -Providers Search Tool", "pt": "OPS - Localizador de Prestadores" }, { "id": "1346", "form": "CorPLS_LR", "en": "HPMS - Providers Groups Search Tool", "pt": "OPS - Localizador de Grupos de Prestadores" }, { "id": "1287", "form": "CorPLS_LS", "en": "HPMS - Additional Services and Coverage Search Tool", "pt": "OPS - Localizador de Serviços e Coberturas Adicionais" }, { "id": "1221", "form": "CorPLS_LT", "en": "HPMS - Price Chart Search Tool", "pt": "OPS - Localizador de Tabelas de Preços" }, { "id": "1344", "form": "CorPLS_LU", "en": "HPMS - Product Groups Search Tool", "pt": "OPS - Localizador de Grupos de Produtos" }, { "id": "1362", "form": "CorPLS_LW", "en": "HPMS - Web Encounter Submission Control", "pt": "OPS - Controle de Liberação de Atendimento Web" }, { "id": "1364", "form": "CorPLS_MA", "en": "HPMS - Maintenance of Authorizer Operational Processes", "pt": "OPS - Manutenção de Processos Operacionais do Autorizador" }, { "id": "1367", "form": "CorPLS_MC", "en": "HPMS - Accounting Movement Update", "pt": "OPS - Atualização do Movimento Contábil" }, { "id": "1228", "form": "CorPLS_MD", "en": "HPMS - Mailing List", "pt": "OPS - Mala Direta para Correspondência" }, { "id": "1389", "form": "CorPLS_ME", "en": "HPMS - BMFF - Business Monthly Fee Files", "pt": "OPS - AME - Arquivos de Mensalidade Empresarial" }, { "id": "336", "form": "CorPLS_MF", "en": "OPS - Monitoramento Financeiro", "pt": "OPS - Monitoramento Financeiro" }, { "id": "262", "form": "CorPLS_MI", "en": "OPS - Módulo de Inadimplência (A510)", "pt": "OPS - Módulo de Inadimplência (A510)" }, { "id": "1285", "form": "CorPLS_MM", "en": "HPMS - Medical Production Control", "pt": "OPS - Controle de Produção Médica" }, { "id": "1363", "form": "CorPLS_MO", "en": "HPMS - Maintenance of Item Conversion", "pt": "OPS - Manutenção de Conversões de Itens" }, { "id": "1292", "form": "CorPLS_MP", "en": "HPMS - SCA Registration Movement", "pt": "OPS - Movimentação Cadastral de SCA" }, { "id": "1311", "form": "CorPLS_MR", "en": "HPMS - Movement of Services Provided in Prepayment", "pt": "OPS - Movimentação de Serviços Prestados em Pré-Pagamento" }, { "id": "1315", "form": "CorPLS_MT", "en": "HPMS - Maintenance of Price Lists", "pt": "OPS - Manutenção de Tabelas de Preço" }, { "id": "244", "form": "CorPLS_NC", "en": "HPMS - Load (New)", "pt": "OPS - Cargas (Nova)" }, { "id": "107", "form": "CorPLS_NP", "en": "HPMS - Provider Payment", "pt": "OPS - Pagamentos de Prestadores" }, { "id": "1305", "form": "CorPLS_OC", "en": "HPMS - Akin Operators", "pt": "OPS - Operadoras Congêneres" }, { "id": "1391", "form": "CorPLS_OD", "en": "HPMS - Odontograph", "pt": "OPS - Odontograma" }, { "id": "1393", "form": "CorPLS_OI", "en": "HPMS - Service Order Exchange", "pt": "OPS - Ordem de Serviço Intercâmbio" }, { "id": "1352", "form": "CorPLS_OR", "en": "HPMS - Budget", "pt": "OPS - Orçamento" }, { "id": "1399", "form": "CorPLS_OT", "en": "HPMS - Dental Requests", "pt": "OPS - Requisições Odontológicas" }, { "id": "1308", "form": "CorPLS_P1", "en": "HPMS - Production - consultation Typing", "pt": "OPS - Produção - Digitação de Consultas" }, { "id": "1309", "form": "CorPLS_P2", "en": "HPMS - Production - SP/SADT Typing", "pt": "OPS - Produção - Digitação de SP/SADT" }, { "id": "1310", "form": "CorPLS_P3", "en": "HPMS - Production - Admission Typing", "pt": "OPS - Produção - Digitação de Internações" }, { "id": "1232", "form": "CorPLS_PA", "en": "HPMS - Proposal for Electronic Subscription", "pt": "OPS - Proposta de Adesão Eletrônica" }, { "id": "1266", "form": "CorPLS_PC", "en": "HPMS - Occurence Panel", "pt": "OPS - Painel de Ocorrências" }, { "id": "347", "form": "CorPLS_PE", "en": "HPMS - Collective Readjustment Scheduling", "pt": "OPS - Programação de Reajuste Coletivo" }, { "id": "1354", "form": "CorPLS_PG", "en": "HPMS - Payer\u0027s Registry Maintenance", "pt": "OPS - Manutenção do Cadastro do Pagador" }, { "id": "1319", "form": "CorPLS_PI", "en": "HPMS - Consultation of Exchange Provider Data", "pt": "OPS - Consulta Dados Prestador Intercâmbio" }, { "id": "1337", "form": "CorPLS_PJ", "en": "HPMS - Lawsuit", "pt": "OPS - Processo Judicial" }, { "id": "1260", "form": "CorPLS_PL", "en": "HPMS - Programmed Entries", "pt": "OPS - Lançamentos Programados" }, { "id": "1235", "form": "CorPLS_PM", "en": "HPMS - Medical Expertise Control", "pt": "OPS - Controle de Perícia Médica" }, { "id": "1372", "form": "CorPLS_PN", "en": "HPMS - Production X Invoices Control", "pt": "OPS - Controle de Produção X Nota Fiscal" }, { "id": "1242", "form": "CorPLS_PO", "en": "HPMS - Portability", "pt": "OPS - Portabilidade" }, { "id": "1282", "form": "CorPLS_PP", "en": "HPMS - Medical Production Payments", "pt": "OPS - Pagamentos de Produção Médica" }, { "id": "1323", "form": "CorPLS_PR", "en": "HPMS - Supplier Registry Movement (A400)", "pt": "OPS - Movimentação Cadastral de Prestador (A400)" }, { "id": "1375", "form": "CorPLS_PS", "en": "HPMS - Health Plan Record", "pt": "OPS - Registro de Planos de Saúde (RPS)" }, { "id": "1259", "form": "CorPLS_PT", "en": "HPMS - Technical Provision", "pt": "OPS - Provisões Técnicas" }, { "id": "110", "form": "CorPLS_PW", "en": "HPMS - Web Portal", "pt": "OPS - Portal Web" }, { "id": "1383", "form": "CorPLS_PX", "en": "HPMS - Production - Medical Accounts Processes", "pt": "OPS - Produção - Processos de Contas Médicas" }, { "id": "1387", "form": "CorPLS_QU", "en": "HPMS - Bookkeeping of quotes from the cooperative members", "pt": "OPS - Escriturações de Quotas de Cooperados" }, { "id": "1271", "form": "CorPLS_RA", "en": "HPMS - Authorization Request", "pt": "OPS - Requisições para Autorização" }, { "id": "1278", "form": "CorPLS_RC", "en": "HPMS - Management of Collective Contract for Relationship", "pt": "OPS - Gestão de Contratos Coletivos para Relacionamento" }, { "id": "1338", "form": "CorPLS_RE", "en": "HPMS - CPA - Collective Plan Adjustment", "pt": "OPS - RPC - Reajuste de Planos Coletivos" }, { "id": "1377", "form": "CorPLS_RF", "en": "HPMS (OPS) - Adjustments for Re-Invoicing (INACTIVE - UNAVAILABLE FOR USE)", "pt": "OPS - Ajustes para Refaturamento (INATIVO - DISPONÍVEL PARA UTILIZAÇÃO)" }, { "id": "1334", "form": "CorPLS_RG", "en": "HPMS - Contestation Control", "pt": "OPS - Controle de Contestações" }, { "id": "210", "form": "CorPLS_RJ", "en": "HPMS - Adjustment of Prices for Beneficiaries", "pt": "OPS - Reajuste de Preços de Beneficiários" }, { "id": "1347", "form": "CorPLS_RL", "en": "HPMS - Customer Relations (legal entity)", "pt": "OPS - Relacionamento com o Cliente (PJ)" }, { "id": "1368", "form": "CorPLS_RM", "en": "HPMS - canceling Prescriptions", "pt": "OPS - Cancelamento de Receitas" }, { "id": "1268", "form": "CorPLS_RP", "en": "HPMS - People Registry Review", "pt": "OPS - Revisão de Cadastros de Pessoas" }, { "id": "1396", "form": "CorPLS_RR", "en": "HPMS - Concurrent Audit - Rules Registration", "pt": "OPS - Auditoria Concorrente - Cadastro de Regras" }, { "id": "1238", "form": "CorPLS_RS", "en": "HPMS - Control of Reimbursement Processes", "pt": "OPS - Controle de Processos de Ressarcimento" }, { "id": "1380", "form": "CorPLS_RT", "en": "HPMS - TISS Radar", "pt": "OPS - Radar TISS" }, { "id": "1385", "form": "CorPLS_RX", "en": "HPMS - Issuance of Request/Forms in Batch", "pt": "OPS - Emissão de Requisição/Guia em Lote" }, { "id": "280", "form": "CorPLS_SB", "en": "HPMS - SIB ANS - Beneficiary Information System", "pt": "OPS - SIB ANS - Sistema de Informação de Beneficiários" }, { "id": "1264", "form": "CorPLS_SC", "en": "HPMS - Additional Services and Coverage", "pt": "OPS - Serviços e Coberturas Adicionais" }, { "id": "1340", "form": "CorPLS_SE", "en": "HPMS - Protestation Items Selection", "pt": "OPS - Seleção de Itens da Contestação e Recurso de Glosa" }, { "id": "1328", "form": "CorPLS_SF", "en": "HPMS - SEFIP Generation", "pt": "OPS - Geração do SEFIP e E-Social" }, { "id": "1395", "form": "CorPLS_SO", "en": "HPMS - Online Proposal Request", "pt": "OPS - Solicitação de Proposta Online" }, { "id": "1231", "form": "CorPLS_SP", "en": "HPMS - SIP - Product Information System", "pt": "OPS - SIP - Sistema de Informações de Produtos" }, { "id": "1233", "form": "CorPLS_SR", "en": "HPMS - Price Simulator", "pt": "OPS - Simulador de Preços" }, { "id": "1262", "form": "CorPLS_TE", "en": "HPMS - Electronic Data Transfer (EDT)", "pt": "OPS - Transferência Eletrônica de Dados (TED)" }, { "id": "1212", "form": "CorPLS_TP", "en": "HPMS - Price Chart", "pt": "OPS - Tabelas de Preços" }, { "id": "1239", "form": "CorPLS_TS", "en": "HPMS - Supplementary Health Fee", "pt": "OPS - Taxa de Saúde Suplementar" }, { "id": "1281", "form": "CorPLS_UE", "en": "HPMS - Occasional Users Control", "pt": "OPS - Controle de Usuários Eventuais" }, { "id": "349", "form": "CorPLS_VC", "en": "HPMS - Billing Notice (A520)", "pt": "OPS - Aviso de Cobrança (A520)" }, { "id": "1245", "form": "CorPLS_VP", "en": "HPMS - Pending Amounts", "pt": "OPS - Valores Pendentes" }, { "id": "209", "form": "CorPLS_X1", "en": "HPMS - Encounter Protocol Management", "pt": "OPS - Gestão de Protocolos de Atendimento" }, { "id": "242", "form": "CorPLS_X2", "en": "HPMS - price control", "pt": "OPS - Controle de cotação" }, { "id": "370", "form": "CorPri_A1", "en": "Patient Privacy Control", "pt": "Controle de Privacidade do Paciente" }, { "id": "488", "form": "CorQua_AP", "en": "Process Automation", "pt": "Automação de Processos" }, { "id": "273", "form": "CorQua_DP", "en": "Product Documentation", "pt": "Documentação do Produto" }, { "id": "4000", "form": "CorQua_F1", "en": "Quality Management", "pt": "Gestão da Qualidade" }, { "id": "4100", "form": "CorQua_F2", "en": "Product Evaluation Management", "pt": "Gestão da Avaliação de Produtos" }, { "id": "4003", "form": "CorQua_F3", "en": "Quality Consultation", "pt": "Consulta da Qualidade" }, { "id": "3015", "form": "CorQua_F4", "en": "Notifications", "pt": "Notificações" }, { "id": "7007", "form": "CorQua_F5", "en": "Assessment of Professionals", "pt": "Avaliação de Profissionais" }, { "id": "437", "form": "CorQua_GD", "en": "Print document", "pt": "Imprimir documento" }, { "id": "386", "form": "CorQua_GDP", "en": "EMR Electronic Document Management", "pt": "Gestão de Documentos Eletrônicos EMR" }, { "id": "441", "form": "CorQua_GP", "en": "Philips Management", "pt": "Gestão Philips" }, { "id": "4001", "form": "CorQua_GQ", "en": "Software Quality Management", "pt": "Gestão da Qualidade de Software" }, { "id": "436", "form": "CorQua_ID", "en": "Document Management", "pt": "Gestão de Documentos" }, { "id": "-210", "form": "CorQua_LE", "en": "Event Search Tool", "pt": "Localizador de Eventos" }, { "id": "-276", "form": "CorQua_LO", "en": "Object Search tool", "pt": "Localizador de Objetos" }, { "id": "398", "form": "CorQua_MP", "en": "Product Documentation - Multiplatform", "pt": "Documentação do Produto - Multiplataforma" }, { "id": "348", "form": "CorQua_QR", "en": "Development Quality Review", "pt": "Development Quality Review" }, { "id": "1350", "form": "CorRes_F1", "en": "Hospital Waste and Garbage Control", "pt": "Controle de Resíduos Hospitalares e Lixo" }, { "id": "2000", "form": "CorSac_F1", "en": "Incident Report", "pt": "Boletim de Ocorrência" }, { "id": "450", "form": "CorSan_F0", "en": "Blood Management", "pt": "Hemoterapia" }, { "id": "10017", "form": "CorSan_F1", "en": "Hemotherapy Batch", "pt": "Lote da Hemoterapia" }, { "id": "451", "form": "Corsan_FO", "en": "Blood Bank", "pt": "Banco de Sangue" }, { "id": "10032", "form": "CORSAN_GI", "en": "Blood Management integration management", "pt": "Gerenciamento integração Hemoterapia" }, { "id": "254", "form": "CorSeg_F5", "en": "System Parameters", "pt": "Parâmetros do Sistema" }, { "id": "-993", "form": "CorSeg_F6", "en": "User Properties", "pt": "Propriedades do Usuário" }, { "id": "329", "form": "CorSis_AC", "en": "Access Control", "pt": "Controle de Acesso" }, { "id": "3333", "form": "CorSis_AD", "en": "Digital Signature", "pt": "Assinatura Digital" }, { "id": "26", "form": "CorSis_AI", "en": "Manager of Digital Signature", "pt": "Gerenciador de Assinatura Digital" }, { "id": "99080", "form": "CorSis_AP", "en": "Privacy Notice and Terms of Use", "pt": "Aviso de Privacidade e Termos de Uso" }, { "id": "375", "form": "CorSis_BD", "en": "Bangalore Operations DashBoard", "pt": "Bangalore Operations DashBoard" }, { "id": "383", "form": "CorSis_BS", "en": "Batch Signature Management", "pt": "Gestão de Assinatura em Lote" }, { "id": "99019", "form": "CorSis_CB", "en": "Control of information of the build", "pt": "Controle de informações do build" }, { "id": "1410", "form": "CorSis_CC", "en": "Channel Management - Philips", "pt": "Gestão de Canais - Philips" }, { "id": "99060", "form": "CorSis_CD", "en": "CleanCode Dashboard", "pt": "CleanCode Dashboard" }, { "id": "11", "form": "CorSis_CI", "en": "Object Dictionary - Conversion in Languages", "pt": "Dicionário de Objetos - Conversão em Idiomas" }, { "id": "384", "form": "CorSIS_CM", "en": "Configuration and Management", "pt": "Configuration and Management" }, { "id": "10010", "form": "CorSis_CO", "en": "SBIS Audit", "pt": "Auditoria SBIS" }, { "id": "8047", "form": "CorSis_CP", "en": "Control of PRP/NPI Processes and Stages", "pt": "Controle de Processos e Etapas PRP/NPI" }, { "id": "8048", "form": "CorSis_CR", "en": "Schedule Management", "pt": "Gestão de Cronogramas" }, { "id": "14", "form": "CorSis_CS", "en": "Software Consultation", "pt": "Consulta de Software" }, { "id": "240", "form": "CorSis_D4", "en": "Dashboard 4Test", "pt": "Dashboard 4Test" }, { "id": "6002", "form": "CorSis_DD", "en": "Dictionary Documentation", "pt": "Documentação do Dicionário" }, { "id": "9", "form": "CorSis_DI", "en": "Language Dictionary", "pt": "Dicionário de Idiomas" }, { "id": "183", "form": "CorSis_DL", "en": "Online Documentation", "pt": "Documentação online" }, { "id": "443", "form": "CorSis_DM", "en": "Delegation Management", "pt": "Gestão de Delegação" }, { "id": "10", "form": "CorSis_DO", "en": "Object Dictionary", "pt": "Dicionário de Objetos" }, { "id": "7045", "form": "CorSis_DP", "en": "Portuguese Language Dictionary", "pt": "Dicionário da Língua Portuguesa" }, { "id": "239", "form": "CorSis_DS", "en": "Dashboard HTML5", "pt": "Dashboard HTML5" }, { "id": "191", "form": "CorSis_DT", "en": "Dictionary of dependencies between tables", "pt": "Dicionário de dependências entre tabelas" }, { "id": "99647", "form": "CorSis_DX", "en": "Dictionary Maintenance", "pt": "Manutenção de Dicionário" }, { "id": "990", "form": "CorSis_E1", "en": "Automatic issuing of reports", "pt": "Emissão automática de relatórios" }, { "id": "-2224", "form": "CorSis_EM", "en": "Email Search Tool", "pt": "Localizador de Emails" }, { "id": "-990", "form": "CorSis_ES", "en": "Specialty Change", "pt": "Troca de Especialidade" }, { "id": "99637", "form": "CorSis_ES", "en": "Electronic Signature Management of Documents", "pt": "Gestão de Assinatura Eletrônica de Documentos" }, { "id": "5050", "form": "CorSis_EW", "en": "Philips Survey", "pt": "Enquete Philips" }, { "id": "9000", "form": "CorSis_F0", "en": "Login", "pt": "Login" }, { "id": "0", "form": "CorSis_F1", "en": "System Menu", "pt": "Menu do Sistema" }, { "id": "3005", "form": "CorSis_F2", "en": "Change password", "pt": "Trocar de senha" }, { "id": "250", "form": "CorSis_F3", "en": "System Tables", "pt": "Tabelas do Sistema" }, { "id": "-2223", "form": "CorSis_F5", "en": "Warning events", "pt": "Eventos de aviso" }, { "id": "87", "form": "CorSis_F8", "en": "Internal Communication", "pt": "Comunicação Interna" }, { "id": "256", "form": "CorSis_FA", "en": "Interface", "pt": "Interface" }, { "id": "6005", "form": "CorSis_FD", "en": "Function Information", "pt": "Informações Sobre a Função" }, { "id": "-997", "form": "CorSis_FG", "en": "Health Insurance Data Confirmation", "pt": "Confirmação Dados Convênio" }, { "id": "-991", "form": "CorSis_FH", "en": "Tasy Changes", "pt": "Alteração Tasy" }, { "id": "215", "form": "CorSis_Fj", "en": "Philips Sales Management", "pt": "Gestão de Vendas Philips" }, { "id": "-992", "form": "CorSis_FK", "en": "Establishment Change", "pt": "Troca de estabelecimento" }, { "id": "3200", "form": "CorSis_FM", "en": "Report configuration", "pt": "Configuração de relatório" }, { "id": "6000", "form": "CorSis_FN", "en": "Philips Data Dictionary", "pt": "Dicionário de Dados Philips" }, { "id": "6001", "form": "CorSis_FO", "en": "System Administration", "pt": "Administração do Sistema" }, { "id": "99101", "form": "CorSis_FP", "en": "Function properties", "pt": "Propriedades da função" }, { "id": "3102", "form": "CorSis_Fp", "en": "Internet and Intranet Browser", "pt": "Navegador Internet e Intranet" }, { "id": "260", "form": "CorSis_Fq", "en": "Report Manager", "pt": "Gerenciador de Relatórios" }, { "id": "-261", "form": "CorSis_FR", "en": "Report Parameters", "pt": "Parâmetros dos Relatórios" }, { "id": "3003", "form": "CorSis_FS", "en": "Report Printing", "pt": "Impressão de Relatórios" }, { "id": "3100", "form": "CorSis_FT", "en": "Report parameters", "pt": "Parâmetros do relatório" }, { "id": "4202", "form": "CorSis_FU", "en": "Label printing", "pt": "Impressão de etiquetas" }, { "id": "-998", "form": "CorSIS_FV", "en": "Filter definition for consultation", "pt": "Definição de filtro para consulta" }, { "id": "-999", "form": "CorSis_FW", "en": "Selection", "pt": "Seleção" }, { "id": "4644", "form": "CorSis_GA", "en": "IAN Management", "pt": "Gestão do IAN" }, { "id": "992", "form": "CorSis_GC", "en": "Philips Commercial Management", "pt": "Gestão Comercial Philips" }, { "id": "993", "form": "CorSis_GD", "en": "Philips Project Management", "pt": "Gestão de Projetos Philips" }, { "id": "1005", "form": "Corsis_GE", "en": "Philips Financial Management", "pt": "Gestão Financeira Philips" }, { "id": "999", "form": "CorSis_GI", "en": "External Interface Generation", "pt": "Geração de Interface Externa" }, { "id": "3140", "form": "CorSis_GK", "en": "Philips Support Management", "pt": "Gestão do Suporte Philips" }, { "id": "1450", "form": "CorSis_GM", "en": "Marketing Management - Philips", "pt": "Gestão de Marketing - Philips" }, { "id": "1420", "form": "CorSis_GP", "en": "Professionals Management - Philips", "pt": "Gestão de Profissionais - Philips" }, { "id": "99059", "form": "CorSis_GS", "en": "Schematics manager", "pt": "Gerenciador do Schematics" }, { "id": "7046", "form": "CorSis_GT", "en": "Test Management", "pt": "Gestão de Testes" }, { "id": "7049", "form": "CorSis_GU", "en": "FAQ answer", "pt": "Resposta FAQ" }, { "id": "1430", "form": "CorSis_GV", "en": "Sales Management - Philips", "pt": "Gestão de Vendas - Philips" }, { "id": "356", "form": "CorSis_H1", "en": "System Requirements", "pt": "Requisitos do Sistema" }, { "id": "99680", "form": "CorSis_HI", "en": "Integration Hub", "pt": "Hub de Integrações" }, { "id": "8040", "form": "CorSis_HL", "en": "HL7 Manager", "pt": "Gerenciador de HL7" }, { "id": "4645", "form": "CorSis_IA", "en": "IAN", "pt": "IAN" }, { "id": "8049", "form": "CorSis_IC", "en": "Information regarding the Customer Basis", "pt": "Informações da Base do Cliente" }, { "id": "8045", "form": "CorSis_ID", "en": "Panel of Indicators of Development and Technology", "pt": "Painel de Indicadores de Desenvolvimento e Tecnologia" }, { "id": "469", "form": "CorSis_IG", "en": "Integration Manager", "pt": "Gerador de Integrações" }, { "id": "287", "form": "CorSis_IL", "en": "Philips Impact Analyzer", "pt": "Philips Impact Analyzer" }, { "id": "6006", "form": "CorSis_IM", "en": "Information About the Menu", "pt": "Informações Sobre o Menu" }, { "id": "1990", "form": "CorSis_IN", "en": "Integration Documentation", "pt": "Documentação das integrações" }, { "id": "346", "form": "CorSis_IS", "en": "Implementation", "pt": "Implantação" }, { "id": "258", "form": "CorSis_IT", "en": "Integrations with libraries", "pt": "Integrações com bibliotecas" }, { "id": "99040", "form": "CorSis_IV", "en": "Integration Validator", "pt": "Validador de Integrações" }, { "id": "345", "form": "CorSis_JS", "en": "JSON Management", "pt": "Gerenciador de JSON" }, { "id": "933", "form": "CorSis_K1", "en": "System\u0027s Basic Keys", "pt": "Teclas Básicas do Sistema" }, { "id": "408", "form": "CorSis_KM", "en": "Philips Knowledge Management", "pt": "Gestão de Conhecimento Philips" }, { "id": "284", "form": "CorSis_LM", "en": "Log Management", "pt": "Administração de Logs" }, { "id": "-2245", "form": "CorSis_LP", "en": "Project Search Tool", "pt": "Localizador de projetos" }, { "id": "427", "form": "CorSis_MA", "en": "Multiple Approval Management", "pt": "Gestão de Múltiplas Aprovações" }, { "id": "3135", "form": "CorSis_MD", "en": "External Communication", "pt": "Comunicação Externa" }, { "id": "12", "form": "CorSis_MI", "en": "Migration Analyzer", "pt": "Analisador de Migração" }, { "id": "-2250", "form": "CorSis_ML", "en": "Search Tool Set Up", "pt": "Montagem do localizador" }, { "id": "16", "form": "CorSis_MM", "en": "Migration Manager", "pt": "Gerenciador de Migração" }, { "id": "282", "form": "CorSis_MP", "en": "Performance Governance", "pt": "Governança de Performance" }, { "id": "342", "form": "CorSis_MX", "en": "NOM Forms Generation", "pt": "Geração das Guias NOM" }, { "id": "8046", "form": "CorSis_PD", "en": "Planning, Monitoring and Control of Projects under development", "pt": "Planejamento, Monitoramento e Controle de Projetos em Desenvolvimento" }, { "id": "251", "form": "CorSis_PM", "en": "PMO - Project Management Office", "pt": "PMO - Project Management Office" }, { "id": "73", "form": "CorSis_PR", "en": "Password retrieval", "pt": "Recuperação de Senhas" }, { "id": "387", "form": "CorSis_PS", "en": "Pending digital signatures", "pt": "Assinaturas digitais pendentes" }, { "id": "8726", "form": "CorSis_PT", "en": "Dashboard of Targets", "pt": "Dashboard of Targets" }, { "id": "1440", "form": "CorSis_PV", "en": "After Sales Management - Philips", "pt": "Gestão de Pós Venda - Philips" }, { "id": "265", "form": "CorSis_PW", "en": "Philips Products Management", "pt": "Gestão de Produtos Philips" }, { "id": "363", "form": "CorSis_RE", "en": "Report Expression", "pt": "Reportar Expressão" }, { "id": "9907", "form": "CorSis_RN", "en": "Release Notes", "pt": "Release Notes" }, { "id": "468", "form": "CorSis_RU", "en": "R\u0026D Utility", "pt": "Utilitário P\u0026D" }, { "id": "2105", "form": "CorSis_RZ", "en": "Query Builder", "pt": "Query Builder" }, { "id": "470", "form": "CorSis_SD", "en": "Users’ electronic signature", "pt": "Assinatura eletrônica dos usuários" }, { "id": "418", "form": "CorSis_SL", "en": "Security level", "pt": "Nível segurança" }, { "id": "-450", "form": "CorSis_SU", "en": "Satisfaction Survey", "pt": "Pesquisa de Satisfação" }, { "id": "99638", "form": "CorSis_TB", "en": "DX - Data Dictionary", "pt": "DX - Dicionário de Dados" }, { "id": "99030", "form": "CorSis_TE", "en": "Schematic4Test", "pt": "Schematic4Test" }, { "id": "1901", "form": "CorSis_TI", "en": "TISS Transactions Log", "pt": "Log Transações TISS" }, { "id": "339", "form": "CorSis_UG", "en": "User guide", "pt": "Guia do usuário" }, { "id": "285", "form": "CorSis_VD", "en": "Dictionary Versioning", "pt": "Versionamento do Dicionário" }, { "id": "74", "form": "CorSis_VM", "en": "Version Management", "pt": "Gestão da Versão" }, { "id": "527", "form": "CORSIS_VT", "en": "Version Traceability", "pt": "Rastreabilidade de Versão" }, { "id": "1111", "form": "CorSis_XM", "en": "XML Manager", "pt": "Gerenciador de XML" }, { "id": "2", "form": "CorSisWS", "en": "Philips SMS", "pt": "Philips SMS" }, { "id": "2500", "form": "CorSug_F1", "en": "Suggestion Control", "pt": "Controle de Sugestões" }, { "id": "9025", "form": "CorSup_01", "en": "Notification display", "pt": "Visualizador de alertas" }, { "id": "417", "form": "CorTax_F1", "en": "Digital Certificate Manager", "pt": "Gerenciador de Certificado Digital" }, { "id": "3120", "form": "CorTel_F1", "en": "Telephony Management", "pt": "Gerenciamento da Telefonia" }, { "id": "7004", "form": "CorTre_F1", "en": "Training", "pt": "Treinamento" }, { "id": "7041", "form": "CorTre_F2", "en": "Training Management", "pt": "Gestão de Treinamento" }, { "id": "99058", "form": "CorTre_F3", "en": "Training - Philips", "pt": "Treinamentos - Philips" }, { "id": "125", "form": "CorVis_ES", "en": "Strategic view of the item", "pt": "Visão estratégica do item" }, { "id": "927", "form": "CusApu_F1", "en": "Cost Calculation", "pt": "Apuração de Custo" }, { "id": "503", "form": "CusBas_f3", "en": "Levels of Capacity per Control Center", "pt": "Níveis de Capacidade por Centro Controle" }, { "id": "511", "form": "CusBas_f9", "en": "Value of Components per Date", "pt": "Valor dos Componentes por Data" }, { "id": "512", "form": "CusBas_fa", "en": "Value of Components per Chart", "pt": "Valor dos Componentes por Tabela" }, { "id": "590", "form": "CusBas_FF", "en": "Cost Records", "pt": "Cadastros Custos" }, { "id": "516", "form": "CusFic_f1", "en": "Datasheet", "pt": "Ficha Técnica" }, { "id": "513", "form": "CusMat_f1", "en": "Standard Cost of Materials", "pt": "Custo Padrão dos Materiais" }, { "id": "506", "form": "CusOrc_f1", "en": "Cost Budget", "pt": "Orçamento de Custos" }, { "id": "507", "form": "CusOrc_f2", "en": "Budget Distribution Criteria", "pt": "Critérios Distribuição Orçamento" }, { "id": "508", "form": "CusOrc_f3", "en": "Distributed Budget Consultation", "pt": "Consulta do Orçamento Distribuído" }, { "id": "520", "form": "CusOrc_F5", "en": "Results by Control Center", "pt": "Resultados por Centro de Controle" }, { "id": "-530", "form": "CusOrc_F6", "en": "Distributed Budget Consultation", "pt": "Consulta Orçamento Distribuído" }, { "id": "-523", "form": "CusOrc_R5", "en": "Control Center Result Report", "pt": "Relatório Resultado Centro de controle" }, { "id": "517", "form": "CusPad_f1", "en": "Standard Cost", "pt": "Custo Padrão" }, { "id": "518", "form": "CusPre_f1", "en": "Product/Services Price", "pt": "Preço Produtos/Serviços" }, { "id": "176", "form": "CusPre_F3", "en": "Costs Record", "pt": "Cadastro de Custos" }, { "id": "515", "form": "CusPro_f1", "en": "Procedure Quotation Cost", "pt": "Custo Orçado dos Procedimentos" }, { "id": "514", "form": "CusTax_f1", "en": "Activity Cost Rate", "pt": "Taxa de Custo da Atividade" }, { "id": "4444", "form": "DesTes_PR", "en": "Development Department Tests", "pt": "Testes Depto Desenvolvimento" }, { "id": "247", "form": "DesTesDC", "en": "Schematic Documentation", "pt": "Documentação Schematic" }, { "id": "9906", "form": "desTesF1", "en": "Schematic Function", "pt": "Função Schematic" }, { "id": "1650", "form": "DisPed_F1", "en": "Orders - Distributor", "pt": "Pedidos - Distribuidora" }, { "id": "292", "form": "EisAte_CD", "en": "Indicator Record", "pt": "Cadastro de Indicadores" }, { "id": "1121", "form": "EisAte_CP", "en": "EIS Pending Accounts (New)", "pt": "EIS Contas Pendentes (Nova)" }, { "id": "422", "form": "EisAte_DR", "en": "Data Analysis \u0026 Reporting", "pt": "Análise de Dados e Relatórios" }, { "id": "204", "form": "EisAte_f2", "en": "EIS Pending Accounts", "pt": "EIS Contas Pendentes" }, { "id": "212", "form": "EisAte_FA", "en": "EIS Hospital Result", "pt": "EIS Resultado Hospital" }, { "id": "90", "form": "EisAte_fc", "en": "EIS - Medical Diagnosis", "pt": "EIS - Diagnóstico Médico" }, { "id": "223", "form": "EisAte_FG", "en": "EIS Result per Procedure", "pt": "Eis Resultado por Procedimento" }, { "id": "232", "form": "EisAte_FP", "en": "Account Analysis", "pt": "Análise de Contas" }, { "id": "-601", "form": "EisAte_R2", "en": "Pending accounts report", "pt": "Relatório de contas pendentes" }, { "id": "-603", "form": "EisAte_R4", "en": "EIS Grid Report", "pt": "Relatório Grid EIS" }, { "id": "9940", "form": "EisDes_F1", "en": "R \u0026 D Indicators", "pt": "Indicadores R\u0026D" }, { "id": "291", "form": "EisGer_F1", "en": "Management Indicators", "pt": "Indicadores de Gestão" }, { "id": "-605", "form": "EisGer_R1", "en": "EisGer_R1", "pt": "EisGer_R1" }, { "id": "147", "form": "EtqDis_EL", "en": "Electronic Dispensary", "pt": "Dispensário Eletrônico" }, { "id": "117", "form": "EtqRel_CF", "en": "Purchase by Supplier Report", "pt": "Relatório Compras por Fornecedor" }, { "id": "133", "form": "EtqRel_CM", "en": "Monthly Consumption per Cost Center Report", "pt": "Relatório Consumo Mensal por Centro de Custo" }, { "id": "158", "form": "EtqRel_EC", "en": "Consigned Stock Balance Report", "pt": "Relatório Saldo Estoque Consignados" }, { "id": "213", "form": "EtqRel_F0", "en": "Report of Controlled Materials", "pt": "Rel de Materiais Controlados" }, { "id": "181", "form": "EtqRel_F1", "en": "Stock Balance Report", "pt": "Relatório Saldo de Estoque" }, { "id": "184", "form": "EtqRel_F4", "en": "Material Structure Report", "pt": "Rel Estrutura Materiais" }, { "id": "185", "form": "EtqRel_F5", "en": "Entered Bills Report", "pt": "Rel Notas Digitadas" }, { "id": "186", "form": "EtqRel_F6", "en": "Invoice Expiration Report", "pt": "Rel Notas Fiscais Vencimento" }, { "id": "330", "form": "EtqRel_F7", "en": "Rationale of Consigned Stock Report", "pt": "Rel. Razão de Estoque Consignado" }, { "id": "189", "form": "EtqRel_F9", "en": "Stock Movement Report", "pt": "Relatório Movimento Estoque" }, { "id": "196", "form": "EtqRel_FA", "en": "Non-Formulary Medicine Report", "pt": "Rel Medicamentos Não Padronizados" }, { "id": "187", "form": "EtqRel_Fb", "en": "Request Report", "pt": "Rel Requisição" }, { "id": "188", "form": "EtqRel_Fc", "en": "Purchase by Supplier Report", "pt": "Relatório Compras por Fornecedor" }, { "id": "190", "form": "EtqRel_Fd", "en": "Report ABC/XYZ Analysis", "pt": "Rel Curva ABC/XYZ" }, { "id": "182", "form": "EtqRel_Fe", "en": "Materials Report", "pt": "Rel Materiais" }, { "id": "192", "form": "EtqRel_FF", "en": "Synthetic Movement Operation Report", "pt": "Relatório Movimento Sintético Operação" }, { "id": "180", "form": "EtqRel_FG", "en": "Monthly Consumption per Cost Center Report", "pt": "Relatório Consumo Mensal por Centro de Custo" }, { "id": "199", "form": "EtqRel_Fh", "en": "Consigned Stock Balance Report", "pt": "Relatório Saldo Estoque Consignados" }, { "id": "179", "form": "EtqRel_FJ", "en": "Purchase Order Item Discrepancy Report", "pt": "Rel Divergência Ordem Compra Item" }, { "id": "165", "form": "EtqRel_FL", "en": "Medicine List", "pt": "Relação de Medicamentos" }, { "id": "312", "form": "EtqRel_Fm", "en": "Non-accounted Patient Accounts Report", "pt": "Rel Contas Paciente não Contabilizadas" }, { "id": "314", "form": "EtqRel_Fn", "en": "Invoice Report per General Ledger account", "pt": "Rel Notas por Conta Contábil" }, { "id": "318", "form": "EtqRel_Fo", "en": "Consigned Material with Last Purchase Price", "pt": "Materiais Consig. c/ Preço Última Compra" }, { "id": "65", "form": "Etqrel_fp", "en": "Inventory Report", "pt": "Relatório de Inventário" }, { "id": "321", "form": "EtqRel_Fq", "en": "Stock Ledger Report", "pt": "Relatório Razão do Estoque" }, { "id": "141", "form": "EtqRel_ME", "en": "Stock Movement Report", "pt": "Relatório Movimento Estoque" }, { "id": "115", "form": "EtqRel_ND", "en": "Entered Invoice Reports", "pt": "Relatórios de Notas Digitadas" }, { "id": "-187", "form": "EtqRel_Rb", "en": "Request Report", "pt": "Relatório requisição" }, { "id": "118", "form": "EtqRel_RC", "en": "Rationale of Consigned Stock Report", "pt": "Rel. Razão de Estoque Consignado" }, { "id": "129", "form": "EtqRel_RI", "en": "Inventory Report", "pt": "Relatório de Inventário" }, { "id": "149", "form": "EtqRel_RS", "en": "Stock Ledger Report", "pt": "Relatório Razão do Estoque" }, { "id": "114", "form": "EtqRel_SE", "en": "Stock Balance Report", "pt": "Relatório Saldo de Estoque" }, { "id": "142", "form": "EtqRel_SO", "en": "Synthetic Movement Operation Report", "pt": "Relatório Movimento Sintético Operação" }, { "id": "919", "form": "EtqReq_F5", "en": "Materials and Medicines Requisition", "pt": "Requisição de Materiais e Medicamentos" }, { "id": "-130", "form": "EtqReq_FZ", "en": "Find Material Requisition", "pt": "Localizar Requisição de Material" }, { "id": "109", "form": "EtqTab_F9", "en": "Requisition Dispensing", "pt": "Atendimento da Requisição" }, { "id": "122", "form": "EtqTab_Fa", "en": "Encounter Issuance (Request/Order)", "pt": "Emissão dos Atendimentos (Requisição/Prescrição)" }, { "id": "1602", "form": "FarCad_F1", "en": "Materials - commercial pharmacy", "pt": "Materiais - farmácia coml" }, { "id": "1605", "form": "FarCad_F2", "en": "Sellers - commercial pharmacy", "pt": "Vendedores - farmácia coml" }, { "id": "1606", "form": "FarCad_F3", "en": "Contracts - commercial pharmacy", "pt": "Contratos - farmácia coml" }, { "id": "1608", "form": "FarCom_F1", "en": "Commercial Pharmacy - Sale", "pt": "Farmácia Comercial - Venda" }, { "id": "1600", "form": "FarLoc_F1", "en": "Material/Medicine finder - commercial pharmacy", "pt": "Localizador de mat/med - farmácia coml" }, { "id": "1607", "form": "FarPed_CX", "en": "Checkout - Commercial pharmacy", "pt": "Caixa - Farmácia coml." }, { "id": "1601", "form": "FarPed_F1", "en": "Orders - commercial pharmacy", "pt": "Pedidos - farmácia coml" }, { "id": "1604", "form": "FarPed_F2", "en": "Order management - commercial pharmacy", "pt": "Gestão de pedidos - farmácia coml" }, { "id": "1603", "form": "FarPed_F3", "en": "Delivery - commercial pharmacy", "pt": "Entregas - farmácia coml" }, { "id": "351", "form": "FatAct_CC", "en": "Insurance Data Exchange", "pt": "Troca de Dados com Convênio" }, { "id": "3013", "form": "FatAct_CF", "en": "Billing Center", "pt": "Central de Faturamento" }, { "id": "35", "form": "FatAct_CH", "en": "Hospital and Outpatient Information Control", "pt": "CIHA - Controle de Informação Hospitalar e Ambulatorial" }, { "id": "3014", "form": "FatAct_CR", "en": "Dispatch Control", "pt": "Controle de Remessa" }, { "id": "104", "form": "FatAct_D1", "en": "ID - Profit Distribution Rules", "pt": "DL - Regras de Distribuição de Lucros" }, { "id": "105", "form": "FatAct_D2", "en": "DL - Profit Distribution", "pt": "DL - Distribuição de Lucros" }, { "id": "103", "form": "FatAct_D3", "en": "DL - Partners Meeting", "pt": "DL - Reunião de Sócios" }, { "id": "7051", "form": "FatAct_DC", "en": "Insurance Documentation Consultation", "pt": "Consulta Documentação Convênio" }, { "id": "352", "form": "FatAct_DD", "en": "Work Accident (DALE-UV)", "pt": "Acidente de Trabalho (DALE-UV)" }, { "id": "-80", "form": "FatAct_E1", "en": "Generate Accounts Receivable", "pt": "Gerar Título Receber" }, { "id": "3300", "form": "FatAct_E2", "en": "Partial Closure of Patient Account", "pt": "Fechamento Parcial da Conta Paciente" }, { "id": "7021", "form": "FatAct_E3", "en": "Packs Management", "pt": "Gestão de Pacotes" }, { "id": "7028", "form": "FatAct_E4", "en": "Billing Parameters", "pt": "Parâmetros Faturamento" }, { "id": "85", "form": "FatAct_F1", "en": "Insurance Protocol", "pt": "Protocolo Convênio" }, { "id": "84", "form": "FatAct_F2", "en": "Performed Procedure Health Insurance Change", "pt": "Alteração Convênio Procedimento Exec." }, { "id": "27", "form": "FatAct_F3", "en": "Insurance Return", "pt": "Retorno Convênio" }, { "id": "79", "form": "FatAct_F4", "en": "Billing Updates", "pt": "Atualizações Faturamento" }, { "id": "67", "form": "FatAct_F5", "en": "Patient Account", "pt": "Conta Paciente" }, { "id": "1199", "form": "FatAct_F6", "en": "Third-Party Production Control", "pt": "Controle de Produção de Terceiros" }, { "id": "81", "form": "FatAct_F7", "en": "Patient Account (Old)", "pt": "Conta Paciente (Antiga)" }, { "id": "66", "form": "FatAct_F9", "en": "Audit Patient Account", "pt": "Conta Paciente Auditoria" }, { "id": "-316", "form": "FatAct_FA", "en": "Order Inconsistencies", "pt": "Inconsistências da Prescrição" }, { "id": "1116", "form": "FatAct_FB", "en": "Patient Account Audit", "pt": "Auditoria Conta Paciente" }, { "id": "82", "form": "FatAct_Fc", "en": "Prescription Checking Report", "pt": "Relatório de Conferência da Prescrição" }, { "id": "86", "form": "FatAct_Fd", "en": "Change Encounter Health Insurance", "pt": "Alterar Convênio Atendimento" }, { "id": "89", "form": "FatAct_FF", "en": "Payment Transfer to Third Parties", "pt": "Repasse para Terceiros" }, { "id": "92", "form": "FatAct_FH", "en": "Payment Transfer Rules and Criteria", "pt": "Regras e Critérios de Repasse" }, { "id": "172", "form": "FatAct_FJ", "en": "HAC - Hospital Admission Control", "pt": "CIH - Controle de Internação Hospitalar" }, { "id": "18", "form": "FatAct_FK", "en": "Patient Account Structure Record", "pt": "Cadastro de Estrutura da Conta Paciente" }, { "id": "1008", "form": "FatAct_FL", "en": "Medical Shift Record", "pt": "Cadastro de Plantões Médicos" }, { "id": "170", "form": "FatAct_FM", "en": "Required Procedures per Insurance", "pt": "Procedimentos Requeridos por Convênio" }, { "id": "-2008", "form": "FatAct_FN", "en": "Encounter Insurance Change", "pt": "Alteração do Convênio do Atendimento" }, { "id": "905", "form": "FatAct_FO", "en": "Automatic Entry Rules", "pt": "Regras de Lançamento Automático" }, { "id": "907", "form": "FatAct_FQ", "en": "Third-Party Control", "pt": "Controle de Terceiros" }, { "id": "290", "form": "FatAct_FS", "en": "Document Protocol", "pt": "Protocolo Documento" }, { "id": "-910", "form": "FatAct_FT", "en": "Service Quotation", "pt": "Orçamento Serviço" }, { "id": "1800", "form": "FatAct_FU", "en": "Insurance Accounts Simulator", "pt": "Simulador de Contas de Convênio" }, { "id": "-14", "form": "FatAct_FY", "en": "Search Protocols", "pt": "Consulta de Protocolos" }, { "id": "987", "form": "FatAct_FZ", "en": "Insurance Submission Consultation", "pt": "Consulta Liberação Plano Convênio" }, { "id": "988", "form": "FatAct_GA", "en": "Authorization Management", "pt": "Gerenciamento de Autorizações" }, { "id": "8009", "form": "FatAct_GC", "en": "Hospital and Outpatient Information Control", "pt": "CIHA - Controle de Informação Hospitalar e Ambulatorial" }, { "id": "7042", "form": "FatAct_GP", "en": "Management of Patient Account Pendencies", "pt": "Gestão de Pendências da Conta do Paciente" }, { "id": "69", "form": "FatAct_GR", "en": "Denial Appeal Management", "pt": "Gestão de Recurso de Glosas" }, { "id": "7048", "form": "FatAct_MC", "en": "Billing per Physician Analysis", "pt": "Análise do Faturamento por Médico" }, { "id": "99071", "form": "FatAct_OB", "en": "Patient Billing", "pt": "Faturamento Paciente" }, { "id": "1112", "form": "FatAct_PE", "en": "Research Protocol", "pt": "Protocolo de Pesquisa" }, { "id": "7052", "form": "FatAct_PF", "en": "Pre-Billing Control", "pt": "Controle do Pré-Faturamento" }, { "id": "9920", "form": "FatAct_PM", "en": "Production by Medical Shift", "pt": "Produção por Plantão Médico" }, { "id": "-81", "form": "FATACT_R0", "en": "Amounts Pending Report", "pt": "Relatório de Valores Pendentes" }, { "id": "-85", "form": "FATACT_R1", "en": "Insurance protocol report", "pt": "Relatório de protocolo convênio" }, { "id": "435", "form": "FatAct_R1", "en": "Issuance of Reports to Present to the Insurances", "pt": "Emissão de Relatórios para Apresentar aos Convênios" }, { "id": "-86", "form": "FatAct_R2", "en": "Protocol Forms Report", "pt": "Relatório de Guias do Protocolo" }, { "id": "-318", "form": "FatAct_R5", "en": "Protocol Inconsistencies Report", "pt": "Relatório de Inconsistências do Protocolo" }, { "id": "-88", "form": "FatAct_R6", "en": "Protocol Forms Report", "pt": "Relatório de Guias do Protocolo" }, { "id": "-13", "form": "FatAct_R7", "en": "Patient Account Structure Report", "pt": "Relatório de Estrutura da Conta Paciente" }, { "id": "-39", "form": "FatAct_R8", "en": "Relatório de honorários do protocolo", "pt": "Relatório de honorários do protocolo" }, { "id": "7053", "form": "FatAct_SP", "en": "AAR (Administrative Action Request) Management", "pt": "Gestão de SPA (Solicitação de Providência Administrativa)" }, { "id": "3402", "form": "FatAct_TC", "en": "TISS - Beneficiary Hospitalization / Discharge Notice", "pt": "TISS - Comunicação de Internação / Alta do Beneficiário" }, { "id": "1899", "form": "FatAct_TI", "en": "TISS - Inconsistencies", "pt": "TISS - Inconsistências" }, { "id": "3401", "form": "FatAct_TL", "en": "TISS - Clinical Attachment Batches", "pt": "TISS - Lotes de Anexos Clínicos" }, { "id": "3400", "form": "FatAct_TR", "en": "TISS - Accounts Resubmission", "pt": "TISS - Reapresentação de Contas" }, { "id": "8600", "form": "FatAct_TU", "en": "Consulta Tabela TUSS (Mat/Med)", "pt": "Consulta Tabela TUSS (Mat/Med)" }, { "id": "72", "form": "FatPre_F3", "en": "Copy of Service Prices", "pt": "Cópia de Preços de Serviços" }, { "id": "1114", "form": "FatPre_F8", "en": "Coverage Consultation", "pt": "Consulta Cobertura" }, { "id": "29", "form": "FatPre_F9", "en": "Consult Price (old)", "pt": "Consulta Preço (antiga)" }, { "id": "-128", "form": "FatPre_fa", "en": "Medicine x Brasindice Relationship", "pt": "Relacionamento Medicamento x Brasíndice" }, { "id": "1115", "form": "FatPre_FC", "en": "Price Check", "pt": "Consulta Preço" }, { "id": "-148", "form": "FatPre_FD", "en": "Medicine x Brasindice Relationship", "pt": "Relacionamento Medicamento x Brasíndice" }, { "id": "3110", "form": "FatPre_FQ", "en": "Price Charts", "pt": "Tabelas de Preços" }, { "id": "-112", "form": "FatPre_FZ", "en": "Find Brasindice Medicine", "pt": "Localizar Medicamento Brasíndice" }, { "id": "9899", "form": "FisCal_F1", "en": "Fiscal", "pt": "Fiscal" }, { "id": "9910", "form": "FisPaf_F2", "en": "Tax Receipt", "pt": "Cupom Fiscal" }, { "id": "33", "form": "frmRegistr", "en": "EHR - Clinical Record consultation", "pt": "Consulta de EHR - Registro Clínico" }, { "id": "10018", "form": "FUCorretor", "en": "Spelling Checker", "pt": "Corretor Ortográfico" }, { "id": "2682", "form": "IOSPac_A1", "en": "iOS - Diagnosis", "pt": "iOS - Diagnósticos" }, { "id": "2685", "form": "IOSPac_A2", "en": "iOS - Vital Signs and Monitoring", "pt": "iOS - Sinais Vitais e Monitorização" }, { "id": "2687", "form": "IOSPac_A3", "en": "iOS - Laboratory Tests", "pt": "iOS - Exames Laboratoriais" }, { "id": "2689", "form": "IOSPac_A4", "en": "iOS - Imaging/diagnostic services", "pt": "iOS - Exames Não Laboratoriais" }, { "id": "2703", "form": "IOSPac_A5", "en": "iOS - Clinical notes", "pt": "iOS - Evoluções" }, { "id": "259", "form": "IOSPac_BH", "en": "iOS - Intakes \u0026 Outputs iPod", "pt": "iOS - Ganhos e Perdas iPod" }, { "id": "241", "form": "IOSPac_CB", "en": "iOS - Bedside Check", "pt": "iOS - Checagem Beira Leito" }, { "id": "264", "form": "IOSPac_CP", "en": "iOS - Procedure Check iPod", "pt": "iOS - Checagem Procedimentos iPod" }, { "id": "263", "form": "IOSPac_CR", "en": "iOS - iPod recommendation check", "pt": "iOS - Checagem Recomendação iPod" }, { "id": "272", "form": "IOSPac_DM", "en": "iOS - Return of Materials and Medicines iPod", "pt": "iOS - Devolução de Materiais e Medicamentos iPod" }, { "id": "283", "form": "IOSPac_ED", "en": "iOS - eMAR - iPod", "pt": "iOS - ADEP - iPod" }, { "id": "274", "form": "IOSPac_GC", "en": "iOS - Capillary Glycemia management", "pt": "iOS - Controle de Glicemia Capilar iPod" }, { "id": "257", "form": "IOSPac_SV", "en": "iOS - Vital Signs iPod", "pt": "iOS - Sinais Vitais iPod" }, { "id": "277", "form": "IOSPac_TF", "en": "iOS - iPod devices", "pt": "iOS - Dispositivos iPod" }, { "id": "276", "form": "IOSPac_TL", "en": "iOS - Trocar Local do Paciente iPod", "pt": "iOS - Trocar Local do Paciente iPod" }, { "id": "2705", "form": "IOSREP_A2", "en": "iOS - CPOE - Diets", "pt": "iOS - REP-PT - Dietas" }, { "id": "2708", "form": "IOSREP_A3", "en": "iOS - CPOE - Infusions", "pt": "iOS - REP-PT - Soluções" }, { "id": "2709", "form": "IOSREP_A4", "en": "iOS - CPOE - medicines", "pt": "iOS - REP-PT - Medicamentos" }, { "id": "2711", "form": "IOSREP_A5", "en": "iOS - CPOE - Procedures", "pt": "iOS - REP-PT - Procedimentos" }, { "id": "2713", "form": "IOSREP_A6", "en": "iOS - CPOE - Recommendations", "pt": "iOS - REP-PT - Recomendações" }, { "id": "761", "form": "MedAte_F1", "en": "Schedule", "pt": "Agenda" }, { "id": "762", "form": "MedAte_F2", "en": "Encounters", "pt": "Atendimentos" }, { "id": "764", "form": "MedAte_F4", "en": "Text Editor", "pt": "Editor Texto" }, { "id": "765", "form": "MedAte_F5", "en": "Billing", "pt": "Faturamento" }, { "id": "760", "form": "MedCad_F0", "en": "Patient classif.", "pt": "Classif.Pac." }, { "id": "751", "form": "MedCad_F1", "en": "Patient", "pt": "Paciente" }, { "id": "752", "form": "MedCad_F2", "en": "Medicine", "pt": "Medicamento" }, { "id": "753", "form": "MedCad_F3", "en": "Protocol", "pt": "Protocolo" }, { "id": "754", "form": "MedCad_F4", "en": "Group", "pt": "Grupo" }, { "id": "755", "form": "MedCad_F5", "en": "Exams/Tests", "pt": "Exames" }, { "id": "756", "form": "MedCad_F6", "en": "Laboratory", "pt": "Laboratório" }, { "id": "757", "form": "MedCad_F7", "en": "Exam type", "pt": "Tipo exame" }, { "id": "758", "form": "MedCad_F8", "en": "Plan", "pt": "Plano" }, { "id": "759", "form": "MedCad_F9", "en": "Treatments", "pt": "Tratamentos" }, { "id": "796", "form": "MedCad_Fa", "en": "Register Revenue", "pt": "Cadastros Faturamento" }, { "id": "9019", "form": "MedCad_FE", "en": "Stock", "pt": "Estoque" }, { "id": "413", "form": "MedCad_FR", "en": "Prescriptions", "pt": "Receitas" }, { "id": "-162", "form": "MedCad_FS", "en": "TasyMed - Billing Item Search Tool", "pt": "TasyMed - Localizador de Itens de Faturamento" }, { "id": "-700", "form": "MedCad_FT", "en": "Medicine search", "pt": "Localizador de medicamentos" }, { "id": "-11", "form": "MedCad_FV", "en": "Exam Search Tool", "pt": "Localizador de Exames" }, { "id": "-757", "form": "MedCad_FW", "en": "Standard Exams Search Tool", "pt": "Localizador de Exames Padrão" }, { "id": "9018", "form": "MedCad_FY", "en": "Formulary Medicine Search Tool", "pt": "Localizador de Medicamentos Padrão" }, { "id": "-751", "form": "MedCad_FZ", "en": "TasyMed - Patient Register", "pt": "TasyMed - Cadastro de Pacientes" }, { "id": "415", "form": "MedCadFR", "en": "Prescriptions", "pt": "Receitas" }, { "id": "781", "form": "MedCfg_F1", "en": "Permissions", "pt": "Permissões" }, { "id": "782", "form": "MedCfg_F2", "en": "Schedule Configuration", "pt": "Config Agenda" }, { "id": "783", "form": "MedCfg_f3", "en": "Parameters", "pt": "Parâmetros" }, { "id": "784", "form": "MedCfg_F4", "en": "Export", "pt": "Exportação" }, { "id": "785", "form": "MedCon_F1", "en": "ICD", "pt": "CID" }, { "id": "786", "form": "MedCon_F2", "en": "Procedure Table", "pt": "Tabela proced" }, { "id": "771", "form": "MedEis_F1", "en": "Patient EIS", "pt": "EIS Paciente" }, { "id": "772", "form": "MedEis_F2", "en": "EIS Encounter", "pt": "EIS Atendimento" }, { "id": "773", "form": "MedEis_F3", "en": "EIS Schedule", "pt": "EIS Agenda" }, { "id": "774", "form": "MedEis_F4", "en": "EIS Diagnosis", "pt": "EIS Diagnóstico" }, { "id": "775", "form": "MedEis_F5", "en": "EIS Certificate", "pt": "EIS Atestado" }, { "id": "9007", "form": "MedEnt_F1", "en": "TasyMed - Physician\u0027s Office", "pt": "TasyMed - Consultório Médico" }, { "id": "792", "form": "MedPes_F2", "en": "References", "pt": "Referências" }, { "id": "793", "form": "MedPes_F3", "en": "Texts", "pt": "Textos" }, { "id": "795", "form": "MedPes_F5", "en": "Normal Values", "pt": "Val.Normais" }, { "id": "10158", "form": "MedPre_AG", "en": "HDM - Schedule", "pt": "HDM - Agenda" }, { "id": "10159", "form": "MedPre_AP", "en": "HDM - Encounter Plan Monitoring", "pt": "HDM - Acompanhamento do Plano de Atendimento" }, { "id": "10160", "form": "MedPre_AT", "en": "HDM - Encounter", "pt": "HDM - Atendimento" }, { "id": "10155", "form": "MedPre_CA", "en": "HDM - Invitation", "pt": "HDM - Captação" }, { "id": "10151", "form": "MedPre_CC", "en": "HDM - Campaign Control", "pt": "HDM - Controle de Campanhas" }, { "id": "10200", "form": "MedPre_CF", "en": "HDM - General Settings", "pt": "HDM - Configurações Gerais" }, { "id": "10150", "form": "MedPre_CG", "en": "HDM - Core Tables Settings", "pt": "HDM - Cadastros Gerais" }, { "id": "10157", "form": "MedPre_CP", "en": "HDM - Participant Control", "pt": "HDM - Controle de Participantes" }, { "id": "10162", "form": "MedPre_DA", "en": "HDM - Scheduling data", "pt": "HDM - Dados do agendamento" }, { "id": "10153", "form": "MedPre_EP", "en": "HDM - Team Control and Roles", "pt": "HDM - Controle de Equipes e Papéis" }, { "id": "10154", "form": "MedPre_GC", "en": "HDM - Collective Care Groups", "pt": "HDM - Grupos de Atendimento Coletivo" }, { "id": "-2300", "form": "MedPre_L1", "en": "HDM - Professional Finder", "pt": "HDM - Localizador de Profissional" }, { "id": "-2400", "form": "MedPre_L2", "en": "HDM - Team Finder", "pt": "HDM - Localizador de Equipe" }, { "id": "-2301", "form": "MedPre_L3", "en": "HDM - Participant Finder", "pt": "HDM - Localizador de Participante" }, { "id": "10156", "form": "MedPre_PP", "en": "HDM - Target Population Search", "pt": "HDM - Pesquisa de População Alvo" }, { "id": "10152", "form": "MedPre_PR", "en": "HDM - Programs", "pt": "HDM - Programas" }, { "id": "10161", "form": "MedPre_TM", "en": "HDM - Telemonitoring", "pt": "HDM - Telemonitoramento" }, { "id": "447", "form": "NICU_AN", "en": "NICU - Analytics", "pt": "Análises da UTI Neonatal" }, { "id": "448", "form": "NICU_ST", "en": "NICU - Settings", "pt": "Configurações da UTI Neonatal" }, { "id": "480", "form": "NICU_TC", "en": "NICU - Trend Charts", "pt": "UTI Neonatal - Gráficos de Tendências" }, { "id": "461", "form": "PFCS_AC", "en": "Acute Care Units", "pt": "Unidades de Internação" }, { "id": "438", "form": "PFCS_AD", "en": "Admission Prioritizer", "pt": "Priorização de Admissões" }, { "id": "411", "form": "PFCS_CC", "en": "PFCS - Surgical Center", "pt": "PFCS - Centro Cirúrgico" }, { "id": "414", "form": "PFCS_CO", "en": "PFCS - Covid-19", "pt": "PFCS - Covid-19" }, { "id": "455", "form": "PFCS_DM", "en": "Discharge Manager", "pt": "Gestão de Altas" }, { "id": "403", "form": "PFCS_DT", "en": "PFCS - Details", "pt": "PFCS - Detalhes" }, { "id": "463", "form": "PFCS_DY", "en": "Dynamic panel", "pt": "Painel dinâmico" }, { "id": "464", "form": "PFCS_ED", "en": "Emergency Room Performance", "pt": "Performance do Pronto Atendimento" }, { "id": "412", "form": "PFCS_EV", "en": "PFCS - Enterprise View", "pt": "PFCS - Visualização Corporativa" }, { "id": "397", "form": "PFCS_F1", "en": "PFCS - Settings", "pt": "PFCS - Configurações" }, { "id": "434", "form": "PFCS_GE", "en": "Patient Flow Capacity Suite - PFCS", "pt": "Patient Flow Capacity Suite - PFCS" }, { "id": "404", "form": "PFCS_GL", "en": "PFCS - Bed Management", "pt": "PFCS - Gestão de Leitos" }, { "id": "466", "form": "PFCS_HH", "en": "Hospital at Home", "pt": "Hospital em Casa" }, { "id": "399", "form": "PFCS_PA", "en": "PFCS - Emergency Department", "pt": "PFCS - Pronto Atendimento" }, { "id": "467", "form": "PFCS_SC", "en": "Surgical Center", "pt": "Centro Cirúrgico" }, { "id": "478", "form": "PFCS_SP", "en": "Staffing", "pt": "Equipe" }, { "id": "462", "form": "PFCS_TC", "en": "Transitional Care Units", "pt": "Unidades de Cuidado Transitório" }, { "id": "409", "form": "PFCS_TL", "en": "PFCS - Telemetry", "pt": "PFCS - Telemetria" }, { "id": "439", "form": "PFCS_TP", "en": "Telemetry Performance Management", "pt": "Telemetria - Gestão de Performance" }, { "id": "428", "form": "PFCS_UT", "en": "Intensive Care Units", "pt": "Unidades de Tratamento Intensivo" }, { "id": "429", "form": "PFCS_VC", "en": "Enterprise Demand", "pt": "Demanda Corporativa" }, { "id": "3131", "form": "RegEst_F1", "en": "Hospital Cancer Registry", "pt": "Registro Hospitalar de Câncer" }, { "id": "10250", "form": "RelAte_A0", "en": "Encounters Report", "pt": "Rel Atendimentos" }, { "id": "10251", "form": "RelAte_A1", "en": "Encounter Report per department", "pt": "Rel Atendimento Setor" }, { "id": "160", "form": "RelAte_DF", "en": "Report Surgery Statistics", "pt": "Rel Estatísticas de Cirurgias" }, { "id": "311", "form": "RelAte_F0", "en": "Report Revenue", "pt": "Rel Receitas" }, { "id": "151", "form": "RelAte_F1", "en": "Labels Report", "pt": "Rel Etiquetas" }, { "id": "152", "form": "RelAte_F2", "en": "Persons Report", "pt": "Rel Pessoas Físicas" }, { "id": "153", "form": "RelAte_F3", "en": "Exams Performed Report", "pt": "Rel Exames Realizados" }, { "id": "154", "form": "RelAte_F4", "en": "Protocols Rel - Standard Phrases", "pt": "Rel Protocolos - Frases Padrão" }, { "id": "155", "form": "RelAte_F5", "en": "Non-Confirmed Exams Report", "pt": "Rel Exames Não Confirmados" }, { "id": "156", "form": "RelAte_F6", "en": "Encounters Report", "pt": "Rel Atendimentos" }, { "id": "157", "form": "RelAte_F7", "en": "Report Used Medic/Material", "pt": "Rel Medic/Mat Utilizados" }, { "id": "159", "form": "RelAte_F9", "en": "Diagnosis Report", "pt": "Rel Diagnósticos" }, { "id": "218", "form": "RelAte_FA", "en": "Third Party Expenses Report", "pt": "Rel. Gasto de Terceiros" }, { "id": "162", "form": "RelAte_FC", "en": "Medicines per Physician and Patient", "pt": "Medicamentos por Médico e Paciente" }, { "id": "163", "form": "RelAte_FD", "en": "List of Surgeries", "pt": "Relação das Cirurgias" }, { "id": "164", "form": "RelAte_FE", "en": "Encounter Report per department", "pt": "Rel Atendimento Setor" }, { "id": "324", "form": "RelAte_FF", "en": "Care per insurance Report", "pt": "Relat Atendimentos por convenio" }, { "id": "313", "form": "RelAte_FG", "en": "Materials/Medication per Encounter Report", "pt": "Rel Materiais/Medic por Atendimento" }, { "id": "325", "form": "RelAte_Fh", "en": "Consistency Patient Information Report", "pt": "Rel. Consistência Dados Cadastrais Pac." }, { "id": "83", "form": "RelAte_FI", "en": "Encounter per Town Report", "pt": "Rel de Atendimento por Município" }, { "id": "326", "form": "RelAte_Fj", "en": "Report Mat/Med Consumed per Surgery", "pt": "Rel. Mat/Med Consumidos por Cirurgia" }, { "id": "216", "form": "RelAte_fl", "en": "Package Profitability Report", "pt": "Rel. de Rentabilidade de Pacote" }, { "id": "58", "form": "relate_fm", "en": "Care Result Report", "pt": "Rel. Resultado Atendimentos" }, { "id": "108", "form": "RelCir_A0", "en": "List of Surgeries", "pt": "Relação das Cirurgias" }, { "id": "332", "form": "RelCpa_F1", "en": "Accounts Payable Report", "pt": "Relatório de Títulos a Pagar" }, { "id": "334", "form": "RelCre_F7", "en": "Accounts Receivable Report", "pt": "Relatório de Títulos a Receber" }, { "id": "331", "form": "RelCre_F9", "en": "Check Report", "pt": "Rel de Cheques" }, { "id": "77", "form": "RelFat_F0", "en": "Report of Material/Medicine Use", "pt": "Rel Utilização Material/Medicamento" }, { "id": "300", "form": "RelFat_F1", "en": "Procedure Price Report", "pt": "Rel Preço Procedimentos" }, { "id": "301", "form": "RelFat_F2", "en": "Brasindice Material Report", "pt": "Rel Material Brasíndice" }, { "id": "302", "form": "RelFat_F3", "en": "Priceless Material Report", "pt": "Rel Materiais Sem Preço" }, { "id": "303", "form": "RelFat_F4", "en": "Insurance Batch Rep", "pt": "Rel Lotes dos Convênios" }, { "id": "194", "form": "RelFat_F5", "en": "Admission per Insurance Report", "pt": "Rel Internações por Convênio" }, { "id": "195", "form": "RelFat_F6", "en": "Report Statistics Account Settling", "pt": "Rel Estatística Acerto Conta" }, { "id": "304", "form": "RelFat_F7", "en": "Report Material Price per Insurance", "pt": "Rel Preço Material por Convênio" }, { "id": "227", "form": "RelFat_F8", "en": "Report Control of Physician\u0027s Fees", "pt": "Rel.Controle de Honorários Médicos" }, { "id": "306", "form": "RelFat_F9", "en": "Report Total of Accounts per Insurance", "pt": "Rel Totais das Contas por Convênio" }, { "id": "307", "form": "RelFat_FA", "en": "Report of Material/Medicine Use", "pt": "Rel Utilização Material/Medicamento" }, { "id": "308", "form": "RelFat_FB", "en": "Report Revenue Accounts", "pt": "Rel Contas de Receita" }, { "id": "310", "form": "RelFat_FC", "en": "Material Comparative Report w/wo Prescription", "pt": "Rel Comparativo Materiais com/sem Prescr" }, { "id": "319", "form": "RelFat_Fd", "en": "Department Billing Summary Report", "pt": "Rel. Resumo Setor Faturamento" }, { "id": "323", "form": "RelFat_Fe", "en": "Report Calculation Simulation of Patient\u0027s Account", "pt": "Rel. Simulação de Cálculo da Conta de Pa" }, { "id": "320", "form": "RelFat_Fg", "en": "Revenue per Sint. Revenue Group Report", "pt": "Rel. Receita por Grupo de Receita Sint." }, { "id": "327", "form": "RelFat_Fh", "en": "Report Control of Physician\u0027s Fees", "pt": "Rel.Controle de Honorários Médicos" }, { "id": "328", "form": "RelFat_Fi", "en": "Money Deposit Control Report", "pt": "Rel. Controle de Cauções" }, { "id": "235", "form": "RelFat_FL", "en": "Exams Performed Report", "pt": "Rel Exames Realizados" }, { "id": "236", "form": "RelFat_FM", "en": "Report of Medicines/Materials Used", "pt": "Relatório Medicamentos/Materiais Utilizados" }, { "id": "237", "form": "RelFat_FN", "en": "Report of Materials/Medicines by Encounter", "pt": "Relatório Materiais/Medicamentos por Atendimento" }, { "id": "238", "form": "RelFat_FO", "en": "Orthosis, Prosthesis and Special Material Report", "pt": "Rel Ortese, Protese e Material Especial" }, { "id": "335", "form": "RelFat_FP", "en": "Insurance Protocol Report", "pt": "Rel Protocolo Convênio" }, { "id": "234", "form": "RelFat_FR", "en": "Care Result Report", "pt": "Rel. Resultado Atendimentos" }, { "id": "231", "form": "RelFat_FS", "en": "Protocol Forms Report", "pt": "Relatório de Guias do Protocolo" }, { "id": "229", "form": "RelFat_FT", "en": "Insurance Protocol Report", "pt": "Rel Protocolo Convênio" }, { "id": "233", "form": "RelFat_FV", "en": "Amounts Pending Report", "pt": "Relatório de Valores Pendentes" }, { "id": "333", "form": "RelFat_FX", "en": "Insurance Protocol Report (X-Ray)", "pt": "Rel Protocolo Convênio (Raio-X)" }, { "id": "214", "form": "RelFat_RC", "en": "Report Revenue", "pt": "Rel Receitas" }, { "id": "222", "form": "RelFat_RE", "en": "Report Material Price per Insurance", "pt": "Rel Preço Material por Convênio" }, { "id": "225", "form": "RelFat_RF", "en": "Department Billing Summary Report", "pt": "Rel. Resumo Setor Faturamento" }, { "id": "226", "form": "RelFat_RG", "en": "Revenue per Sint. Revenue Group Report", "pt": "Rel. Receita por Grupo de Receita Sint." }, { "id": "217", "form": "RelFat_RM", "en": "Report Mat/Med Consumed per Surgery", "pt": "Rel. Mat/Med Consumidos por Cirurgia" }, { "id": "224", "form": "RelFat_RP", "en": "Package Profitability Report", "pt": "Rel. de Rentabilidade de Pacote" }, { "id": "219", "form": "RelFat_RS", "en": "Priceless Material Report", "pt": "Rel Materiais Sem Preço" }, { "id": "228", "form": "RelFat_RX", "en": "Insurance Protocol Report (X-Ray)", "pt": "Rel Protocolo Convênio (Raio-X)" }, { "id": "178", "form": "RelPes_Fc", "en": "Legal Entity Label", "pt": "Etiqueta Pessoa Jurídica" }, { "id": "317", "form": "RelSUS_F0", "en": "SUS Accounting Summary", "pt": "Resumo Contábil SUS" }, { "id": "315", "form": "RelSUS_F2", "en": "Orthosis, Prosthesis and Special Material Report", "pt": "Rel Ortese, Protese e Material Especial" }, { "id": "93", "form": "RelSUS_F3", "en": "SUS Accounting Summary", "pt": "Resumo Contábil SUS" }, { "id": "20", "form": "RelSus_F5", "en": "SUS Internal Report (AIH)", "pt": "Relatório SUS Interno (AIH)" }, { "id": "99001", "form": "RISMed_AT", "en": "RIS Encounter", "pt": "Atendimento RIS" }, { "id": "99003", "form": "RISMed_CA", "en": "RIS Administration Center", "pt": "Central Administrativa RIS" }, { "id": "99004", "form": "RISMed_CD", "en": "RIS Typing Center", "pt": "Central de Digitação RIS" }, { "id": "99002", "form": "RISMed_CL", "en": "RIS Report Center", "pt": "Central de Laudos RIS" }, { "id": "99006", "form": "RISMed_IE", "en": "RIS Infrastructure", "pt": "Infraestrutura RIS" }, { "id": "99007", "form": "RISMed_PR", "en": "RIS Professionals", "pt": "Profissionais RIS" }, { "id": "99005", "form": "RISMed_SU", "en": "RIS Support", "pt": "Suporte RIS" }, { "id": "1327", "form": "SCS_DM", "en": "HPMS - SCS Service", "pt": "OPS - Serviço SCS" }, { "id": "3130", "form": "SerTer_F1", "en": "Chemotherapy", "pt": "Quimioterapia" }, { "id": "476", "form": "SerTer_F2", "en": "Oncology Order Analysis", "pt": "Análise da Prescrição de Oncologia - APO" }, { "id": "99642", "form": "SWCF_DL", "en": "Data Transfer Tool - DTT", "pt": "Ferramenta de Transferência de Dados - FTD" }, { "id": "99646", "form": "SWCF_MW", "en": "Extension Management", "pt": "Gerenciamento de Extensões" }, { "id": "99650", "form": "SWCF_NR", "en": "SmartLink", "pt": "SmartLink" }, { "id": "99640", "form": "SWCF_SL", "en": "SmartLink", "pt": "SmartLink" }, { "id": "475", "form": "SWCF_SL", "en": "SWCF Testing", "pt": "Testes do SWCF" }, { "id": "245", "form": "TecManF0", "en": "Technology Management", "pt": "Technology Management" }, { "id": "9033", "form": "TecTes_F1", "en": "Technology Tests", "pt": "Testes da Tecnologia" }, { "id": "102", "form": "TecTes_F2", "en": "Demo Schematics", "pt": "Demo Schematics" }, { "id": "9004", "form": "UCorCad_F1", "en": "Core Tables Settings", "pt": "Cadastros Gerais" }, { "id": "711", "form": "UCorLab_FY", "en": "Lab Tests", "pt": "Exames Laboratoriais" }, { "id": "9003", "form": "UCorSis_FO", "en": "System Administration", "pt": "Administração do Sistema" }, { "id": "-709", "form": "UMedCad_FV", "en": "Exam Search Tool", "pt": "Localizador de Exames" }, { "id": "1256", "form": "WebPlsGM", "en": "OPSW - Medical form", "pt": "OPSW - Guia Médico" }, { "id": "374", "form": "WebSui_AC", "en": "Web Suite Concurrent Audit", "pt": "Auditoria Concorrente Web Suite" }, { "id": "9134", "form": "WebSui_ACP", "en": "Client Portal Management Web Suite", "pt": "Web Suite Administração Portal Cliente" }, { "id": "9112", "form": "WebSui_AD", "en": "Web Suite Management", "pt": "Administração Web Suite" }, { "id": "9129", "form": "WebSui_ADE", "en": "Electronic Medication Administration Record Web Suite", "pt": "Web Suite Adm. Eletrônica da Prescrição" }, { "id": "9137", "form": "WebSui_AG", "en": "Physician Schedulings Web Suite", "pt": "Web Suite Agendamentos do Médico" }, { "id": "9135", "form": "WebSui_AP", "en": "Pending Approval Portal Web Suite", "pt": "Web Suite Portal Aprovações Pendentes" }, { "id": "9113", "form": "WebSui_AP", "en": "Web Suite Patient Schedulings", "pt": "Web Suite Agendamentos do Paciente" }, { "id": "9118", "form": "WebSui_BE", "en": "Web Suite Beneficiary", "pt": "Web Suite Beneficiário" }, { "id": "9122", "form": "WebSui_CA", "en": "Web Suite HPMS Access Control", "pt": "Web Suite Controle de Acessos HPMS" }, { "id": "9130", "form": "WebSui_CE", "en": "Exam Collection Web Suite", "pt": "Web Suite Coleta de Exames" }, { "id": "479", "form": "WebSui_CM", "en": "HPMS Medical Accounts Web Suite", "pt": "Web Suite Contas Médicas HPMS" }, { "id": "9133", "form": "WebSui_CP", "en": "Customer Portal Web Suite", "pt": "Web Suite Portal do Cliente" }, { "id": "9138", "form": "WebSui_CPO", "en": "CPOE Web Suite", "pt": "Web Suite CPOE" }, { "id": "9136", "form": "WebSui_DC", "en": "Double Check Web Suite", "pt": "Web Suite Dupla Conferência" }, { "id": "9131", "form": "WebSui_EC", "en": "Submit Exam Collection Web Suite", "pt": "Web Suite Enviar Coleta de Exames" }, { "id": "9121", "form": "WebSui_ES", "en": "Contractor Web Suite", "pt": "Web Suite Estipulante" }, { "id": "9117", "form": "WebSui_ET", "en": "Web Suite Extranet", "pt": "Extranet Web Suite" }, { "id": "9124", "form": "WebSui_FH", "en": "Web Suite HPMS Financial", "pt": "Web Suite Financeiro HPMS" }, { "id": "9120", "form": "WebSui_FI", "en": "Finders", "pt": "Localizadores" }, { "id": "9126", "form": "WebSui_GC", "en": "Web Suite HPMS Contract Management", "pt": "Web Suite Gestão do Contrato HPMS" }, { "id": "9132", "form": "WebSui_GM", "en": "Medical Guide Web Suite", "pt": "Web Suite Guia Médico" }, { "id": "485", "form": "WebSui_MC", "en": "My Companion", "pt": "My Companion" }, { "id": "9125", "form": "WebSui_ME", "en": "Results Portal Web Suite", "pt": "Web Suite Portal de Resultados" }, { "id": "481", "form": "WebSui_PA", "en": "Adhesion Proposal Web Suite", "pt": "Web Suite Proposta de Adesão" }, { "id": "9127", "form": "WebSui_PE", "en": "Electronic Patient Chart Web Suite", "pt": "Web Suite Prontuário Eletrônico do Paciente" }, { "id": "9116", "form": "WebSui_PH", "en": "Healthcare Professional Web Suite", "pt": "Web Suite Profissional da Saúde" }, { "id": "9119", "form": "WebSui_PO", "en": "Web Suite Online Proposal Request", "pt": "Solicitação de Proposta Online Web Suite" }, { "id": "9114", "form": "WebSui_RE", "en": "Web Suite Exams Results", "pt": "Web Suite Resultado de Exames" }, { "id": "9128", "form": "WebSui_SV", "en": "Web Suite Vital Signs", "pt": "Web Suite Sinais Vitais" }, { "id": "9111", "form": "WebSui_WS", "en": "Web Suite Patient", "pt": "Paciente Web Suite" }, { "id": "458", "form": "WhebSui_CP", "en": "Provider Accreditation Web Suite", "pt": "Web Suite Credenciamento Prestador" }, { "id": "459", "form": "WhebSui_PR", "en": "Provider Web Suite", "pt": "Web Suite Prestador" }, { "id": "460", "form": "WhebSui_PS", "en": "Operator Portal Web Suite", "pt": "Web Suite Portal da Operadora" }, { "id": "38", "form": "wteste", "en": "Test", "pt": "Teste" }]
+      ;
+    const MODULES = ["AGFA", "AteDis", "AteIOS", "AtePac", "AteSus", "CenCom", "CenMat", "CenReq", "CihGra", "CihOco", "CihRel", "CMDK", "CodEon", "ComApr", "ComCad", "ComCot", "ComGes", "ComLic", "ComOrd", "ComRel", "ComSol", "ConInt", "Cor", "CorAp", "CorAte", "CorBi", "CorCad", "CorCom", "CorCon", "CorCpa", "CorCre", "CorCrg", "CorCtb", "CorEme", "CorEtq", "CorFin", "Corger", "CorGpi", "CORHIT", "CorInt", "CorLab", "CorMan", "CorMap", "CorNfe", "CorNfs", "CorOpe", "CorPar", "CorPCS", "CorPes", "CorPla", "CorPLS", "CorPri", "CorQua", "CorRes", "CorSac", "Corsan", "CorSeg", "CorSis", "CorSug", "CorSup", "CorTax", "CorTel", "CorTre", "CorVis", "CusApu", "CusBas", "CusFic", "CusMat", "CusOrc", "CusPad", "CusPre", "CusPro", "CusTax", "DesTes", "desTesF", "DisPed", "EisAte", "EisDes", "EisGer", "EtqDis", "EtqRel", "EtqReq", "EtqTab", "FarCad", "FarCom", "FarLoc", "FarPed", "FatAct", "FatPre", "FisCal", "FisPaf", "IOSPac", "IOSREP", "MedAte", "MedCad", "MedCfg", "MedCon", "MedEis", "MedEnt", "MedPes", "MedPre", "NICU", "PFCS", "RegEst", "RelAte", "RelCir", "RelCpa", "RelCre", "RelFat", "RelPes", "RelSUS", "RISMed", "SCS", "SerTer", "SWCF", "TecManF", "TecTes", "UCorCad", "UCorLab", "UCorSis", "UMedCad", "WebSui", "WhebSui"];
+
+    // ===================== STATE =====================
+    let selectedModules = [];
+    let selectedFeatures = new Set();
+    let moduleDropActive = -1;
+
+    // ===================== INIT =====================
+    function init() {
+      // Populate environments
+      const sel = document.getElementById('env-select');
+      Object.keys(ENVIRONMENTS).forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = key;
+        sel.appendChild(opt);
+      });
+      loadState();
+      renderFeatures('');
+      renderHistory();
+      buildCommand();
+    }
+
+    // ===================== ENVIRONMENT =====================
+    function updateEnvUrl() {
+      const key = document.getElementById('env-select').value;
+      const urlEl = document.getElementById('env-url');
+      if (key && ENVIRONMENTS[key]) {
+        urlEl.textContent = '⚡ ' + ENVIRONMENTS[key].backend;
+      } else {
+        urlEl.textContent = '';
+      }
+      buildCommand();
+    }
+
+    // ===================== MODULES =====================
+    function focusModuleInput() {
+      document.getElementById('module-input').focus();
+    }
+
+    function renderModuleTags() {
+      const wrap = document.getElementById('modules-tags');
+      wrap.innerHTML = '';
+      selectedModules.forEach((m, i) => {
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.innerHTML = m + '<button onclick="removeModule(\'' + m + '\')" title="Remove">×</button>';
+        wrap.appendChild(tag);
+      });
+    }
+
+    function removeModule(m) {
+      selectedModules = selectedModules.filter(x => x !== m);
+      renderModuleTags();
+      buildCommand();
+    }
+
+    function onModuleInput() {
+      const q = document.getElementById('module-input').value.trim().toLowerCase();
+      renderModuleDrop(q);
+    }
+
+    function onModuleFocus() {
+      const q = document.getElementById('module-input').value.trim().toLowerCase();
+      renderModuleDrop(q);
+    }
+
+    function onModuleBlur() {
+      setTimeout(() => {
+        document.getElementById('module-drop').style.display = 'none';
+        moduleDropActive = -1;
+      }, 180);
+    }
+
+    function renderModuleDrop(q) {
+      const drop = document.getElementById('module-drop');
+      const filtered = MODULES.filter(m => m.toLowerCase().includes(q) && !selectedModules.includes(m));
+      if (filtered.length === 0) { drop.style.display = 'none'; return; }
+      drop.innerHTML = '';
+      moduleDropActive = -1;
+      filtered.slice(0, 20).forEach((m, i) => {
+        const d = document.createElement('div');
+        d.className = 'autocomplete-item';
+        d.textContent = m;
+        d.onmousedown = () => addModule(m);
+        drop.appendChild(d);
+      });
+      drop.style.display = 'block';
+    }
+
+    function addModule(m) {
+      if (!selectedModules.includes(m)) {
+        selectedModules.push(m);
+        renderModuleTags();
+        buildCommand();
+      }
+      document.getElementById('module-input').value = '';
+      document.getElementById('module-drop').style.display = 'none';
+    }
+
+    function onModuleKeydown(e) {
+      const drop = document.getElementById('module-drop');
+      const items = drop.querySelectorAll('.autocomplete-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        moduleDropActive = Math.min(moduleDropActive + 1, items.length - 1);
+        items.forEach((el, i) => el.classList.toggle('active', i === moduleDropActive));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        moduleDropActive = Math.max(moduleDropActive - 1, -1);
+        items.forEach((el, i) => el.classList.toggle('active', i === moduleDropActive));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (moduleDropActive >= 0 && items[moduleDropActive]) {
+          items[moduleDropActive].onmousedown();
+        } else {
+          const val = document.getElementById('module-input').value.trim();
+          if (val) addModule(val);
+        }
+      } else if (e.key === 'Escape') {
+        drop.style.display = 'none';
+      } else if (e.key === 'Backspace' && document.getElementById('module-input').value === '') {
+        if (selectedModules.length > 0) {
+          selectedModules.pop();
+          renderModuleTags();
+          buildCommand();
+        }
+      }
+    }
+
+    // ===================== FEATURES =====================
+    function renderFeatures(query) {
+      const list = document.getElementById('features-list');
+      const q = query.trim().toLowerCase();
+      let filtered;
+      if (q.length === 0) {
+        filtered = FUNCTIONS.slice(0, 80);
+        document.getElementById('feat-count-label').textContent =
+          'Showing top 80 of ' + FUNCTIONS.length + ' — search to filter';
+      } else {
+        filtered = FUNCTIONS.filter(f =>
+          f.form.toLowerCase().includes(q) ||
+          (f.en && f.en.toLowerCase().includes(q)) ||
+          (f.pt && f.pt.toLowerCase().includes(q))
+        );
+        document.getElementById('feat-count-label').textContent =
+          filtered.length + ' result' + (filtered.length !== 1 ? 's' : '') + ' found';
+      }
+
+      list.innerHTML = '';
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="no-results">No matching features found</div>';
+        return;
+      }
+
+      const frag = document.createDocumentFragment();
+      filtered.forEach(f => {
+        const row = document.createElement('div');
+        row.className = 'feature-item' + (selectedFeatures.has(f.form) ? ' selected' : '');
+        row.onclick = () => toggleFeature(f.form, f.en);
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = selectedFeatures.has(f.form);
+        cb.onclick = (e) => { e.stopPropagation(); toggleFeature(f.form, f.en); };
+
+        const formSpan = document.createElement('span');
+        formSpan.className = 'feature-form';
+        formSpan.textContent = f.form;
+
+        const enSpan = document.createElement('span');
+        enSpan.className = 'feature-en';
+        enSpan.textContent = f.en + ' | ' + f.pt;
+
+        const idSpan = document.createElement('span');
+        idSpan.className = 'feature-id';
+        idSpan.textContent = '#' + f.id;
+
+        row.appendChild(cb);
+        row.appendChild(formSpan);
+        row.appendChild(enSpan);
+        row.appendChild(idSpan);
+        frag.appendChild(row);
+      });
+      list.appendChild(frag);
+    }
+
+    function filterFeatures() {
+      const q = document.getElementById('feat-search').value;
+      renderFeatures(q);
+    }
+
+    function toggleFeature(form, en) {
+      if (selectedFeatures.has(form)) {
+        selectedFeatures.delete(form);
+      } else {
+        selectedFeatures.add(form);
+      }
+      // re-render the list item state without full reload
+      const q = document.getElementById('feat-search').value;
+      renderFeatures(q);
+      renderSelectedFeatureTags();
+      buildCommand();
+    }
+
+    function renderSelectedFeatureTags() {
+      const container = document.getElementById('selected-features');
+      const badge = document.getElementById('feat-badge');
+      container.innerHTML = '';
+      badge.textContent = selectedFeatures.size + ' selected';
+      selectedFeatures.forEach(form => {
+        const tag = document.createElement('span');
+        tag.className = 'feat-tag';
+        tag.innerHTML = form + '<button onclick="removeFeature(\'' + form + '\')" title="Remove">×</button>';
+        container.appendChild(tag);
+      });
+    }
+
+    function removeFeature(form) {
+      selectedFeatures.delete(form);
+      const q = document.getElementById('feat-search').value;
+      renderFeatures(q);
+      renderSelectedFeatureTags();
+      buildCommand();
+    }
+
+    function clearFeatures() {
+      selectedFeatures.clear();
+      const q = document.getElementById('feat-search').value;
+      renderFeatures(q);
+      renderSelectedFeatureTags();
+      buildCommand();
+    }
+
+    // ===================== COMMAND BUILDER =====================
+    function buildCommand() {
+      const env = document.getElementById('env-select').value;
+      const modules = selectedModules;
+      const features = Array.from(selectedFeatures);
+      const mem = document.getElementById('mem-input').value;
+      const port = document.getElementById('port-input').value;
+
+      let parts = ['npm run dev --'];
+      if (env) parts.push('--environment ' + env);
+      if (modules.length > 0) parts.push('--modules "' + modules.join(' ') + '"');
+      if (features.length > 0) parts.push('--features "' + features.join(' ').replace(/_/g, '') + '"');
+      if (mem) parts.push('--max_old_space_size=' + mem);
+      if (port) parts.push('--port ' + port);
+
+      const cmd = parts.join(' ');
+      const el = document.getElementById('cmd-output');
+      el.innerHTML = '<span class="prompt">$ </span>' + escHtml(cmd);
+      el._cmd = cmd;
+
+      // Reset copy btn
+      const btn = document.getElementById('copy-btn');
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy to clipboard';
+      saveState();
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function copyCommand() {
+      const el = document.getElementById('cmd-output');
+      const cmd = el._cmd || el.textContent.replace(/^\$\s*/, '');
+      navigator.clipboard.writeText(cmd).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 12 4 10"/></svg> Copied!';
+      });
+    }
+
+    // ===================== LOCALSTORAGE =====================
+    const LS_STATE = 'tasy-cmd-state';
+    const LS_HISTORY = 'tasy-cmd-history';
+
+    function saveState() {
+      try {
+        const state = {
+          env: document.getElementById('env-select').value,
+          modules: selectedModules,
+          features: Array.from(selectedFeatures),
+          mem: document.getElementById('mem-input').value,
+          port: document.getElementById('port-input').value
+        };
+        localStorage.setItem(LS_STATE, JSON.stringify(state));
+      } catch (e) { }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(LS_STATE);
+        if (!raw) return;
+        const s = JSON.parse(raw);
+        if (s.env) {
+          document.getElementById('env-select').value = s.env;
+          const urlEl = document.getElementById('env-url');
+          if (ENVIRONMENTS[s.env]) urlEl.textContent = '\u26A1 ' + ENVIRONMENTS[s.env].backend;
+        }
+        if (Array.isArray(s.modules)) { selectedModules = s.modules; renderModuleTags(); }
+        if (Array.isArray(s.features)) { selectedFeatures = new Set(s.features); renderSelectedFeatureTags(); }
+        if (s.mem) document.getElementById('mem-input').value = s.mem;
+        if (s.port) document.getElementById('port-input').value = s.port;
+      } catch (e) { }
+    }
+
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem(LS_HISTORY) || '[]'); } catch (e) { return []; }
+    }
+
+    function saveToHistory() {
+      const nameInput = document.getElementById('history-name-input');
+      const name = nameInput.value.trim();
+      if (!name) { nameInput.focus(); return; }
+      const entry = {
+        name,
+        savedAt: new Date().toLocaleString(),
+        env: document.getElementById('env-select').value,
+        modules: [...selectedModules],
+        features: Array.from(selectedFeatures),
+        mem: document.getElementById('mem-input').value,
+        port: document.getElementById('port-input').value
+      };
+      const hist = getHistory();
+      hist.unshift(entry);
+      try { localStorage.setItem(LS_HISTORY, JSON.stringify(hist.slice(0, 20))); } catch (e) { }
+      nameInput.value = '';
+      renderHistory();
+    }
+
+    function loadFromHistory(idx) {
+      const hist = getHistory();
+      const s = hist[idx];
+      if (!s) return;
+      document.getElementById('env-select').value = s.env || '';
+      const urlEl = document.getElementById('env-url');
+      if (s.env && ENVIRONMENTS[s.env]) urlEl.textContent = '\u26A1 ' + ENVIRONMENTS[s.env].backend;
+      else urlEl.textContent = '';
+      selectedModules = s.modules || [];
+      renderModuleTags();
+      selectedFeatures = new Set(s.features || []);
+      renderSelectedFeatureTags();
+      renderFeatures(document.getElementById('feat-search').value);
+      if (s.mem) document.getElementById('mem-input').value = s.mem;
+      if (s.port) document.getElementById('port-input').value = s.port;
+      buildCommand();
+    }
+
+    function deleteFromHistory(idx) {
+      const hist = getHistory();
+      hist.splice(idx, 1);
+      try { localStorage.setItem(LS_HISTORY, JSON.stringify(hist)); } catch (e) { }
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const hist = getHistory();
+      const container = document.getElementById('history-list');
+      if (!container) return;
+      if (hist.length === 0) {
+        container.innerHTML = '<div class="history-empty">No saved configurations yet</div>';
+        return;
+      }
+      container.innerHTML = '';
+      hist.forEach(function (h, i) {
+        const row = document.createElement('div');
+        row.className = 'history-item';
+        row.innerHTML = '<span class="history-item-name"><b>' + escHtml(h.name) + ' </b></span>'
+          + '<span class="history-item-meta">' + escHtml(h.savedAt) + '</span>'
+          + '<button class="history-item-load" onclick="loadFromHistory(' + i + ')">Load</button>'
+          + '<button class="history-item-del" onclick="deleteFromHistory(' + i + ')" title="Delete">\uD83D\uDDD1</button>';
+        container.appendChild(row);
+      });
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
