@@ -478,6 +478,253 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #475569;
     }
+
+    .io-btns-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .export-btn {
+      flex: 1;
+      background: #1e3a5f;
+      color: #93c5fd;
+      border: 1px solid #1e40af;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .export-btn:hover {
+      background: #1e40af;
+    }
+
+    .import-btn {
+      flex: 1;
+      background: #1a2e1a;
+      color: #86efac;
+      border: 1px solid #166534;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .import-btn:hover {
+      background: #166534;
+    }
+
+    /* History list */
+    .history-list {
+      border: 1px solid #334155;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #0f172a;
+      margin-bottom: 12px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .history-empty {
+      text-align: center;
+      color: #475569;
+      padding: 24px 20px;
+      font-size: 0.85rem;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid #1e293b;
+      transition: background 0.12s;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-item:hover {
+      background: #162032;
+    }
+
+    .history-item-left {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .history-item-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+      flex-shrink: 0;
+    }
+
+    .history-item-chips {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .history-item-env-tag {
+      display: inline-block;
+      background: #0ea5e920;
+      color: #38bdf8;
+      border: 1px solid #0ea5e940;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .history-item-chip {
+      display: inline-block;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    .history-item-date {
+      font-size: 0.7rem;
+      color: #475569;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: auto;
+      padding-left: 8px;
+    }
+
+    .history-item-actions {
+      display: flex;
+      flex-direction: row;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .history-item-load {
+      background: #0ea5e9;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 13px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .history-item-load:hover {
+      background: #0284c7;
+    }
+
+    .history-item-del {
+      background: #2d1a1a;
+      border: 1px solid #7f1d1d;
+      border-radius: 6px;
+      color: #f87171;
+      cursor: pointer;
+      font-size: 0.82rem;
+      padding: 5px 9px;
+      transition: all 0.12s;
+      line-height: 1;
+    }
+
+    .history-item-del:hover {
+      background: #ef444430;
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+
+    /* Save config form */
+    .save-config-section {
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .save-config-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #64748b;
+      margin-bottom: 10px;
+    }
+
+    .save-history-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .save-history-input {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 9px 13px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .save-history-input:focus {
+      border-color: #0ea5e9;
+    }
+
+    .save-history-input::placeholder {
+      color: #475569;
+    }
+
+    .save-history-btn {
+      background: #0ea5e9;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .save-history-btn:hover {
+      background: #0284c7;
+    }
   </style>
 </head>
 
@@ -568,7 +815,7 @@
         </div>
         <div>
           <label for="port-input">--port</label>
-          <input type="number" id="port-input" value="4000" min="1024" max="65535" oninput="buildCommand()">
+          <input type="number" id="port-input" step="1000" value="3000" min="2000" max="65535" oninput="buildCommand()">
         </div>
       </div>
     </div>
@@ -605,10 +852,34 @@
       <div class="history-list" id="history-list">
         <div class="history-empty">No saved configurations yet</div>
       </div>
-      <div class="save-history-row">
-        <input class="save-history-input" id="history-name-input" placeholder="Configuration name..."
-          onkeydown="if(event.key==='Enter')saveToHistory()">
-        <button class="save-history-btn" onclick="saveToHistory()">Save Config</button>
+      <div class="save-config-section">
+        <div class="save-config-label">Save current configuration</div>
+        <div class="save-history-row">
+          <input class="save-history-input" id="history-name-input" placeholder="Configuration name..."
+            onkeydown="if(event.key==='Enter')saveToHistory()">
+          <button class="save-history-btn" onclick="saveToHistory()">Save Config</button>
+        </div>
+      </div>
+      <div class="io-btns-row">
+        <button class="export-btn" onclick="exportConfigs()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor"
+            stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Export JSON
+        </button>
+        <button class="import-btn" onclick="document.getElementById('import-file-input').click()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor"
+            stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          Import JSON
+        </button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importConfigs(event)">
       </div>
     </div>
   </div>
@@ -1072,6 +1343,39 @@
       renderHistory();
     }
 
+    function exportConfigs() {
+      const hist = getHistory();
+      if (hist.length === 0) { alert('No saved configurations to export.'); return; }
+      const blob = new Blob([JSON.stringify(hist, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tasy-dev-configs.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importConfigs(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!Array.isArray(imported)) throw new Error('Invalid format');
+          const existing = getHistory();
+          const merged = imported.concat(existing).slice(0, 20);
+          localStorage.setItem(LS_HISTORY, JSON.stringify(merged));
+          renderHistory();
+          alert('Imported ' + imported.length + ' configuration(s).');
+        } catch (err) {
+          alert('Failed to import: invalid JSON file.');
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
     function renderHistory() {
       const hist = getHistory();
       const container = document.getElementById('history-list');
@@ -1084,10 +1388,33 @@
       hist.forEach(function (h, i) {
         const row = document.createElement('div');
         row.className = 'history-item';
-        row.innerHTML = '<span class="history-item-name"><b>' + escHtml(h.name) + ' </b></span>'
-          + '<span class="history-item-meta">' + escHtml(h.savedAt) + '</span>'
+
+        const envTag = h.env
+          ? '<span class="history-item-env-tag">' + escHtml(h.env) + '</span>'
+          : '';
+        const featCount = (h.features || []).length;
+        const modCount = (h.modules || []).length;
+        const featChip = featCount > 0
+          ? '<span class="history-item-chip">' + featCount + ' feature' + (featCount !== 1 ? 's' : '') + '</span>'
+          : '';
+        const modChip = modCount > 0
+          ? '<span class="history-item-chip">' + modCount + ' module' + (modCount !== 1 ? 's' : '') + '</span>'
+          : '';
+        const portChip = h.port
+          ? '<span class="history-item-chip">:' + escHtml(String(h.port)) + '</span>'
+          : '';
+        const chips = [envTag, featChip, modChip, portChip].filter(Boolean).join('');
+
+        row.innerHTML =
+          '<div class="history-item-left">'
+          + '<div class="history-item-name">' + escHtml(h.name) + '</div>'
+          + (chips ? '<div class="history-item-chips">' + chips + '</div>' : '')
+          + '<div class="history-item-date">' + escHtml(h.savedAt) + '</div>'
+          + '</div>'
+          + '<div class="history-item-actions">'
           + '<button class="history-item-load" onclick="loadFromHistory(' + i + ')">Load</button>'
-          + '<button class="history-item-del" onclick="deleteFromHistory(' + i + ')" title="Delete">\uD83D\uDDD1</button>';
+          + '<button class="history-item-del" onclick="deleteFromHistory(' + i + ')" title="Delete">\uD83D\uDDD1</button>'
+          + '</div>';
         container.appendChild(row);
       });
     }
