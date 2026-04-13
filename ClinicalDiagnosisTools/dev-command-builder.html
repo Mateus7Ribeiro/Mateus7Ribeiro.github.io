@@ -814,8 +814,14 @@
           <input type="number" id="mem-input" value="8000" min="512" max="32768" step="512" oninput="buildCommand()">
         </div>
         <div>
-          <label for="port-input">--port</label>
-          <input type="number" id="port-input" step="1000" value="3000" min="2000" max="65535" oninput="buildCommand()">
+          <label for="port-input" style="display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="port-enabled" onchange="togglePort()"
+              style="width:auto;accent-color:#0ea5e9;cursor:pointer;">
+            --port <span id="port-optional-badge"
+              style="font-size:0.68rem;color:#475569;font-weight:400;">(optional)</span>
+          </label>
+          <input type="number" id="port-input" step="1000" value="3000" min="2000" max="65535" oninput="buildCommand()"
+            disabled style="opacity:0.35;cursor:not-allowed;">
         </div>
       </div>
     </div>
@@ -1220,6 +1226,15 @@
     }
 
     // ===================== COMMAND BUILDER =====================
+    function togglePort() {
+      const cb = document.getElementById('port-enabled');
+      const input = document.getElementById('port-input');
+      input.disabled = !cb.checked;
+      input.style.opacity = cb.checked ? '1' : '0.35';
+      input.style.cursor = cb.checked ? '' : 'not-allowed';
+      buildCommand();
+    }
+
     function buildCommand() {
       const env = document.getElementById('env-select').value;
       const modules = selectedModules;
@@ -1232,7 +1247,8 @@
       if (modules.length > 0) parts.push('--modules "' + modules.join(' ') + '"');
       if (features.length > 0) parts.push('--features "' + features.join(' ').replace(/_/g, '') + '"');
       if (mem) parts.push('--max_old_space_size=' + mem);
-      if (port) parts.push('--port ' + port);
+      const portEnabled = document.getElementById('port-enabled').checked;
+      if (portEnabled && port) parts.push('--port ' + port);
 
       const cmd = parts.join(' ');
       const el = document.getElementById('cmd-output');
@@ -1271,7 +1287,8 @@
           modules: selectedModules,
           features: Array.from(selectedFeatures),
           mem: document.getElementById('mem-input').value,
-          port: document.getElementById('port-input').value
+          port: document.getElementById('port-input').value,
+          portEnabled: document.getElementById('port-enabled').checked
         };
         localStorage.setItem(LS_STATE, JSON.stringify(state));
       } catch (e) { }
@@ -1291,6 +1308,11 @@
         if (Array.isArray(s.features)) { selectedFeatures = new Set(s.features); renderSelectedFeatureTags(); }
         if (s.mem) document.getElementById('mem-input').value = s.mem;
         if (s.port) document.getElementById('port-input').value = s.port;
+        if (s.portEnabled != null) {
+          const cb = document.getElementById('port-enabled');
+          cb.checked = s.portEnabled;
+          togglePort();
+        }
       } catch (e) { }
     }
 
@@ -1309,7 +1331,8 @@
         modules: [...selectedModules],
         features: Array.from(selectedFeatures),
         mem: document.getElementById('mem-input').value,
-        port: document.getElementById('port-input').value
+        port: document.getElementById('port-input').value,
+        portEnabled: document.getElementById('port-enabled').checked
       };
       const hist = getHistory();
       hist.unshift(entry);
@@ -1333,6 +1356,9 @@
       renderFeatures(document.getElementById('feat-search').value);
       if (s.mem) document.getElementById('mem-input').value = s.mem;
       if (s.port) document.getElementById('port-input').value = s.port;
+      const cb = document.getElementById('port-enabled');
+      cb.checked = s.portEnabled != null ? s.portEnabled : false;
+      togglePort();
       buildCommand();
     }
 
