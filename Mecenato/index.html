@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecenato - Sorteador</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3a405c, #1a1a2e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #f0c040;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.25);
+            color: #e0e0e0;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #f0c040;
+        }
+
+        textarea::placeholder {
+            color: #777;
+        }
+
+        .btn-sortear {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #f0c040, #e6a800);
+            color: #1a1a2e;
+            transition: transform 0.15s, box-shadow 0.3s;
+        }
+
+        .btn-sortear:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(240, 192, 64, 0.4);
+        }
+
+        .btn-sortear:active {
+            transform: scale(0.98);
+        }
+
+        .erro {
+            margin-top: 14px;
+            padding: 12px;
+            background: rgba(220, 50, 50, 0.2);
+            border: 1px solid rgba(220, 50, 50, 0.4);
+            border-radius: 8px;
+            color: #ff8a8a;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .resultado {
+            margin-top: 28px;
+            display: none;
+        }
+
+        .resultado h2 {
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            color: #f0c040;
+        }
+
+        .resultado-lista {
+            list-style: none;
+            padding: 0;
+        }
+
+        .resultado-lista li {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        .resultado-lista li .seta {
+            color: #f0c040;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .resultado-lista li .nome-de {
+            color: #8ecae6;
+            font-weight: 600;
+        }
+
+        .resultado-lista li .nome-para {
+            color: #95d5b2;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .btn-limpar {
+            display: none;
+            width: 100%;
+            margin-top: 12px;
+            padding: 10px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            background: transparent;
+            color: #ccc;
+            transition: background 0.2s;
+        }
+
+        .btn-limpar:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modo-individual {
+            margin-top: 28px;
+            display: none;
+        }
+
+        .modo-individual h2 {
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            color: #f0c040;
+        }
+
+        .card-participante {
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .card-participante:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .card-participante .nome {
+            font-weight: 600;
+            color: #8ecae6;
+        }
+
+        .card-participante .revelado {
+            color: #95d5b2;
+            font-weight: 600;
+        }
+
+        .card-participante .oculto {
+            color: #777;
+            font-style: italic;
+        }
+
+        .toggle-modo {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .toggle-modo input[type="checkbox"] {
+            accent-color: #f0c040;
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>&#127881; Mecenato</h1>
+        <p class="subtitle">Sorteador de troca de livros</p>
+
+        <label for="nomes">Insira os nomes dos participantes (um por linha):</label>
+        <textarea id="nomes" placeholder="Ana&#10;Bruno&#10;Carlos&#10;Diana&#10;Eduardo"></textarea>
+
+        <div class="toggle-modo">
+            <input type="checkbox" id="modoIndividual">
+            <label for="modoIndividual" style="margin:0; cursor:pointer;">Modo individual (cada um revela o seu)</label>
+        </div>
+
+        <button class="btn-sortear" onclick="sortear()">Sortear</button>
+
+        <div class="erro" id="erro"></div>
+
+        <div class="resultado" id="resultado">
+            <h2>Resultado do Sorteio:</h2>
+            <ul class="resultado-lista" id="resultadoLista"></ul>
+        </div>
+
+        <div class="modo-individual" id="modoIndividual-resultado">
+            <h2>Clique no seu nome para revelar:</h2>
+            <div id="cardsIndividuais"></div>
+        </div>
+
+        <button class="btn-limpar" id="btnLimpar" onclick="limpar()">Limpar e recomeçar</button>
+    </div>
+
+    <script src="sorteador.js"></script>
+</body>
+
+</html>
