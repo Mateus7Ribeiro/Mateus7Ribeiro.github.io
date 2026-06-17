@@ -1,40 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clinical Diagnosis Tools</title>
+  <title>Osíris Tools</title>
+  <link rel="icon" type="image/png" href="img/osiris.png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="menu.css">
 </head>
+
 <body>
   <div class="container">
-    <h2>Clinical Diagnosis Tools</h2>
-    <ul class="menu-item">
-      <li class="parent">
-        <spam class="titleItem" onclick="toggleSubMenu('menu1')">Ferramentas Gerais</spam>
-        <ul class="menu1 child">
-          <li class=""><a target="_blank" href="GerarVersionamento.html?osNumber=3186123&branches=art_pas_exams,5.04.1845,5.02.1839,5.02.1838,5.01.1835,dev,1.10.x,1.8.x,1.9.x&cherry=2824b48cb7e972416e6721d6abcfab978900409c">Ferramenta Versionamento GIT</a></li>
-          <li class=""><a target="_blank" href="ConfigurarProxyNPM.html">Configurar Proxy NPM</a></li>
-          <li class=""><a target="_blank" href="CasosDeTeste">Gerador de Casos de Teste</a></li>
-          <li class="new"><a target="_blank" href="JSONinTable.html">Converter JSON para Tabela (Capturar elementos schematics em tela)</a></li>
-          <li class="new"><a target="_blank" href="FormularioDefeitoCard.html">Formulário de Defeito - Card</a></li>
-          <li class="new"><a target="_blank" href="dev-command-builder.html">Tasy Dev Command Builder</a></li>
-        </ul>
-      </li>
-      <li class="parent">
-        <spam class="titleItem" onclick="toggleSubMenu('menu2')">Ferramentas SQL</spam>
-        <ul class="menu2 child">
-          <li class=""><a target="_blank" href="FormatarQuery.html">Formatar Query SQL para código</a></li>
-          <li class=""><a target="_blank" href="GerarLogsPragma.html">Gerar Script de Logs PLSQL</a></li>
-          <li class=""><a target="_blank" href="CapturaParametrosQuerySql.html">Capturar Parâmetros de uma Query SQL</a></li>
-          <li class=""><a target="_blank" href="GerarEstruturaDeTestesUtplsq.html">Gerar Estrutura Testes Utplsql</a></li>
-        </ul>
-      </li>
+    <h2><img src="img/osiris.png" alt="" style="height:35px;vertical-align:middle;margin-right:8px;margin-bottom:2px;">Osíris Tools</h2>
 
-    </ul>
+    <div class="menu">
+
+      <!-- Ferramentas Gerais -->
+      <div class="menu-group">
+        <div class="menu-header">Ferramentas Gerais</div>
+        <ul class="menu-items">
+          <!-- Dev Tools -->
+          <li class="section-label">Dev Tools</li>
+          <li><a target="_blank"
+              href="GerarVersionamento.html?osNumber=3186123&branches=art_pas_exams,5.04.1845,5.02.1839,5.02.1838,5.01.1835,dev,1.10.x,1.8.x,1.9.x&cherry=2824b48cb7e972416e6721d6abcfab978900409c">Ferramenta
+              Versionamento GIT</a></li>
+          <li><a target="_blank" href="ConfigurarProxyNPM.html">Configurar Proxy NPM</a></li>
+          <li><a target="_blank" href="dev-command-builder.html">Tasy Dev Command Builder <span
+                class="badge-new">NOVO</span></a></li>
+          <li><a target="_blank" href="GitDiffViewer.html">Visualizar arquivo diff do Git<span
+                class="badge-new">NOVO</span></a></li>
+             
+           <!-- Utilitários -->  
+          <li class="section-label">Utilitários</li>
+          <li><a target="_blank" href="CasosDeTeste">Gerador de Casos de Teste</a></li>
+          <li><a target="_blank" href="JSONinTable.html">Converter JSON para Tabela</a></li>
+          <li><a target="_blank" href="FormularioDefeitoCard.html">Formulário de Defeito - Card <span
+                class="badge-new">NOVO</span></a></li>
+        </ul>
+      </div>
+
+      <!-- Ferramentas SQL -->
+      <div class="menu-group">
+        <div class="menu-header">Ferramentas SQL</div>
+        <ul class="menu-items">
+          <!-- Formatação & Parâmetros -->
+          <li class="section-label">Formatação & Parâmetros</li>
+          <li><a target="_blank" href="FormatarQuery.html">Formatar Query SQL para código</a></li>
+          <li><a target="_blank" href="CapturaParametrosQuerySql.html">Capturar Parâmetros de uma Query SQL</a></li>
+          <!-- Geração de Código -->
+          <li class="section-label">Geração de Código</li>
+          <li><a target="_blank" href="GerarLogsPragma.html">Gerar Script de Logs PLSQL</a></li>
+          <li><a target="_blank" href="GerarEstruturaDeTestesUtplsq.html">Gerar Estrutura Testes Utplsql</a></li>
+        </ul>
+      </div>
+
+    </div>
   </div>
   <script src="index.js"></script>
-
 </body>
+
 </html>
