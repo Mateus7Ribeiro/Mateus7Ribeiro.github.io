@@ -206,7 +206,11 @@ function saveLastState() {
 
 function loadLastState() {
     const saved = localStorage.getItem(LAST_STATE_KEY);
-    if (saved) applyFormState(JSON.parse(saved));
+    if (saved) {
+        applyFormState(JSON.parse(saved));
+        return true;
+    }
+    return false;
 }
 
 function getProfiles() {
@@ -248,7 +252,7 @@ function loadProfile() {
 
 function deleteProfile() {
     const name = document.getElementById('profileSelect').value;
-    if (!name) { alert('Selecione um perfil para apagar.'); return; }
+    if (!name) { alert('Apagar o perfil para apagar.'); return; }
     if (!confirm(`Apagar o perfil "${name}"?`)) return;
     const profiles = getProfiles();
     delete profiles[name];
@@ -261,11 +265,16 @@ document.getElementById('osForm').addEventListener('input', saveLastState);
 document.getElementById('osForm').addEventListener('change', saveLastState);
 
 // Restaurar último estado e carregar perfis ao abrir
-loadLastState();
+const hadSavedState = loadLastState();
 refreshProfileSelect();
 
+// Query params sobrescrevem o estado salvo e re-salvam
 if (urlParams.size > 0) {
     applyValueToFieldId("osNumber");
     applyValueToFieldId("branches");
     applyValueToFieldId("cherry");
+    saveLastState();
+} else if (!hadSavedState) {
+    // Nenhum estado salvo e sem params: salva os defaults
+    saveLastState();
 }
