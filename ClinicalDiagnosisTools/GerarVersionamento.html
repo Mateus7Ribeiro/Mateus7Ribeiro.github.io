@@ -1,59 +1,66 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Formulário OS e Branches</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <h2>Formulário OS e Branches</h2>
-        
+
         <form id="osForm" action="" method="get">
             <label for="osNumber">Número da OS:</label>
             <input type="text" id="osNumber" name="osNumber"><br><br>
-            
+
             <label for="branches">Branches (separadas por vírgula):</label>
-            <input type="text" id="branches" name="branches" value="art_diagnosis,5.02.1839,5.02.1838,5.01.1835" required>
+            <input type="text" id="branches" name="branches" value="art_diagnosis,5.02.1839,5.02.1838,5.01.1835"
+                required>
             <input type="text" size="5" id="sufixo" name="sufixo" value="-B mr_"><br><br>
-            
+
             <label for="cherry">Cherry-pick (separados por vírgula):</label>
             <input type="text" id="cherry" name="cherry" value="">
-    
-            <select id="repository" name="repository"></select>
+
+            <input type="text" id="repository" name="repository" list="repositoryList"
+                placeholder="Selecione ou cole um repositório">
+            <datalist id="repositoryList"></datalist>
             <br><br>
-            
+
             <input type="checkbox" id="removeInitialCheckout" name="removeInitialCheckout" value="">
-            <label for="removeInitialCheckout">Remover checkout Inicial (main branch)</label><br>
+            <label for="removeInitialCheckout">Remover checkout Inicial (initial checkout)</label><br>
+
+            <input type="checkbox" id="removePull" name="removePull" checked>
+            <label for="removePull">Remover comando Pull</label><br>
 
             <input type="checkbox" id="removeBranchCheckout" name="removeBranchCheckout" value="">
             <label for="removeBranchCheckout">Remover checkout Branch</label><br>
-            
-            <input type="checkbox" id="removePull" name="removePull" checked>
-            <label for="removePull">Remover comando Pull</label><br>      
-			
+
             <input type="checkbox" id="removePush" name="removePush">
             <label for="removePush">Remover comando Push</label><br><br>
-            
+
             <!--
             <input type="checkbox" id="quebraBranchVersao" name="quebraBranchVersao">
             <label for="quebraBranchVersao">Considerar última parte da branch como a versão</label><br>
 			<br>
             -->
-        
-            
+
+
             <input class="metal-button" type="submit" value="Gerar Comandos">
         </form>
         <br>
         <div id="resultados"></div>
         <div class="code"><b>Comando para mostrar hash localmente</b>
- git log -1 --pretty=format:"%H"</div> 
+git log -1 --pretty=format:"%H"</div>
         <hr>
-         <button class="metal-button" type="button" onclick="createLinksPR()">Compare Branchs</button>
-         <button class="metal-button" type="button" onclick="createLinksEdit()">Editor GitHub</button>
-         <br><br>
-         <div id="links-github-edit"></div><br>
-         <a href="https://share.philips.com/sites/ArchitectureInnovation/SitePages/Git---Commit-Patterns.aspx">Commit-Pattern Reference Doc</a>
+        <button class="metal-button" type="button" onclick="createLinksPR()">Compare Branchs</button>
+        <button class="metal-button" type="button" onclick="createLinksEdit()">Editor GitHub</button>
+        <br><br>
+        <div id="links-github-edit"></div><br>
+        <a href="https://share.philips.com/sites/ArchitectureInnovation/SitePages/Git---Commit-Patterns.aspx">Commit-Pattern
+            Reference Doc</a>
     </div>
     <script src="versionamento.js"></script>
 </body>
+
 </html>
