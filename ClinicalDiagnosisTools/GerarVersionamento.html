@@ -17,7 +17,8 @@
             <label for="branches">Branches (separadas por vírgula):</label>
             <input type="text" id="branches" name="branches" value="art_diagnosis,5.02.1839,5.02.1838,5.01.1835"
                 required>
-            <input type="text" size="5" id="sufixo" name="sufixo" value="-B mr_"><br><br>
+            <input type="text" size="5" id="sufixo" name="sufixo" value="-B mr_{os}_{version}"
+                placeholder="Ex: -B mr_{os}_{version}  ou  -b {os}/{version}"><br><br>
 
             <label for="cherry">Cherry-pick (separados por vírgula):</label>
             <input type="text" id="cherry" name="cherry" value="">
@@ -51,7 +52,7 @@
         <br>
         <div id="resultados"></div>
         <div class="code"><b>Comando para mostrar hash localmente</b>
-git log -1 --pretty=format:"%H"</div>
+            git log -1 --pretty=format:"%H"</div>
         <hr>
         <button class="metal-button" type="button" onclick="createLinksPR()">Compare Branchs</button>
         <button class="metal-button" type="button" onclick="createLinksEdit()">Editor GitHub</button>

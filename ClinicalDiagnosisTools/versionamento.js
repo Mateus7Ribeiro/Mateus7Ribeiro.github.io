@@ -39,13 +39,13 @@ function createLinksPR() {
         const branchVersion = branch;
 
         const linkSpan = document.createElement("span");
-        const sufix = sufixBranches.split(" ");
+        const remoteBranch = sufixBranches.replace('{os}', osNumber).replace('{version}', branchVersion).replace(/^-[bB]\s*/, '');
 
         linkSpan.innerHTML += `${branch} -> `;
         for (let repository of arrayRepository) {
             const linkHref = document.createElement("a");
 
-            linkHref.href = `${repository}/compare/${branch}...${sufix[sufix.length - 1]}${osNumber}_${branchVersion}`;
+            linkHref.href = `${repository}/compare/${branch}...${remoteBranch}`;
             linkHref.textContent = ` ${branch}${arrayRepository.length > 1 ? ' | ' : ''}`;
 
             linkSpan.appendChild(linkHref);
@@ -134,8 +134,8 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         branch = branch.trim();
         const resultDiv = document.createElement("div");
         let branchVersion = branch;
-        const sufix = sufixBranches.split(" ");
-        const branchPrefix = sufix.length > 1 ? sufix[sufix.length - 1] : '';
+        const resolvedSufix = sufixBranches.replace('{os}', osNumber).replace('{version}', branchVersion);
+        const remoteBranch = resolvedSufix.replace(/^-[bB]\s*/, '');
 
 
         if (!removeInitialCheckout) {
@@ -147,7 +147,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         }
 
         if (!removeBranchCheckout) {
-            resultDiv.innerHTML += `<br>git checkout <edit>${sufixBranches}${branchPrefix ? '' : ' '}${branchPrefix}${osNumber}_${branchVersion}</edit> `;
+            resultDiv.innerHTML += `<br>git checkout <edit>${resolvedSufix}</edit> `;
         }
 
         if (!cherryArray[0] == '') {
@@ -158,7 +158,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         }
 
         if (!removePush) {
-            resultDiv.innerHTML += `<br>pause && git push origin <edit>${branchPrefix}${osNumber}_${branchVersion}</edit> `;
+            resultDiv.innerHTML += `<br>pause && git push origin <edit>${remoteBranch}</edit> `;
         }
         resultadosDiv.appendChild(resultDiv);
 
