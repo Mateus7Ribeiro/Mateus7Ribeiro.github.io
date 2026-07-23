@@ -177,6 +177,93 @@ this.preencheSelect("repositoryList", repositoryLinks);
 this.preencheInputText("repository", repositoryLinks[0]);
 this.preencheInputText("branches", branchesValues);
 
+// ===== PERFIS E PERSISTÊNCIA LOCAL =====
+const STORAGE_KEY = 'versionamento_profiles';
+const LAST_STATE_KEY = 'versionamento_lastState';
+
+const formFields = ['osNumber', 'branches', 'sufixo', 'cherry', 'repository'];
+const checkboxFields = ['removeInitialCheckout', 'removePull', 'removeBranchCheckout', 'removePush'];
+
+function getFormState() {
+    const state = {};
+    formFields.forEach(id => state[id] = document.getElementById(id).value);
+    checkboxFields.forEach(id => state[id] = document.getElementById(id).checked);
+    return state;
+}
+
+function applyFormState(state) {
+    formFields.forEach(id => {
+        if (state[id] !== undefined) document.getElementById(id).value = state[id];
+    });
+    checkboxFields.forEach(id => {
+        if (state[id] !== undefined) document.getElementById(id).checked = state[id];
+    });
+}
+
+function saveLastState() {
+    localStorage.setItem(LAST_STATE_KEY, JSON.stringify(getFormState()));
+}
+
+function loadLastState() {
+    const saved = localStorage.getItem(LAST_STATE_KEY);
+    if (saved) applyFormState(JSON.parse(saved));
+}
+
+function getProfiles() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+}
+
+function refreshProfileSelect() {
+    const select = document.getElementById('profileSelect');
+    const profiles = getProfiles();
+    select.innerHTML = '<option value="">-- Selecione um perfil --</option>';
+    Object.keys(profiles).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+    });
+}
+
+function saveProfile() {
+    const name = document.getElementById('profileName').value.trim();
+    if (!name) { alert('Digite um nome para o perfil.'); return; }
+    const profiles = getProfiles();
+    profiles[name] = getFormState();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+    document.getElementById('profileName').value = '';
+    refreshProfileSelect();
+    document.getElementById('profileSelect').value = name;
+}
+
+function loadProfile() {
+    const name = document.getElementById('profileSelect').value;
+    if (!name) { alert('Selecione um perfil para carregar.'); return; }
+    const profiles = getProfiles();
+    if (profiles[name]) {
+        applyFormState(profiles[name]);
+        saveLastState();
+    }
+}
+
+function deleteProfile() {
+    const name = document.getElementById('profileSelect').value;
+    if (!name) { alert('Selecione um perfil para apagar.'); return; }
+    if (!confirm(`Apagar o perfil "${name}"?`)) return;
+    const profiles = getProfiles();
+    delete profiles[name];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+    refreshProfileSelect();
+}
+
+// Auto-save ao alterar qualquer campo
+document.getElementById('osForm').addEventListener('input', saveLastState);
+document.getElementById('osForm').addEventListener('change', saveLastState);
+
+// Restaurar último estado e carregar perfis ao abrir
+loadLastState();
+refreshProfileSelect();
+
 if (urlParams.size > 0) {
     applyValueToFieldId("osNumber");
     applyValueToFieldId("branches");

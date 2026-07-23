@@ -10,6 +10,21 @@
     <div class="container">
         <h2>Formulário OS e Branches</h2>
 
+        <div id="profileSection" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
+            <label><b>Perfis salvos:</b></label>
+            <div style="display: flex; gap: 8px; margin-top: 5px; align-items: center;">
+                <select id="profileSelect" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="">-- Selecione um perfil --</option>
+                </select>
+                <button class="metal-button" type="button" onclick="loadProfile()">Carregar</button>
+                <button class="metal-button" type="button" onclick="deleteProfile()" style="background: #c0392b; color: white;">Apagar</button>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+                <input type="text" id="profileName" placeholder="Nome do perfil" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <button class="metal-button" type="button" onclick="saveProfile()">Salvar Perfil</button>
+            </div>
+        </div>
+
         <form id="osForm" action="" method="get">
             <label for="osNumber">Número da OS:</label>
             <input type="text" id="osNumber" name="osNumber"><br><br>
@@ -52,7 +67,7 @@
         <br>
         <div id="resultados"></div>
         <div class="code"><b>Comando para mostrar hash localmente</b>
-            git log -1 --pretty=format:"%H"</div>
+git log -1 --pretty=format:"%H"</div>
         <hr>
         <button class="metal-button" type="button" onclick="createLinksPR()">Compare Branchs</button>
         <button class="metal-button" type="button" onclick="createLinksEdit()">Editor GitHub</button>
