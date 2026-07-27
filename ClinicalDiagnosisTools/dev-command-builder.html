@@ -994,7 +994,7 @@
     const MODULES = ["AGFA", "AteDis", "AteIOS", "AtePac", "AteSus", "CenCom", "CenMat", "CenReq", "CihGra", "CihOco", "CihRel", "CMDK", "CodEon", "ComApr", "ComCad", "ComCot", "ComGes", "ComLic", "ComOrd", "ComRel", "ComSol", "ConInt", "Cor", "CorAp", "CorAte", "CorBi", "CorCad", "CorCom", "CorCon", "CorCpa", "CorCre", "CorCrg", "CorCtb", "CorEme", "CorEtq", "CorFin", "Corger", "CorGpi", "CORHIT", "CorInt", "CorLab", "CorMan", "CorMap", "CorNfe", "CorNfs", "CorOpe", "CorPar", "CorPCS", "CorPes", "CorPla", "CorPLS", "CorPri", "CorQua", "CorRes", "CorSac", "Corsan", "CorSeg", "CorSis", "CorSug", "CorSup", "CorTax", "CorTel", "CorTre", "CorVis", "CusApu", "CusBas", "CusFic", "CusMat", "CusOrc", "CusPad", "CusPre", "CusPro", "CusTax", "DesTes", "desTesF", "DisPed", "EisAte", "EisDes", "EisGer", "EtqDis", "EtqRel", "EtqReq", "EtqTab", "FarCad", "FarCom", "FarLoc", "FarPed", "FatAct", "FatPre", "FisCal", "FisPaf", "IOSPac", "IOSREP", "MedAte", "MedCad", "MedCfg", "MedCon", "MedEis", "MedEnt", "MedPes", "MedPre", "NICU", "PFCS", "RegEst", "RelAte", "RelCir", "RelCpa", "RelCre", "RelFat", "RelPes", "RelSUS", "RISMed", "SCS", "SerTer", "SWCF", "TecManF", "TecTes", "UCorCad", "UCorLab", "UCorSis", "UMedCad", "WebSui", "WhebSui"];
 
     // ===================== STATE =====================
-    let selectedModules = [];
+    let selectedModules = ['CorSis', 'CorAte', 'CorPes'];
     let selectedFeatures = new Set();
     let moduleDropActive = -1;
 
@@ -1009,6 +1009,7 @@
         sel.appendChild(opt);
       });
       loadState();
+      renderModuleTags();
       renderFeatures('');
       renderHistory();
       buildCommand();
@@ -1122,9 +1123,25 @@
     }
 
     // ===================== FEATURES =====================
+    function stripAccents(str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function fuzzyMatch(text, query) {
+      const t = stripAccents(text.toLowerCase());
+      const parts = stripAccents(query.trim().toLowerCase()).split(/\s+/);
+      let pos = 0;
+      for (const part of parts) {
+        const idx = t.indexOf(part, pos);
+        if (idx === -1) return false;
+        pos = idx + part.length;
+      }
+      return true;
+    }
+
     function renderFeatures(query) {
       const list = document.getElementById('features-list');
-      const q = query.trim().toLowerCase();
+      const q = query.trim();
       let filtered;
       if (q.length === 0) {
         filtered = FUNCTIONS.slice(0, 80);
@@ -1132,9 +1149,9 @@
           'Showing top 80 of ' + FUNCTIONS.length + ' — search to filter';
       } else {
         filtered = FUNCTIONS.filter(f =>
-          f.form.toLowerCase().includes(q) ||
-          (f.en && f.en.toLowerCase().includes(q)) ||
-          (f.pt && f.pt.toLowerCase().includes(q))
+          fuzzyMatch(f.form, q) ||
+          (f.en && fuzzyMatch(f.en, q)) ||
+          (f.pt && fuzzyMatch(f.pt, q))
         );
         document.getElementById('feat-count-label').textContent =
           filtered.length + ' result' + (filtered.length !== 1 ? 's' : '') + ' found';
@@ -1304,7 +1321,7 @@
           const urlEl = document.getElementById('env-url');
           if (ENVIRONMENTS[s.env]) urlEl.textContent = '\u26A1 ' + ENVIRONMENTS[s.env].backend;
         }
-        if (Array.isArray(s.modules)) { selectedModules = s.modules; renderModuleTags(); }
+        if (Array.isArray(s.modules) && s.modules.length > 0) { selectedModules = s.modules; renderModuleTags(); }
         if (Array.isArray(s.features)) { selectedFeatures = new Set(s.features); renderSelectedFeatureTags(); }
         if (s.mem) document.getElementById('mem-input').value = s.mem;
         if (s.port) document.getElementById('port-input').value = s.port;
