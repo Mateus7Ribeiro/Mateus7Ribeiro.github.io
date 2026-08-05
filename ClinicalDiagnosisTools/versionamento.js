@@ -2,13 +2,14 @@ const urlParams = new URLSearchParams(window.location.search);
 const repositoryLinks = [
     'https://github.com/philips-internal/emr-tasy-frontend',
     'https://github.com/philips-internal/emr-tasy-backend',
+    'https://github.com/philips-emr/tasy-plsql',
     'https://github.com/philips-internal/cci-tws-exam-service',
     'https://github.com/philips-internal/cci-tws-health-professional-application',
     'https://github.com/philips-internal/cci-tws-patient-application',
     'https://github.com/philips-internal/cci-tws-referring-physician-application'
 ];
 
-const branchesValues = 'art_pas_exams,5.04.1845,5.02.1839,5.02.1838,5.01.1835,dev,1.10.x,1.8.x,1.9.x'
+const branchesValues = 'art_pas_exams,5.06.1848,5.04.1845,5.03.1842,art_pas_exams,1848,1845,1842,dev,release/3.21.x,release/3.19.x,release/3.18.x'
 
 
 function preencheSelect(idSelect, items) {

@@ -68,9 +68,14 @@
         <div id="resultados"></div>
         <div class="code"><b>Comando para mostrar hash localmente</b>
 git log -1 --pretty=format:"%H"</div>
+        
+        <div class="code"><b>Comando para mudar a última mensagem de commit subida no github</b>
+git commit --amend -m "Mensagem aqui"
+git push --set-upstream origin {branch} --force-with-lease
+</div>
         <hr>
         <button class="metal-button" type="button" onclick="createLinksPR()">Compare Branchs</button>
-        <button class="metal-button" type="button" onclick="createLinksEdit()">Editor GitHub</button>
+        <!--<button class="metal-button" type="button" onclick="createLinksEdit()">Editor GitHub</button>-->
         <br><br>
         <div id="links-github-edit"></div><br>
         <a href="https://share.philips.com/sites/ArchitectureInnovation/SitePages/Git---Commit-Patterns.aspx">Commit-Pattern
