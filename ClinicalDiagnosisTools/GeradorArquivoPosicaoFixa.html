@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerador de Arquivo de Posição Fixa</title>
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --line: #e5e7eb;
+            --text: #111827;
+            --muted: #6b7280;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --ok: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--bg);
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 02px8px rgba(0, 0, 0, 0.04);
+        }
+
+        h1 {
+            margin: 008px;
+            font-size: 20px;
+        }
+
+        .muted {
+            margin: 0014px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .line-block {
+            margin-bottom: 16px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .line-header {
+            background: #f9fafb;
+            padding: 10px12px;
+            font-size: 13px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .line-body {
+            padding: 12px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 2fr90px90px120px;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .row:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            padding: 9px10px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .counter {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 10px14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        .secondary {
+            background: #374151;
+        }
+
+        .secondary:hover {
+            background: #1f2937;
+        }
+
+        #resultado,
+        #importInput {
+            min-height: 170px;
+            resize: vertical;
+            font-family: Consolas, monospace;
+            white-space: pre;
+        }
+
+        #importInput {
+            min-height: 120px;
+            font-size: 12px;
+        }
+
+        #status,
+        #importStatus {
+            margin-top: 8px;
+            min-height: 16px;
+            font-size: 12px;
+            color: var(--ok);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Gerador de Linhas \- Arquivo Texto</h1>
+            <p class="muted">
+                Cole abaixo os dados no formato:<br>
+                <code>[seq; linha; ATRIBUTO; posição; VALOR],</code><br>
+                Separadores aceitos: <b>;</b> (ponto e vírgula) ou <b>Tab</b>. O 5º campo é o valor a preencher.
+            </p>
+            <label for="importInput">Dados para preencher os campos</label>
+            <textarea id="importInput"
+                placeholder="[2;	11;	NR_PRESCRICAO;	3;	123456],&#10;[3;	11;	NM_PACIENTE;	15;	João da Silva],&#10;..."></textarea>
+            <div class="actions">
+                <button type="button" onclick="importarValores()">Preencher campos</button>
+            </div>
+            <div id="importStatus"></div>
+        </div>
+
+        <div class="card">
+            <p class="muted">
+                Preencha os campos \(`maxlength` aplicado por `length`\). O `CD_TIPO_REGISTRO` é automático por linha.
+            </p>
+            <div id="formContainer"></div>
+            <div class="actions">
+                <button type="button" onclick="gerarConteudo()">Gerar conteúdo</button>
+                <button type="button" class="secondary" onclick="limparCampos()">Limpar</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <label for="resultado">Conteúdo final para copiar</label>
+            <textarea id="resultado" readonly></textarea>
+            <div class="actions">
+                <button type="button" onclick="copiarResultado()">Copiar conteúdo</button>
+            </div>
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        const definicoes = [
+            [1, 11, "CD_TIPO_REGISTRO", 1, 2], [2, 11, "NR_PRESCRICAO", 3, 12], [3, 11, "NM_PACIENTE", 15, 50], [5, 11, "DT_NASCIMENTO", 65, 8], [6, 11, "IE_SEXO", 73, 1], [7, 11, "IE_COR", 74, 1], [8, 11, "IE_RESERVADO", 75, 174], [9, 11, "IE_DIGITO", 249, 2],
+            [1, 20, "CD_TIPO_REGISTRO", 1, 2], [2, 20, "DS_AMOSTRA", 3, 12], [3, 20, "IE_RESERVADO", 15, 7], [4, 20, "QT_DILUICAO", 22, 7], [5, 20, "CD_AGRUPAMENTO", 29, 12], [6, 20, "CD_LABORATORIO", 41, 8], [7, 20, "CD_INSTRUMENTO", 49, 6], [8, 20, "NR_PRESCRICAO", 55, 12], [9, 20, "IE_ORIGEM", 67, 8], [10, 20, "CD_MATERIAL", 75, 8], [11, 20, "CD_RACK", 83, 6], [12, 20, "DT_COLETA", 89, 8], [13, 20, "DS_OBSERVACAO", 97, 80], [14, 20, "CD_ESCANINHO", 177, 6], [15, 20, "IE_RESERVADO2", 183, 66], [16, 20, "IE_DIGITO", 249, 2],
+            [1, 21, "CD_TIPO_REGISTRO", 1, 2], [2, 21, "CD_EXAME", 3, 8], [3, 21, "CD_PARAMETRO", 11, 8], [4, 21, "DS_RESULTADO", 19, 80], [5, 21, "IE_RESERVADO", 99, 118], [6, 21, "DT_RESULTADO", 217, 8], [7, 21, "HR_RESULTADO", 225, 4], [8, 21, "DT_LIBERACAO", 229, 8], [9, 21, "HR_LIBERACAO", 237, 4], [10, 21, "NM_OPERADOR", 241, 8], [11, 21, "IE_DIGITO", 249, 2],
+            [1, 22, "CD_TIPO_REGISTRO", 1, 2], [2, 22, "QT_LINHAS", 3, 5], [3, 22, "IE_DIGITO", 8, 2],
+            [1, 23, "CD_TIPO_REGISTRO", 1, 2], [2, 23, "CD_EXAME", 3, 8], [3, 23, "CD_FLAG", 11, 8], [4, 23, "DS_FLAG", 19, 80], [5, 23, "IE_RESERVADO", 99, 150], [6, 23, "IE_DIGITO", 249, 2],
+            [1, 24, "CD_TIPO_REGISTRO", 1, 2], [2, 24, "CD_EXAME", 3, 8], [3, 24, "CD_PARAMETRO", 11, 8], [4, 24, "DS_RESULTADO", 19, 80], [5, 24, "IE_RESERVADO", 99, 116], [6, 24, "NR_RESULTADO", 215, 2], [7, 24, "DT_RESULTADO", 217, 8], [8, 24, "HR_RESULTADO", 225, 4], [9, 24, "DT_LIBERACAO", 229, 8], [10, 24, "HR_LIBERACAO", 237, 4], [11, 24, "NM_OPERADOR", 241, 8], [12, 24, "IE_DIGITO", 249, 2]
+        ];
+
+        const agrupado = definicoes.reduce((acc, [seq, linha, atributo, pos, len]) => {
+            if (!acc[linha]) acc[linha] = [];
+            acc[linha].push({ seq, linha, atributo, pos, len });
+            return acc;
+        }, {});
+
+        function importarValores() {
+            const texto = document.getElementById("importInput").value.trim();
+            if (!texto) {
+                document.getElementById("importStatus").textContent = "Cole os dados no campo acima.";
+                document.getElementById("importStatus").style.color = "#dc2626";
+                return;
+            }
+            const linhas = texto.split(/\n/);
+            let preenchidos = 0;
+
+            for (const linha of linhas) {
+                const limpa = linha.replace(/^\s*\[?/, "").replace(/\]?,?\s*$/, "").trim();
+                if (!limpa) continue;
+                const partes = limpa.split(/[;\t]+/).map(p => p.trim());
+                if (partes.length < 5) continue;
+                const tipoLinha = partes[1];
+                const atributo = partes[2];
+                if (atributo === "CD_TIPO_REGISTRO") continue;
+                const valor = partes.slice(4).join(";").trim();
+                const input = document.getElementById(`campo_${tipoLinha}_${atributo}`);
+                if (input) {
+                    input.value = valor;
+                    const counter = document.getElementById(`counter_${input.id}`);
+                    if (counter) counter.textContent = `${input.value.length}/${input.dataset.len}`;
+                    preenchidos++;
+                }
+            }
+
+            document.getElementById("importStatus").textContent = preenchidos > 0
+                ? `${preenchidos} campo(s) preenchido(s).`
+                : "Nenhum campo reconhecido. Verifique se os nomes e tipos de linha correspondem ao formulário.";
+            document.getElementById("importStatus").style.color = preenchidos > 0 ? "var(--ok)" : "#dc2626";
+        }
+
+        function padRight(text, len) {
+            const t = (text || "");
+            return t.length >= len ? t.substring(0, len) : t.padEnd(len, " ");
+        }
+
+        function criarFormulario() {
+            const container = document.getElementById("formContainer");
+            container.innerHTML = "";
+
+            Object.keys(agrupado).sort((a, b) => Number(a) - Number(b)).forEach((linha) => {
+                const bloco = document.createElement("div");
+                bloco.className = "line-block";
+
+                const header = document.createElement("div");
+                header.className = "line-header";
+                header.textContent = "Linha " + linha + " \- CD\\_TIPO\\_REGISTRO automático: " + linha;
+
+                const body = document.createElement("div");
+                body.className = "line-body";
+
+                agrupado[linha]
+                    .sort((a, b) => a.seq - b.seq)
+                    .forEach((campo) => {
+                        if (campo.atributo === "CD_TIPO_REGISTRO") return;
+
+                        const row = document.createElement("div");
+                        row.className = "row";
+
+                        const field = document.createElement("div");
+                        const label = document.createElement("label");
+                        const id = `campo_${linha}_${campo.atributo}`;
+                        label.setAttribute("for", id);
+                        label.textContent = campo.atributo;
+
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.id = id;
+                        input.maxLength = campo.len;
+                        input.dataset.len = campo.len;
+                        input.placeholder = `até ${campo.len} caracteres`;
+
+                        const counter = document.createElement("div");
+                        counter.className = "counter";
+                        counter.id = `counter_${id}`;
+                        counter.textContent = `0/${campo.len}`;
+
+                        input.addEventListener("input", () => {
+                            counter.textContent = `${input.value.length}/${campo.len}`;
+                        });
+
+                        field.appendChild(label);
+                        field.appendChild(input);
+                        field.appendChild(counter);
+
+                        row.appendChild(field);
+                        body.appendChild(row);
+                    });
+
+                bloco.appendChild(header);
+                bloco.appendChild(body);
+                container.appendChild(bloco);
+            });
+        }
+
+        function gerarConteudo() {
+            const linhas = [];
+
+            Object.keys(agrupado).sort((a, b) => Number(a) - Number(b)).forEach((linha) => {
+                let textoLinha = "";
+
+                agrupado[linha]
+                    .sort((a, b) => a.seq - b.seq)
+                    .forEach((campo) => {
+                        if (campo.atributo === "CD_TIPO_REGISTRO") {
+                            textoLinha += padRight(String(linha), campo.len);
+                            return;
+                        }
+
+                        const id = `campo_${linha}_${campo.atributo}`;
+                        const valor = document.getElementById(id).value || "";
+                        textoLinha += padRight(valor, campo.len);
+                    });
+
+                linhas.push(textoLinha);
+            });
+
+            const resultado = linhas.join("\n");
+            document.getElementById("resultado").value = resultado;
+            document.getElementById("status").textContent =
+                `Conteúdo gerado com sucesso. ${linhas.length} linha(s).`;
+        }
+
+        function limparCampos() {
+            document.querySelectorAll("input[type='text']").forEach((input) => {
+                input.value = "";
+                const c = document.getElementById(`counter_${input.id}`);
+                if (c) c.textContent = `0/${input.dataset.len}`;
+            });
+            document.getElementById("resultado").value = "";
+            document.getElementById("status").textContent = "";
+        }
+
+        async function copiarResultado() {
+            const area = document.getElementById("resultado");
+            if (!area.value) {
+                document.getElementById("status").textContent = "Nada para copiar.";
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(area.value);
+            } catch (e) {
+                area.select();
+                document.execCommand("copy");
+            }
+            document.getElementById("status").textContent = "Conteúdo copiado com sucesso.";
+        }
+
+        criarFormulario();
+    </script>
+</body>
+
+</html>

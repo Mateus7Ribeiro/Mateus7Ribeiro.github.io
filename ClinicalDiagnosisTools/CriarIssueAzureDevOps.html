@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Issue - Azure DevOps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+            margin-top: 18px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 28px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .secondary-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .secondary-buttons button {
+            margin-top: 0;
+            font-size: 13px;
+            padding: 10px;
+            background: #f1f2f6;
+            color: #333;
+            box-shadow: none;
+            border: 2px solid #ddd;
+        }
+
+        .secondary-buttons button:hover {
+            transform: none;
+            border-color: #667eea;
+            box-shadow: none;
+        }
+
+        .status-msg {
+            text-align: center;
+            font-size: 12px;
+            color: #059669;
+            margin-top: 10px;
+            min-height: 16px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🐞 Criar Issue no Azure DevOps</h1>
+        <p class="subtitle">Preencha os campos e o formulário abrirá o card já preenchido para revisão e salvamento
+            (via GET, usando sua sessão logada no Azure DevOps).</p>
+
+        <form id="issueForm">
+            <label for="titulo">Título *</label>
+            <input type="text" id="titulo" name="titulo" required placeholder="Ex: Erro ao gerar arquivo de posição">
+
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" placeholder="Descreva o problema ou solicitação..."></textarea>
+
+            <label for="responsavel">Responsável</label>
+            <input type="email" id="responsavel" name="responsavel" placeholder="nome.sobrenome@philips.com">
+            
+            <label for="area">Area</label>
+            <input type="text" id="area" name="area" placeholder="EMR\Time Alpha">
+            <div class="hint">Caminho completo da area, ex: EMR\Time Alpha</div>
+
+            <label for="iteration">Iteration</label>
+            <input type="text" id="iteration" name="iteration" placeholder="EMR\Sprint 1">
+            <div class="hint">Caminho completo da iteration, ex: EMR\Release 10\Sprint 3</div>
+
+
+            <button type="submit">Criar Issue no Azure DevOps</button>
+
+            <div class="secondary-buttons">
+                <button type="button" id="saveJsonBtn">💾 Salvar JSON</button>
+                <button type="button" id="loadJsonBtn">📂 Carregar JSON</button>
+                <button type="button" id="clearBtn">🗑️ Limpar</button>
+            </div>
+            <input type="file" id="fileInput" accept="application/json">
+            <div class="status-msg" id="statusMsg"></div>
+        </form>
+    </div>
+
+    <script>
+        // Ajuste organization/project conforme o board de destino
+        const AZURE_ORG = 'emr-cm';
+        const AZURE_PROJECT = 'EMR';
+        const WORK_ITEM_TYPE = 'Issue';
+        const STORAGE_KEY = 'criarIssueAzureDevOps.formData';
+        const FIELD_IDS = ['titulo', 'descricao', 'responsavel', 'iteration', 'area'];
+
+        const form = document.getElementById('issueForm');
+        const statusMsg = document.getElementById('statusMsg');
+        const fileInput = document.getElementById('fileInput');
+
+        function getFormData() {
+            const data = {};
+            FIELD_IDS.forEach(id => data[id] = document.getElementById(id).value);
+            return data;
+        }
+
+        function applyFormData(data) {
+            FIELD_IDS.forEach(id => {
+                if (data[id] !== undefined) document.getElementById(id).value = data[id];
+            });
+        }
+
+        function showStatus(message) {
+            statusMsg.textContent = message;
+            setTimeout(() => { statusMsg.textContent = ''; }, 3000);
+        }
+
+        // Persiste automaticamente no localStorage a cada alteração (sobrevive ao F5)
+        function persistToLocalStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
+        }
+        FIELD_IDS.forEach(id => {
+            document.getElementById(id).addEventListener('input', persistToLocalStorage);
+        });
+
+        // Restaura os dados salvos ao carregar a página
+        (function restoreFromLocalStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try { applyFormData(JSON.parse(saved)); } catch (err) { /* dados corrompidos, ignora */ }
+            }
+        })();
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const titulo = document.getElementById('titulo').value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            const responsavel = document.getElementById('responsavel').value.trim();
+            const iteration = document.getElementById('iteration').value.trim();
+            const area = document.getElementById('area').value.trim();
+
+            const fields = {
+                '[System.Title]': titulo,
+                '[System.Description]': descricao,
+                '[System.AssignedTo]': responsavel,
+                '[System.IterationPath]': iteration,
+                '[System.AreaPath]': area
+            };
+
+            const params = Object.entries(fields)
+                .filter(([, value]) => value)
+                .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+                .join('&');
+
+            const url = `https://dev.azure.com/${AZURE_ORG}/${AZURE_PROJECT}/_workitems/create/${WORK_ITEM_TYPE}?${params}`;
+
+            // Navega via GET (usa a sessão já autenticada do usuário no Azure DevOps)
+            window.open(url, '_blank');
+        });
+
+        document.getElementById('saveJsonBtn').addEventListener('click', function () {
+            const data = getFormData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            const nomeArquivo = (data.titulo || 'issue').replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+            link.download = `issue_${nomeArquivo}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showStatus('JSON salvo com sucesso!');
+        });
+
+        document.getElementById('loadJsonBtn').addEventListener('click', function () {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function () {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    applyFormData(data);
+                    persistToLocalStorage();
+                    showStatus('JSON carregado com sucesso!');
+                } catch (err) {
+                    showStatus('Erro ao ler o arquivo JSON.');
+                }
+            };
+            reader.readAsText(file);
+            fileInput.value = '';
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', function () {
+            form.reset();
+            localStorage.removeItem(STORAGE_KEY);
+            showStatus('Formulário limpo.');
+        });
+    </script>
+</body>
+
+</html>
