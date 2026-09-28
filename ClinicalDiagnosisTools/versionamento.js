@@ -27,6 +27,22 @@ function preencheInputText(idInput, value) {
     document.getElementById(idInput).value = value
 }
 
+function resolveBranchTemplate(template, osNumber, branchVersion) {
+    const removeDirective = template.match(/\s+-remove\s+(['"])(.*?)\1\s*$/i);
+    let resolvedTemplate = (removeDirective ? template.slice(0, removeDirective.index) : template)
+        .replace('{os}', osNumber)
+        .replace('{version}', branchVersion);
+
+    if (removeDirective) {
+        const patternsToRemove = removeDirective[2].split(',').map(pattern => pattern.trim()).filter(Boolean);
+        patternsToRemove.forEach(pattern => {
+            resolvedTemplate = resolvedTemplate.split(pattern).join('');
+        });
+    }
+
+    return resolvedTemplate;
+}
+
 function createLinksPR() {
     const linksGithubEdit = document.getElementById("links-github-edit");
     const arrayRepository = document.getElementById("repository").value.split(',');
@@ -40,7 +56,7 @@ function createLinksPR() {
         const branchVersion = branch;
 
         const linkSpan = document.createElement("span");
-        const remoteBranch = sufixBranches.replace('{os}', osNumber).replace('{version}', branchVersion).replace(/^-[bB]\s*/, '');
+        const remoteBranch = resolveBranchTemplate(sufixBranches, osNumber, branchVersion).replace(/^-[bB]\s*/, '');
 
         linkSpan.innerHTML += `${branch} -> `;
         for (let repository of arrayRepository) {
@@ -135,7 +151,7 @@ document.getElementById("osForm").addEventListener("submit", (event) => {
         branch = branch.trim();
         const resultDiv = document.createElement("div");
         let branchVersion = branch;
-        const resolvedSufix = sufixBranches.replace('{os}', osNumber).replace('{version}', branchVersion);
+        const resolvedSufix = resolveBranchTemplate(sufixBranches, osNumber, branchVersion);
         const remoteBranch = resolvedSufix.replace(/^-[bB]\s*/, '');
 
 
