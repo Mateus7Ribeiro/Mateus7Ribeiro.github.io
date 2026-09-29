@@ -1144,7 +1144,9 @@
       const q = query.trim();
       let filtered;
       if (q.length === 0) {
-        filtered = FUNCTIONS.slice(0, 80);
+        filtered = FUNCTIONS.slice().sort((a, b) =>
+          Number(selectedFeatures.has(b.form)) - Number(selectedFeatures.has(a.form))
+        ).slice(0, 80);
         document.getElementById('feat-count-label').textContent =
           'Showing top 80 of ' + FUNCTIONS.length + ' — search to filter';
       } else {
@@ -1152,6 +1154,8 @@
           fuzzyMatch(f.form, q) ||
           (f.en && fuzzyMatch(f.en, q)) ||
           (f.pt && fuzzyMatch(f.pt, q))
+        ).sort((a, b) =>
+          Number(selectedFeatures.has(b.form)) - Number(selectedFeatures.has(a.form))
         );
         document.getElementById('feat-count-label').textContent =
           filtered.length + ' result' + (filtered.length !== 1 ? 's' : '') + ' found';
