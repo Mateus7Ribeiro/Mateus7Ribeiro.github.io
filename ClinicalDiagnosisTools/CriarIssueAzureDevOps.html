@@ -163,6 +163,102 @@
             color: #302a78;
         }
 
+        .token-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .token-label-row label {
+            margin-bottom: 6px;
+        }
+
+        .token-help-button {
+            width: auto;
+            margin: 14px 0 4px;
+            padding: 5px 9px;
+            color: #3156b8;
+            background: #f1f2f6;
+            border: 1px solid #d9deea;
+            border-radius: 6px;
+            box-shadow: none;
+            font-size: 12px;
+        }
+
+        .token-help-button:hover {
+            transform: none;
+            box-shadow: none;
+            background: #e8ecf7;
+        }
+
+        #tokenHelpDialog {
+            width: min(760px, calc(100% - 32px));
+            max-height: calc(100vh - 32px);
+            margin: auto;
+            padding: 0;
+            border: 0;
+            border-radius: 10px;
+            color: #333;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.3);
+        }
+
+        #tokenHelpDialog::backdrop {
+            background: rgba(20, 25, 40, 0.62);
+        }
+
+        .token-help-content {
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .token-help-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .token-help-header h2 {
+            font-size: 20px;
+        }
+
+        .token-help-close {
+            width: auto;
+            margin: 0;
+            padding: 6px 10px;
+            color: #333;
+            background: #f1f2f6;
+            border: 1px solid #ddd;
+            box-shadow: none;
+            font-size: 14px;
+        }
+
+        .token-help-close:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .token-help-content p {
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .token-help-content a {
+            color: #3156b8;
+        }
+
+        .token-help-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-top: 18px;
+            border: 1px solid #d9deea;
+            border-radius: 6px;
+        }
+
         #fileInput {
             display: none;
         }
@@ -196,7 +292,10 @@
             <label for="parent">Parent</label>
             <input type="text" id="parent" name="parent" inputmode="numeric" placeholder="Código do card pai">
 
-            <label for="azurePat">Token pessoal do Azure DevOps *</label>
+            <div class="token-label-row">
+                <label for="azurePat">Token pessoal do Azure DevOps *</label>
+                <button type="button" class="token-help-button" id="tokenHelpButton">ⓘ Como criar o token</button>
+            </div>
             <input type="password" id="azurePat" name="azurePat" required autocomplete="off"
                 placeholder="PAT com escopo Work Items: Read & write">
             <div class="hint">Salvo sem criptografia no LocalStorage deste navegador. Não é incluído nos arquivos JSON; qualquer pessoa com acesso ao seu perfil poderá recuperá-lo.</div>
@@ -211,6 +310,18 @@
             <input type="file" id="fileInput" accept="application/json">
             <div class="status-msg" id="statusMsg"></div>
         </form>
+
+        <dialog id="tokenHelpDialog" aria-labelledby="tokenHelpTitle">
+            <div class="token-help-content">
+                <div class="token-help-header">
+                    <h2 id="tokenHelpTitle">Criar token do Azure DevOps</h2>
+                    <button type="button" class="token-help-close" id="closeTokenHelpButton" aria-label="Fechar">Fechar</button>
+                </div>
+                <p><a href="https://dev.azure.com/emr-cm/_usersSettings/tokens" target="_blank" rel="noopener noreferrer">Abrir a página de tokens do Azure DevOps</a></p>
+                <p>Para esta ferramenta, selecione somente a permissão <strong>Work Items: Read & write</strong>. Não é necessário conceder outros escopos.</p>
+                <img class="token-help-image" src="img/tokenAzure.jpg" alt="Permissão Work Items: Read & write selecionada na criação do token do Azure DevOps">
+            </div>
+        </dialog>
 
         <section class="created-issues" id="createdIssuesSection" aria-labelledby="createdIssuesTitle" hidden>
             <h2 id="createdIssuesTitle">Issues criados</h2>
@@ -237,6 +348,7 @@
         const statusMsg = document.getElementById('statusMsg');
         const fileInput = document.getElementById('fileInput');
         const tokenInput = document.getElementById('azurePat');
+        const tokenHelpDialog = document.getElementById('tokenHelpDialog');
         const createdIssuesSection = document.getElementById('createdIssuesSection');
         const createdIssueList = document.getElementById('createdIssueList');
         let statusTimeout;
@@ -311,6 +423,18 @@
         tokenInput.addEventListener('input', function () {
             if (tokenInput.value) localStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.value);
             else localStorage.removeItem(TOKEN_STORAGE_KEY);
+        });
+
+        document.getElementById('tokenHelpButton').addEventListener('click', function () {
+            tokenHelpDialog.showModal();
+        });
+
+        document.getElementById('closeTokenHelpButton').addEventListener('click', function () {
+            tokenHelpDialog.close();
+        });
+
+        tokenHelpDialog.addEventListener('click', function (event) {
+            if (event.target === tokenHelpDialog) tokenHelpDialog.close();
         });
 
         document.getElementById('openAllIssuesBtn').addEventListener('click', function () {
