@@ -53,6 +53,7 @@
 
         input[type="text"],
         input[type="email"],
+        input[type="password"],
         textarea {
             width: 100%;
             padding: 12px;
@@ -65,6 +66,7 @@
 
         input[type="text"]:focus,
         input[type="email"]:focus,
+        input[type="password"]:focus,
         textarea:focus {
             outline: none;
             border-color: #667eea;
@@ -131,6 +133,36 @@
             min-height: 16px;
         }
 
+        .created-issues {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .created-issues h2 {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .created-issue-list {
+            list-style: none;
+            margin-top: 12px;
+        }
+
+        .created-issue-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .created-issue-list a {
+            color: #4f46a5;
+            overflow-wrap: anywhere;
+        }
+
+        .created-issue-list a:hover {
+            color: #302a78;
+        }
+
         #fileInput {
             display: none;
         }
@@ -140,19 +172,19 @@
 <body>
     <div class="container">
         <h1>🐞 Criar Issue no Azure DevOps</h1>
-        <p class="subtitle">Preencha os campos e o formulário abrirá o card já preenchido para revisão e salvamento
-            (via GET, usando sua sessão logada no Azure DevOps).</p>
+        <p class="subtitle">Crie Issues diretamente no Azure DevOps, com Parent vinculado quando informado.</p>
 
         <form id="issueForm">
-            <label for="titulo">Título *</label>
-            <input type="text" id="titulo" name="titulo" required placeholder="Ex: Erro ao gerar arquivo de posição">
+            <label for="titulo">Título(s) *</label>
+            <textarea id="titulo" name="titulo" required placeholder="Um título por linha"></textarea>
+            <div class="hint">Cada linha preenchida criará um novo Issue.</div>
 
             <label for="descricao">Descrição</label>
             <textarea id="descricao" name="descricao" placeholder="Descreva o problema ou solicitação..."></textarea>
 
             <label for="responsavel">Responsável</label>
             <input type="email" id="responsavel" name="responsavel" placeholder="nome.sobrenome@philips.com">
-            
+
             <label for="area">Area</label>
             <input type="text" id="area" name="area" placeholder="EMR\Time Alpha">
             <div class="hint">Caminho completo da area, ex: EMR\Time Alpha</div>
@@ -161,8 +193,15 @@
             <input type="text" id="iteration" name="iteration" placeholder="EMR\Sprint 1">
             <div class="hint">Caminho completo da iteration, ex: EMR\Release 10\Sprint 3</div>
 
+            <label for="parent">Parent</label>
+            <input type="text" id="parent" name="parent" inputmode="numeric" placeholder="Código do card pai">
 
-            <button type="submit">Criar Issue no Azure DevOps</button>
+            <label for="azurePat">Token pessoal do Azure DevOps *</label>
+            <input type="password" id="azurePat" name="azurePat" required autocomplete="off"
+                placeholder="PAT com escopo Work Items: Read & write">
+            <div class="hint">Salvo sem criptografia no LocalStorage deste navegador. Não é incluído nos arquivos JSON; qualquer pessoa com acesso ao seu perfil poderá recuperá-lo.</div>
+
+            <button type="submit">Criar Issues no Azure DevOps</button>
 
             <div class="secondary-buttons">
                 <button type="button" id="saveJsonBtn">💾 Salvar JSON</button>
@@ -172,6 +211,16 @@
             <input type="file" id="fileInput" accept="application/json">
             <div class="status-msg" id="statusMsg"></div>
         </form>
+
+        <section class="created-issues" id="createdIssuesSection" aria-labelledby="createdIssuesTitle" hidden>
+            <h2 id="createdIssuesTitle">Issues criados</h2>
+            <div class="secondary-buttons">
+                <button type="button" id="openAllIssuesBtn">Abrir todos</button>
+                <button type="button" id="clearIssuesBtn">Limpar lista</button>
+            </div>
+            <div class="hint">Limpar a lista remove apenas este histórico local; não apaga os Issues no Azure. Permita pop-ups para abrir todos em abas separadas.</div>
+            <ul class="created-issue-list" id="createdIssueList"></ul>
+        </section>
     </div>
 
     <script>
@@ -180,11 +229,18 @@
         const AZURE_PROJECT = 'EMR';
         const WORK_ITEM_TYPE = 'Issue';
         const STORAGE_KEY = 'criarIssueAzureDevOps.formData';
-        const FIELD_IDS = ['titulo', 'descricao', 'responsavel', 'iteration', 'area'];
+        const TOKEN_STORAGE_KEY = 'criarIssueAzureDevOps.azurePat';
+        const CREATED_ITEMS_STORAGE_KEY = 'criarIssueAzureDevOps.createdItems';
+        const FIELD_IDS = ['titulo', 'descricao', 'responsavel', 'iteration', 'area', 'parent'];
 
         const form = document.getElementById('issueForm');
         const statusMsg = document.getElementById('statusMsg');
         const fileInput = document.getElementById('fileInput');
+        const tokenInput = document.getElementById('azurePat');
+        const createdIssuesSection = document.getElementById('createdIssuesSection');
+        const createdIssueList = document.getElementById('createdIssueList');
+        let statusTimeout;
+        let createdItems = [];
 
         function getFormData() {
             const data = {};
@@ -198,9 +254,10 @@
             });
         }
 
-        function showStatus(message) {
+        function showStatus(message, duration = 3000) {
             statusMsg.textContent = message;
-            setTimeout(() => { statusMsg.textContent = ''; }, 3000);
+            clearTimeout(statusTimeout);
+            statusTimeout = setTimeout(() => { statusMsg.textContent = ''; }, duration);
         }
 
         // Persiste automaticamente no localStorage a cada alteração (sobrevive ao F5)
@@ -217,34 +274,150 @@
             if (saved) {
                 try { applyFormData(JSON.parse(saved)); } catch (err) { /* dados corrompidos, ignora */ }
             }
+
+            tokenInput.value = localStorage.getItem(TOKEN_STORAGE_KEY) || '';
+            try {
+                const savedItems = JSON.parse(localStorage.getItem(CREATED_ITEMS_STORAGE_KEY) || '[]');
+                if (Array.isArray(savedItems)) {
+                    createdItems = savedItems.filter(item => item && /^\d+$/.test(String(item.id)) && typeof item.title === 'string');
+                }
+            } catch (err) { /* histórico corrompido, ignora */ }
+            renderCreatedItems();
         })();
 
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
+        function getIssueUrl(id) {
+            return `https://dev.azure.com/${AZURE_ORG}/${encodeURIComponent(AZURE_PROJECT)}/_workitems/edit/${encodeURIComponent(id)}`;
+        }
 
-            const titulo = document.getElementById('titulo').value.trim();
-            const descricao = document.getElementById('descricao').value.trim();
-            const responsavel = document.getElementById('responsavel').value.trim();
-            const iteration = document.getElementById('iteration').value.trim();
-            const area = document.getElementById('area').value.trim();
+        function persistCreatedItems() {
+            localStorage.setItem(CREATED_ITEMS_STORAGE_KEY, JSON.stringify(createdItems));
+        }
 
+        function renderCreatedItems() {
+            createdIssueList.replaceChildren();
+            createdItems.forEach(item => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = getIssueUrl(item.id);
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = `#${item.id} - ${item.title}`;
+                listItem.appendChild(link);
+                createdIssueList.appendChild(listItem);
+            });
+            createdIssuesSection.hidden = createdItems.length === 0;
+        }
+
+        tokenInput.addEventListener('input', function () {
+            if (tokenInput.value) localStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.value);
+            else localStorage.removeItem(TOKEN_STORAGE_KEY);
+        });
+
+        document.getElementById('openAllIssuesBtn').addEventListener('click', function () {
+            createdItems.forEach(item => window.open(getIssueUrl(item.id), '_blank'));
+        });
+
+        document.getElementById('clearIssuesBtn').addEventListener('click', function () {
+            createdItems = [];
+            localStorage.removeItem(CREATED_ITEMS_STORAGE_KEY);
+            renderCreatedItems();
+            showStatus('Histórico local limpo. Os Issues continuam no Azure.');
+        });
+
+        async function createIssue(title, values, token) {
+            const operations = [
+                { op: 'add', path: '/fields/System.Title', value: title }
+            ];
             const fields = {
-                '[System.Title]': titulo,
-                '[System.Description]': descricao,
-                '[System.AssignedTo]': responsavel,
-                '[System.IterationPath]': iteration,
-                '[System.AreaPath]': area
+                'System.Description': values.descricao,
+                'System.AssignedTo': values.responsavel,
+                'System.IterationPath': values.iteration,
+                'System.AreaPath': values.area
             };
 
-            const params = Object.entries(fields)
-                .filter(([, value]) => value)
-                .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-                .join('&');
+            Object.entries(fields).forEach(([field, value]) => {
+                if (value) operations.push({ op: 'add', path: `/fields/${field}`, value });
+            });
 
-            const url = `https://dev.azure.com/${AZURE_ORG}/${AZURE_PROJECT}/_workitems/create/${WORK_ITEM_TYPE}?${params}`;
+            if (values.parent) {
+                operations.push({
+                    op: 'add',
+                    path: '/relations/-',
+                    value: {
+                        rel: 'System.LinkTypes.Hierarchy-Reverse',
+                        url: `https://dev.azure.com/${AZURE_ORG}/_apis/wit/workItems/${values.parent}`
+                    }
+                });
+            }
 
-            // Navega via GET (usa a sessão já autenticada do usuário no Azure DevOps)
-            window.open(url, '_blank');
+            const url = `https://dev.azure.com/${AZURE_ORG}/${encodeURIComponent(AZURE_PROJECT)}/_apis/wit/workitems/$${encodeURIComponent(WORK_ITEM_TYPE)}?api-version=7.1`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${btoa(`:${token}`)}`,
+                    'Content-Type': 'application/json-patch+json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(operations)
+            });
+            const responseText = await response.text();
+            let result;
+            try { result = JSON.parse(responseText); } catch (err) { result = {}; }
+
+            if (!response.ok) {
+                throw new Error(result.message || `Erro HTTP ${response.status}`);
+            }
+            return result.id;
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const titulos = document.getElementById('titulo').value.split(/\r?\n/).map(titulo => titulo.trim()).filter(Boolean);
+            const values = {
+                descricao: document.getElementById('descricao').value.trim(),
+                responsavel: document.getElementById('responsavel').value.trim(),
+                iteration: document.getElementById('iteration').value.trim(),
+                area: document.getElementById('area').value.trim(),
+                parent: document.getElementById('parent').value.trim()
+            };
+            const token = tokenInput.value.trim();
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            if (titulos.length === 0) {
+                showStatus('Informe pelo menos um título.');
+                return;
+            }
+            if (values.parent && !/^\d+$/.test(values.parent)) {
+                showStatus('Parent deve ser o código numérico do card.');
+                return;
+            }
+            if (!token) {
+                showStatus('Informe um PAT válido do Azure DevOps.');
+                return;
+            }
+
+            submitButton.disabled = true;
+            showStatus(`Criando ${titulos.length} Issue(s)...`);
+            const results = await Promise.allSettled(titulos.map(titulo => createIssue(titulo, values, token)));
+            const created = results.flatMap((result, index) => result.status === 'fulfilled'
+                ? [{ id: result.value, title: titulos[index] }]
+                : []);
+            createdItems = [...createdItems, ...created];
+            if (created.length) {
+                persistCreatedItems();
+                renderCreatedItems();
+            }
+            const createdIds = created.map(item => item.id);
+            const failures = results.filter(result => result.status === 'rejected');
+            submitButton.disabled = false;
+
+            if (failures.length) {
+                const reason = failures[0].reason.message;
+                showStatus(`${createdIds.length}/${titulos.length} criados. Erro: ${reason}`, 10000);
+            } else {
+                showStatus(`Issues criados: ${createdIds.join(', ')}`, 10000);
+            }
         });
 
         document.getElementById('saveJsonBtn').addEventListener('click', function () {
@@ -282,9 +455,9 @@
         });
 
         document.getElementById('clearBtn').addEventListener('click', function () {
-            form.reset();
+            FIELD_IDS.forEach(id => { document.getElementById(id).value = ''; });
             localStorage.removeItem(STORAGE_KEY);
-            showStatus('Formulário limpo.');
+            showStatus('Campos do formulário limpos. Token e histórico mantidos.');
         });
     </script>
 </body>
